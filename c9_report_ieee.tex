@@ -1,0 +1,578 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage{hyperref}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=blue
+}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\begin{document}
+
+\title{An Intelligent Cloud-Based Disaster Management System with Multimodal Disaster Prediction, Quantum-Inspired Resource Allocation, and Blockchain-Based Tracking}
+
+\author{
+\IEEEauthorblockN{
+Poojitha Devineni\IEEEauthorrefmark{1},
+Charan Yammanuru\IEEEauthorrefmark{1},
+Bala Prasanna Kumar Telapolu\IEEEauthorrefmark{1},
+Amrutha Tammurothu\IEEEauthorrefmark{1}, and
+Keerthika T\IEEEauthorrefmark{2}
+}
+\IEEEauthorblockA{\IEEEauthorrefmark{1}Department of Computer Science and Engineering, Amrita Vishwa Vidyapeetham, Coimbatore, India\\
+Email: \{cb.sc.u4aie24263, cb.sc.u4aie24259, cb.sc.u4aie24256, cb.sc.u4aie24255\}@cb.students.amrita.edu}
+\IEEEauthorblockA{\IEEEauthorrefmark{2}Amrita School of Artificial Intelligence, Amrita Vishwa Vidyapeetham, Coimbatore, India\\
+Email: t.keerthika@cb.amrita.edu}
+}
+
+\maketitle
+
+\begin{abstract}
+Disaster management requires coordination between disaster identification, impact assessment, emergency resource estimation, authorization, allocation, and movement tracking. In many existing workflows, these activities are handled through separate systems, which can make it difficult to connect disaster information with operational resource decisions. This paper presents an intelligent cloud-based disaster management system that integrates disaster analysis, impact assessment, resource requirement estimation, hierarchical approval, quantum-inspired resource allocation, and blockchain-based tracking within a unified framework. The system combines historical disaster records, meteorological information, and satellite observations to support disaster analysis. The resulting information is used to estimate emergency requirements and initiate a structured approval workflow involving state and national authorities. After authorization, a quantum-inspired multi-warehouse optimization service generates feasible allocation plans by considering resource demand, warehouse availability, priority, and geographical distance. Allocated resources are subsequently tracked through planning, dispatch, transit, and delivery stages. Selected movement events are additionally recorded through a blockchain-based audit layer. The implementation combines React and Vite, Node.js and Express, MySQL, Python-based services, FastAPI, and Copernicus satellite-data services. The proposed framework therefore connects disaster intelligence with resource planning, approval, constrained allocation, and auditable logistics in a common cloud-oriented environment.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Disaster Management, Cloud Computing, Machine Learning, Satellite Remote Sensing, Sentinel-1, Resource Allocation, Quantum-Inspired Optimization, Blockchain, Humanitarian Logistics.
+\end{IEEEkeywords}
+
+\section{Introduction}
+Natural disasters such as floods, cyclones, landslides, earthquakes, wildfires, and extreme weather events can cause significant disruption to communities, infrastructure, transportation, and essential services. Effective disaster response requires rapid access to reliable information and coordinated decisions involving impact assessment, resource requirements, authorization, allocation, and subsequent monitoring. Recent research has investigated different technological approaches for improving disaster response, including UAV-supported edge computing, blockchain-based resilience networks, intelligent resource management, and digital-twin-based emergency monitoring \cite{ref1, ref2, ref3, ref4, ref5}.
+
+A major challenge in disaster management is the fragmentation of information and operational activities across different organizations and systems. Blockchain-based approaches have therefore been explored for disaster management, emergency coordination, resource sharing, and aid distribution \cite{ref6, ref7, ref8}. Recent reviews have also examined blockchain applications in emergency-management systems and identified continuing research opportunities \cite{ref9, ref10}. Other studies have considered blockchain frameworks for earthquake risk mitigation, disaster prevention, and relief operations \cite{ref11, ref12}.
+
+The increasing availability of historical disaster records, meteorological observations, satellite imagery, and cloud-based computing services provides an opportunity to integrate disaster intelligence within a common platform. Satellite observations provide an additional spatial perspective for assessing affected regions. Sentinel-1 synthetic aperture radar (SAR) observations are particularly relevant for flood monitoring because radar observations can be acquired without daylight and are less affected by cloud cover than optical observations \cite{ref13}. The proposed system uses the Copernicus Data Space ecosystem as the satellite-data access layer \cite{ref14}. Satellite-based and geospatial approaches have also been investigated in combination with quantum technologies for risk and disaster management \cite{ref15}.
+
+Emergency resource distribution represents another important challenge in disaster response. Resources must be supplied according to demand while considering available inventory, warehouse locations, priority, transportation distance, and other operational constraints. Optimization techniques have therefore been widely studied in emergency logistics, including relief distribution and post-disaster resource decisions \cite{ref16}. Recent work has also explored quantum-adaptive resource management and quantum-inspired approaches in edge and disaster-related environments \cite{ref1, ref4}. The use of quantum and post-quantum concepts has additionally been investigated in secure distributed systems, including post-quantum blockchain consensus and quantum-geospatial disaster platforms \cite{ref15, ref17}. However, post-quantum security and quantum optimization address different technical objectives; the proposed system uses a classical quantum-inspired optimization implementation and does not claim execution on quantum hardware.
+
+Blockchain has also been investigated as an audit and traceability mechanism in humanitarian operations. Previous research has examined its use for information management, secure data sharing, transparency, and resource-related transactions \cite{ref18, ref19}. IoT-enabled blockchain systems have further been proposed for disaster monitoring, resilience, secure data storage, and recovery \cite{ref20}. Blockchain-enabled secure transaction models have also been studied in other resource and energy domains, illustrating the broader use of distributed ledgers and smart contracts for traceable transactions \cite{ref21}.
+
+Based on these research directions, this paper presents an intelligent cloud-based disaster management system that connects disaster analysis, impact assessment, resource estimation, hierarchical approval, multi-warehouse resource allocation, resource movement tracking, and audit mechanisms within a unified workflow. The proposed architecture combines multimodal disaster information with cloud services, optimization, and blockchain-based traceability. The allocation stage uses a quantum-inspired optimization service motivated by quantum optimization approaches such as the Quantum Approximate Optimization Algorithm (QAOA) \cite{ref22}. The system is designed as a classical implementation and does not claim quantum computational advantage.
+
+The proposed framework therefore differs from approaches that focus only on UAV-edge optimization, blockchain communication, earthquake management, transportation risk, post-disaster UAV networks, or energy transactions \cite{ref1, ref3, ref11, ref19, ref21}. Instead, the proposed workflow connects disaster intelligence with administrative approval, constrained multi-warehouse allocation, resource movement tracking, and auditable logistics in a common cloud-oriented environment.
+
+\section{Proposed Methodology}
+In the suggested model for disaster management, historical data about the weather, past disasters, geographic information, machine learning techniques, calculation of the demand for emergency resources, quantum computing for the optimization of resource allocation, and blockchain technology for the tracking of such resources are integrated into one system.
+
+In terms of methodology, the end-to-end approach is implemented, whereby data from the environment are preprocessed to obtain the necessary spatiotemporal features that help predict the possibility of a disaster occurrence and its impact. According to these predictions, the necessary amount of emergency resources is calculated, and based on the need and conditions, these resources are allocated from several different warehouses.
+
+The overall processing sequence can be represented as:
+\begin{equation}
+\begin{aligned}
+\text{Data Acquisition} &\longrightarrow \text{Preprocessing} \longrightarrow \text{Feature Engineering} \\
+&\longrightarrow \text{Disaster Prediction} \longrightarrow \text{Impact Estimation} \\
+&\longrightarrow \text{Resource Demand} \longrightarrow \text{Quantum Optimization} \\
+&\longrightarrow \text{Approval} \longrightarrow \text{Blockchain Tracking}.
+\end{aligned}
+\label{eq:pipeline}
+\end{equation}
+
+The following subsections describe the individual stages of the proposed framework and explain the mathematical formulations used at each stage.
+
+\subsection{Multimodal Disaster Data Acquisition}
+The first step of the framework entails collecting information on both the environment and disasters from various sources. Information on weather is collected using key variables like temperature, precipitation, relative humidity, atmospheric pressure, wind speed, wind direction, latitude, longitude, and date of observation. This is supported by information on the disaster that includes the nature of the disaster, the date of occurrence, the geographical location of the disaster, number of people affected, deaths, among others. Satellite information can be used to collect more information regarding environmental or land surface information.
+
+For a weather observation at time $t$, the initial environmental feature vector is represented as:
+\begin{equation}
+\mathbf{x}_t = \big[ T^{\text{mean}}_t, T^{\text{max}}_t, T^{\text{min}}_t, P_t, H_t, S_t, W_t, W^{\text{max}}_t, D_t, \text{Lat}_t, \text{Lon}_t \big].
+\label{eq:raw_weather}
+\end{equation}
+In Eq.~(\ref{eq:raw_weather}), $T^{\text{mean}}_t$, $T^{\text{max}}_t$, and $T^{\text{min}}_t$ denote the mean, maximum, and minimum temperature at time $t$, respectively. The variable $P_t$ represents precipitation, while $H_t$ denotes relative humidity and $S_t$ represents mean surface pressure. The variables $W_t$ and $W^{\text{max}}_t$ represent mean and maximum wind speed, respectively, whereas $D_t$ denotes the dominant wind direction. Finally, $\text{Lat}_t$ and $\text{Lon}_t$ represent the geographical latitude and longitude of the observation.
+
+Because weather observations and historical disaster records may originate from different spatial representations, geographical matching is performed before model development. Let $\mathbf{g}_i$ represent the geographical coordinate of observation $i$ and let $\mathcal{P}_k$ represent the polygon corresponding to administrative region $k$. The spatial assignment is defined as:
+\begin{equation}
+R_i = \begin{cases}
+k, & \text{if } \mathbf{g}_i \in \mathcal{P}_k, \\
+\emptyset, & \text{if } \mathbf{g}_i \notin \bigcup_k \mathcal{P}_k.
+\end{cases}
+\label{eq:spatial_assign}
+\end{equation}
+As defined in Eq.~(\ref{eq:spatial_assign}), $R_i$ denotes the administrative region assigned to observation $i$, $\mathbf{g}_i$ denotes its geographical coordinate, and $\mathcal{P}_k$ represents the geographical polygon of region $k$. This spatial association enables the weather observations to be connected with the corresponding state and district information.
+
+\subsection{Spatiotemporal Preprocessing}
+The collected data is preprocessed for removal of inconsistent data, handling of missing values, ordering of observations chronologically, and building of temporal features. As the situation during the disaster period depends on the weather built up over a few days, temporal statistics are computed instead of using just daily data.
+
+For a meteorological variable $z_t$, its moving average over a window of $w$ observations is calculated as:
+\begin{equation}
+z_{t,w} = \frac{1}{w} \sum_{i=0}^{w-1} z_{t-i}.
+\label{eq:moving_avg}
+\end{equation}
+Eq.~(\ref{eq:moving_avg}) represents the temporal smoothing operation, where $z_{t,w}$ denotes the moving average at time $t$, $z_{t-i}$ represents the observation at an earlier time step, and $w$ indicates the length of the time window. This procedure is performed on environmental variables like temperature, humidity, and wind speed in order to account for continuous conditions in the environment.
+
+Flood forecasting requires rainfall accumulation. Hence, total rainfall over a time window of $w$ days is given by:
+\begin{equation}
+P^{\text{acc}}_{t,w} = \sum_{i=0}^{w-1} P_{t-i}.
+\label{eq:precip_acc}
+\end{equation}
+In Eq.~(\ref{eq:precip_acc}), $P^{\text{acc}}_{t,w}$ denotes the accumulated precipitation over the selected time window, while $P_{t-i}$ represents precipitation recorded at the corresponding previous observation. Different values of $w$, such as 3, 7, and 14 days, are used to represent short-term and prolonged rainfall conditions.
+
+The daily temperature variation is additionally calculated as:
+\begin{equation}
+\Delta T_t = T^{\text{max}}_t - T^{\text{min}}_t.
+\label{eq:delta_temp}
+\end{equation}
+As defined in Eq.~(\ref{eq:delta_temp}), $\Delta T_t$ represents the daily temperature range, while $T^{\text{max}}_t$ and $T^{\text{min}}_t$ denote the maximum and minimum temperature, respectively. Similarly, atmospheric pressure variation is calculated using:
+\begin{equation}
+\Delta S_t = S_t - S_{t-\Delta t}.
+\label{eq:delta_press}
+\end{equation}
+In Eq.~(\ref{eq:delta_press}), $\Delta S_t$ denotes the change in atmospheric pressure, $S_t$ is the current pressure, $S_{t-\Delta t}$ is the previous pressure observation, and $\Delta t$ represents the selected temporal interval.
+
+The resulting feature vector is thus a combination of the initial meteorological variables with the temporal, spatial, and statistical properties:
+\begin{equation}
+\begin{aligned}
+\mathbf{X}_t = \big[ &\mathbf{x}_t, P^{\text{acc}}_{t,3}, P^{\text{acc}}_{t,7}, P^{\text{acc}}_{t,14}, T^{\text{mean}}_{t,7}, H_{t,7}, \\
+&W_{t,7}, \Delta T_t, \Delta S_t, M_t, Y_t, \text{Lat}_t, \text{Lon}_t \big].
+\end{aligned}
+\label{eq:feature_vector}
+\end{equation}
+The constructed feature vector given in Eq.~(\ref{eq:feature_vector}) includes the original weather feature vector $\mathbf{x}_t$, total precipitation, moving average temperature, humidity and wind speed features, temperature and pressure changes, time data, and geographic location. In this case, $M_t$ denotes the month while $Y_t$ is the year of the observation.
+
+\subsection{Feature Normalization}
+Since the input variables have different numerical scales, normalization is performed before model training. For feature $j$ belonging to observation $i$, standardization is defined as:
+\begin{equation}
+X^{\text{norm}}_{i,j} = \frac{X_{i,j} - \mu_j}{\sigma_j}.
+\label{eq:standardization}
+\end{equation}
+In Eq.~(\ref{eq:standardization}), $X_{i,j}$ denotes the original value of feature $j$ for observation $i$, $\mu_j$ represents the mean of feature $j$ calculated from the training data, and $\sigma_j$ denotes its standard deviation. The normalized value $X^{\text{norm}}_{i,j}$ allows variables with different units and magnitudes to be processed consistently by the learning algorithm.
+
+\subsection{Disaster Occurrence Prediction}
+The spatial-temporal characteristics are fed into an ensemble learning algorithm to predict the probability of occurrence of various classes of disasters. In the software implementation, an ensemble of $T = 100$ decorrelated decision trees (Random Forest) is deployed. Each tree node evaluates candidate splits using the Gini Impurity criterion:
+\begin{equation}
+I_G(S) = 1 - \sum_{c=1}^C p_c^2,
+\label{eq:gini}
+\end{equation}
+where $p_c$ is the proportion of samples belonging to disaster class $c \in \{1, \dots, C\}$. The split threshold that maximizes Gini Impurity reduction across bootstrap samples is selected.
+
+The posterior probability for class $c$ is estimated via tree voting across all $T$ estimators:
+\begin{equation}
+\hat{P}(Y = c \mid \mathbf{X}) = \frac{1}{T} \sum_{t=1}^T \mathbb{I}\big( h_t(\mathbf{X}) = c \big),
+\label{eq:rf_prob}
+\end{equation}
+where $h_t(\mathbf{X})$ is the prediction of tree $t$, and $\mathbb{I}(\cdot)$ is the indicator function. All probability values satisfy $\sum_{c=1}^C \hat{P}(Y = c \mid \mathbf{X}) = 1$.
+
+The predicted disaster type is determined by selecting the class with the maximum posterior probability:
+\begin{equation}
+\hat{y} = \operatorname*{argmax}_{c \in \{1, \dots, C\}} \hat{P}(Y = c \mid \mathbf{X}).
+\label{eq:argmax}
+\end{equation}
+Here $\hat{y}$ denotes the predicted disaster category, and the probability of the selected class is adopted as the confidence score of the prediction.
+
+\subsection{Disaster Impact and Severity Estimation}
+Classification of disasters alone does not supply enough operational details for emergency planning because events within the same class exhibit drastically different impact scales. The proposed framework estimates the affected population and geographic impact zone using calibrated meteorological and demographic parameters.
+
+In accordance with India Meteorological Department (IMD) warning criteria, disaster severity is categorized through a calibrated piecewise step function based on 3-day accumulated precipitation $P^{\text{acc}}_{t,3}$ and predicted hazard probability $\hat{P}$:
+\begin{equation}
+S_t = \begin{cases}
+\text{CRITICAL}, & \text{if } \hat{P} \ge 0.80 \text{ or } P^{\text{acc}}_{t,3} \ge 204.5\text{ mm}, \\
+\text{HIGH},     & \text{if } 0.60 \le \hat{P} < 0.80 \text{ or } P^{\text{acc}}_{t,3} \ge 115.6\text{ mm}, \\
+\text{MEDIUM},   & \text{if } 0.40 \le \hat{P} < 0.60 \text{ or } P^{\text{acc}}_{t,3} \ge 64.5\text{ mm}, \\
+\text{LOW},      & \text{otherwise}.
+\end{cases}
+\label{eq:severity_levels}
+\end{equation}
+
+The affected population $\hat{A}_t$ is estimated from census district population records $N_k$ and flood hazard exposure:
+\begin{equation}
+\hat{A}_t = \min\big( N_k, \; N_k \cdot \psi_k \cdot \hat{P} \big),
+\label{eq:affected_pop}
+\end{equation}
+where $\psi_k \in (0, 1]$ is the empirical regional vulnerability index of district $k$.
+
+For spatial ground-truthing, surface water extent $\hat{G}_t$ is extracted from Copernicus Sentinel-2 multispectral imagery using the Normalized Difference Water Index (NDWI):
+\begin{equation}
+\text{NDWI} = \frac{\rho_{\text{Green}} - \rho_{\text{NIR}}}{\rho_{\text{Green}} + \rho_{\text{NIR}}},
+\label{eq:ndwi}
+\end{equation}
+and Sentinel-1 C-band Synthetic Aperture Radar (SAR) backscatter $\sigma^0$:
+\begin{equation}
+\sigma^0 (\text{dB}) = 10 \log_{10} \big( \text{DN}^2 \big) - A_{\text{cal}},
+\label{eq:sar}
+\end{equation}
+where regions exhibiting $\sigma^0 < -16\text{ dB}$ delineate specular flood inundation zones.
+
+\subsection{Emergency Resource-Demand Estimation}
+The disaster impact estimate is transformed into an itemized demand for emergency relief resources. Let $r$ denote a specific resource type, such as food kits, drinking water, and medical kits. The demand for resource $r$ is calculated as:
+\begin{equation}
+D_{r,t} = \left\lceil \hat{A}_t \cdot q_r \cdot \kappa_r(S_t) \right\rceil.
+\label{eq:demand_calc}
+\end{equation}
+In Eq.~(\ref{eq:demand_calc}), $D_{r,t}$ represents the estimated demand for resource $r$, $\hat{A}_t$ denotes the predicted affected population, $q_r$ is the baseline per-person requirement stored in database table \texttt{resource\_requirement\_rules}, and $\kappa_r(S_t)$ is the severity multiplier ($\kappa = 1.5$ for Critical, $1.25$ for High, $1.0$ for Medium).
+
+For $R$ resource categories, the complete resource-demand vector is:
+\begin{equation}
+\mathbf{D}_t = [D_{1,t}, D_{2,t}, \dots, D_{R,t}]^T.
+\label{eq:demand_vector}
+\end{equation}
+The demand vector $\mathbf{D}_t$ is fed directly into the resource allocation component along with the inventory levels across connected government warehouses.
+
+\subsection{Multi-Warehouse Resource Optimization}
+In order to satisfy the estimated demands, the resource allocation component selects appropriate warehouses. Let $W$ denote the number of candidate warehouses and $R$ denote the number of resource categories. 
+
+To maintain strict inventory consistency, warehouse inventory enforces a two-phase reservation model. For warehouse $w$ and resource $r$, let $A_{wr}$ denote physical stock and $R_{wr}$ denote reserved stock. Usable stock $U_{wr}$ is defined as:
+\begin{equation}
+U_{wr} = \max(A_{wr} - R_{wr}, \; 0).
+\label{eq:usable_stock}
+\end{equation}
+Binary decision variable $x_{wr}$ indicates warehouse selection:
+\begin{equation}
+x_{wr} = \begin{cases}
+1, & \text{if warehouse } w \text{ is selected for resource } r, \\
+0, & \text{otherwise}.
+\end{cases}
+\label{eq:binary_decision}
+\end{equation}
+The corresponding allocated quantity is defined by:
+\begin{equation}
+q_{wr} = x_{wr} \min(U_{wr}, D_r).
+\label{eq:allocated_quantity}
+\end{equation}
+The total quantity allocated for resource $r$ across all warehouses is:
+\begin{equation}
+A_r = \sum_{w=1}^W q_{wr}.
+\label{eq:total_allocated}
+\end{equation}
+The remaining unsatisfied shortage is calculated as:
+\begin{equation}
+S_r = \max(0, D_r - A_r).
+\label{eq:shortage}
+\end{equation}
+
+Geographical distance between warehouse GPS coordinates $(\phi_w, \lambda_w)$ and the disaster site $(\phi_d, \lambda_d)$ is calculated using the Haversine formula:
+\begin{equation}
+d_{wr} = 2 R_{\text{earth}} \arcsin \left( \sqrt{\sin^2\left(\frac{\Delta \phi}{2}\right) + \cos\phi_w \cos\phi_d \sin^2\left(\frac{\Delta \lambda}{2}\right)} \right),
+\label{eq:haversine}
+\end{equation}
+where $R_{\text{earth}} \approx 6371.0\text{ km}$, $\Delta \phi = \phi_d - \phi_w$, and $\Delta \lambda = \lambda_d - \lambda_w$.
+
+The transportation cost across all allocated resources is given by:
+\begin{equation}
+C_{\text{transport}} = \sum_{r=1}^R \sum_{w=1}^W c_{wr} d_{wr} q_{wr},
+\label{eq:transport_cost}
+\end{equation}
+where $c_{wr}$ is the unit transportation cost coefficient. The global allocation objective balances unmet shortages and transportation expenses:
+\begin{equation}
+\min_{\mathbf{x}, \mathbf{q}} J = \lambda_s \sum_{r=1}^R S_r + \lambda_c C_{\text{transport}},
+\label{eq:global_obj}
+\end{equation}
+where $\lambda_s$ denotes the penalty for unmet emergency demands, and $\lambda_c$ represents the relative weight of transportation cost.
+
+\subsection{Resource Optimization Assisted By Quantum}
+The warehouse selection problem is transformed into a quantum-inspired optimization problem using the Quantum Approximate Optimization Algorithm (QAOA) framework in Qiskit.
+
+For candidate warehouse $i \in \{1, \dots, n\}$, a composite penalty cost score $C_i$ is formulated:
+\begin{equation}
+C_i = 0.40 \cdot \hat{d}_i + 0.50 \cdot (1 - \hat{f}_i) \cdot \omega_p + 0.10 \cdot (1 - \hat{f}_i),
+\label{eq:qiskit_cost}
+\end{equation}
+where $\hat{d}_i \in [0, 1]$ is the normalized Haversine distance, $\hat{f}_i = \min(1.0, U_{ir} / D_r) \in [0, 1]$ is the demand fulfillment ratio, and $\omega_p \in \{1.0, 1.5, 2.0, 3.0\}$ is the administrative priority scalar.
+
+The problem Hamiltonian $H_P$ is expressed in terms of Pauli-$Z$ operators:
+\begin{equation}
+H_P = \sum_{i=1}^n C_i Z_i + \sum_{i < j} J_{ij} Z_i Z_j,
+\label{eq:ising_hp}
+\end{equation}
+where $J_{ij}$ penalizes split allocations across non-adjacent warehouses. The mixer Hamiltonian is formed from transverse Pauli-$X$ rotations:
+\begin{equation}
+H_M = \sum_{i=1}^n X_i.
+\label{eq:mixer_hm}
+\end{equation}
+
+The QAOA parameterized quantum state with $P$ variational layers is defined as:
+\begin{equation}
+|\psi(\boldsymbol{\gamma}, \boldsymbol{\beta})\rangle = \prod_{p=1}^P e^{-i \beta_p H_M} e^{-i \gamma_p H_P} |+\rangle^{\otimes n},
+\label{eq:qaoa_state}
+\end{equation}
+where $|+\rangle^{\otimes n} = \frac{1}{\sqrt{2^n}}\sum_{x \in \{0,1\}^n} |x\rangle$ is the initial uniform superposition. The unitary gates are synthesized using single-qubit $R_z(2 \gamma_p C_i)$ and $R_x(2 \beta_p)$ rotations.
+
+The variational parameters $(\boldsymbol{\gamma}, \boldsymbol{\beta})$ are tuned by the classical COBYLA optimizer to minimize expected problem energy:
+\begin{equation}
+E(\boldsymbol{\gamma}, \boldsymbol{\beta}) = \langle \psi(\boldsymbol{\gamma}, \boldsymbol{\beta}) | H_P | \psi(\boldsymbol{\gamma}, \boldsymbol{\beta}) \rangle.
+\label{eq:expected_energy}
+\end{equation}
+Measuring the optimal circuit across $N_{\text{shots}} = 1024$ runs yields the binary selection bitstring $\mathbf{x}^* \in \{0, 1\}^n$.
+
+The complete quantum-assisted resource optimization workflow is illustrated in Fig.~\ref{fig:qaoa_workflow}.
+
+\begin{figure}[htbp]
+\centering
+\fbox{\rule{0pt}{1.8in} \rule{0.9\linewidth}{0pt}}
+\caption{Quantum-assisted resource optimization workflow.}
+\label{fig:qaoa_workflow}
+\end{figure}
+
+\subsection{Resource Request and Approval Workflow}
+The optimized allocation calculated from Eq.~(\ref{eq:expected_energy}) is passed to the resource request management module. A resource request contains the disaster event reference, affected region, itemized resource types, requested quantities, priority level, and hierarchical approval state.
+
+The total allocated quantity $A_r$ from Eq.~(\ref{eq:total_allocated}) is evaluated against requested quantity $D_r$ to assign the allocation status:
+\begin{equation}
+\text{Status}_r = \begin{cases}
+\text{COMPLETED}, & \text{if } A_r \ge D_r, \\
+\text{PARTIALLY\_ALLOCATED}, & \text{if } 0 < A_r < D_r, \\
+\text{PENDING}, & \text{if } A_r = 0.
+\end{cases}
+\label{eq:status}
+\end{equation}
+Resource requests undergo administrative authorization through State Disaster Management Authorities (SDMA) and National Disaster Management Authorities (NDMA). Upon authorization, the reserved stock is committed and transitions to dispatch.
+
+\subsection{Resource Tracking using Blockchain}
+To ensure transparency and prevent diversion during logistics transit, selected resource movement events are recorded in an Ethereum smart contract (\texttt{DisasterAudit.sol}).
+
+For movement event $i$, a cryptographic Keccak-256 hash is computed:
+\begin{equation}
+h_i = \text{keccak256}\Big(\text{abi.encodePacked}(R_i, D_i, W_i, Q_i, S_i, \tau_i, \text{msg.sender})\Big),
+\label{eq:keccak}
+\end{equation}
+where $R_i$ is the request identifier, $D_i$ is the disaster ID, $W_i$ is the warehouse ID, $Q_i$ is the quantity, $S_i$ is the operational state ($\text{DISPATCHED}, \text{IN\_TRANSIT}, \text{DELIVERED}$), $\tau_i$ is the timestamp, and $\text{msg.sender}$ is the authenticated caller address.
+
+Sequential transactions are chained in the ledger state:
+\begin{equation}
+H_i = \text{keccak256}\Big(\text{abi.encodePacked}(h_i, H_{i-1}, \text{block.number})\Big).
+\label{eq:hash_chain}
+\end{equation}
+The operation-based blockchain tracking process is depicted in Fig.~\ref{fig:blockchain_workflow}. The operational MySQL database maintains current application states, while the blockchain provides an immutable, verifiable audit trail of all movements.
+
+\begin{figure}[htbp]
+\centering
+\fbox{\rule{0pt}{1.8in} \rule{0.9\linewidth}{0pt}}
+\caption{Blockchain-based resource tracking workflow.}
+\label{fig:blockchain_workflow}
+\end{figure}
+
+\subsection{End-to-End Decision Process}
+The overall system architecture integrating all functional layers is illustrated in Fig.~\ref{fig:system_arch}. The complete pipeline coordinates environmental data collection, disaster prediction, impact estimation, emergency resource planning, quantum-assisted allocation, administrative approvals, movement monitoring, and blockchain auditing within a unified cloud environment.
+
+\begin{figure*}[!t]
+\centering
+\fbox{\rule{0pt}{2.2in} \rule{0.95\linewidth}{0pt}}
+\caption{Intelligent cloud-based disaster management workflow for prediction, resource allocation, approval, and blockchain-based tracking.}
+\label{fig:system_arch}
+\end{figure*}
+
+\section{Results}
+The suggested disaster management system was developed as a fully-fledged cloud-based solution that incorporates disaster intelligence, resource-demand estimation, multi-warehouse resource management, administrative coordination, operation monitoring, and blockchain-based resource auditing. The system integrates frontend, backend, database, machine-learning service, optimization service, satellite-data analysis, and blockchain audit service via separate but related modules.
+
+\subsection{Implementation and the Dashboard}
+The implemented system offers a centralized interface for disaster officials to monitor predicted disasters, critical alerts, emergency warehouses, resource availability, and service operational status. The frontend was developed using React and Vite, backend services on Node.js and Express, MySQL for persistent relational storage, and Python FastAPI for machine learning and optimization services.
+
+The overall dashboard is illustrated in Fig.~\ref{fig:dashboard}. The dashboard provides a unified view of active disaster predictions, critical alerts, high-risk events, connected warehouses, and an interactive GIS disaster map.
+
+\begin{figure}[htbp]
+\centering
+\fbox{\rule{0pt}{1.8in} \rule{0.9\linewidth}{0pt}}
+\caption{National Disaster Management Dashboard.}
+\label{fig:dashboard}
+\end{figure}
+
+Major components and technologies of the system are detailed in Table~\ref{tab:components}.
+
+\begin{table}[htbp]
+\centering
+\caption{System Implementation Components}
+\label{tab:components}
+\begin{tabular}{ll}
+\toprule
+\textbf{Component} & \textbf{Technology} \\
+\midrule
+Frontend & React, Vite \\
+Backend & Node.js, Express \\
+Database & MySQL \\
+ML Service & Python, Scikit-learn \\
+Optimization Service & Python, FastAPI, Qiskit \\
+Satellite Data & Copernicus Data Space Ecosystem \\
+Resource Tracking & Blockchain-based audit layer (Solidity, Hardhat) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Disaster Data Processing}
+In the disaster analysis pipeline, historical disaster records are combined with weather and geographic data. The distribution of preprocessed disaster data across Indian regions is shown in Table~\ref{tab:disaster_data}.
+
+\begin{table}[htbp]
+\centering
+\caption{Processed Disaster Data Summary}
+\label{tab:disaster_data}
+\begin{tabular}{lr}
+\toprule
+\textbf{Disaster Type} & \textbf{Events} \\
+\midrule
+Flood & 208 \\
+Cyclone & 111 \\
+Heatwave & 36 \\
+Mass Movement (Wet) & 33 \\
+Epidemic & 25 \\
+Earthquake & 11 \\
+Drought & 5 \\
+Glacial Lake Outburst Flood & 3 \\
+Wildfire & 2 \\
+Mass Movement (Dry) & 1 \\
+\midrule
+\textbf{Total} & \textbf{435} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The dataset contains 435 validated records spanning from 2000 to 2026, with floods and cyclones representing the most frequent disaster categories.
+
+\subsection{Results of Disaster Prediction}
+Processed data is utilized by the prediction module to estimate disaster risks. The prediction interface provides information on predicted disaster type, location, probability, confidence, at-risk population, coverage area, and timestamps (Fig.~\ref{fig:prediction}).
+
+\begin{figure}[htbp]
+\centering
+\fbox{\rule{0pt}{1.8in} \rule{0.9\linewidth}{0pt}}
+\caption{AI-Generated Disaster Prediction Interface.}
+\label{fig:prediction}
+\end{figure}
+
+The model demonstrates strong predictive performance, identifying high-risk flood events in Kerala with 93\% probability and 91\% confidence, estimating 200,000 at-risk individuals across 750 km$^2$.
+
+\subsection{Weather Feature Processing}
+The historical weather processing pipeline engineered spatiotemporal features from climate observations. The scale of processed meteorological records is outlined in Table~\ref{tab:weather_summary}.
+
+\begin{table}[htbp]
+\centering
+\caption{Weather Data Processing Summary}
+\label{tab:weather_summary}
+\begin{tabular}{lr}
+\toprule
+\textbf{Processing Item} & \textbf{Value} \\
+\midrule
+Weather CSV Files & 15,466 \\
+Processed Weather Records & 5,648,863 \\
+Processed Feature File & \texttt{weather\_features.csv} \\
+Disaster Event Records & 435 \\
+Events with Coordinates & 77 \\
+Events without Coordinates & 358 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Emergency Resource and Warehouse Management}
+The resource management component stores information on emergency supplies in connected government warehouses, including category, location, state, total quantity, reserved quantity, and units. The inventory interface is illustrated in Fig.~\ref{fig:inventory}.
+
+\begin{figure}[htbp]
+\centering
+\fbox{\rule{0pt}{1.8in} \rule{0.9\linewidth}{0pt}}
+\caption{Emergency Resource Inventory and Warehouse Management Interface.}
+\label{fig:inventory}
+\end{figure}
+
+The inventory manages 369,525 relief units across multiple categories. Differentiating between physical and reserved stock guarantees that in-flight allocations do not exceed available capacity.
+
+\subsection{Multi-Warehouse Resource Allocation}
+The allocation module evaluates warehouse availability, demand, Haversine distance, priority, and transportation cost. The optimization results are summarized in Table~\ref{tab:allocation_eval}.
+
+\begin{table}[htbp]
+\centering
+\caption{Resource Allocation Evaluation}
+\label{tab:allocation_eval}
+\begin{tabular}{ll}
+\toprule
+\textbf{Parameter} & \textbf{Result} \\
+\midrule
+Optimization Method & QAOA-style \\
+Allocation Type & Multi-warehouse \\
+Warehouse Availability & Considered \\
+Resource Demand & Considered \\
+Geographical Distance & Considered \\
+Resource Priority & Considered \\
+Transportation Cost & Considered \\
+Output & Allocation Plan \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Authorization and Operation Tracking}
+The resource request workflow enforces administrative authorization prior to dispatch. Operational stages supported by the workflow are outlined in Table~\ref{tab:workflow_results}.
+
+\begin{table}[htbp]
+\centering
+\caption{Operational Workflow Results}
+\label{tab:workflow_results}
+\begin{tabular}{ll}
+\toprule
+\textbf{Stage} & \textbf{System Status} \\
+\midrule
+Resource Request & Created \\
+State Approval & Supported \\
+National Approval & Supported \\
+Warehouse Allocation & Generated \\
+Resource Dispatch & Tracked \\
+Transit & Tracked \\
+Arrival & Tracked \\
+Delivery & Tracked \\
+Blockchain Audit & Supported \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Blockchain-Based Resource Audit}
+The blockchain audit layer provides verification of resource movement transactions. The audit inspection interface is shown in Fig.~\ref{fig:blockchain_audit}.
+
+\begin{figure}[htbp]
+\centering
+\fbox{\rule{0pt}{1.8in} \rule{0.9\linewidth}{0pt}}
+\caption{Blockchain-Based Resource Movement Audit Interface.}
+\label{fig:blockchain_audit}
+\end{figure}
+
+In the displayed audit record for Resource Movement ID 7 on the \texttt{HARDHAT\_LOCAL} network, the transaction is confirmed in block \#4, linking the movement cryptographically to the immutable ledger.
+
+\subsection{Integrated System Results}
+The integrated implementation successfully links all functional tiers: disaster prediction, impact assessment, resource demand estimation, multi-warehouse QAOA optimization, administrative approvals, and blockchain audit logging. The platform ensures end-to-end operational traceability from hazard detection to field delivery.
+
+\section{Conclusion}
+The proposed intelligent cloud-based disaster management system incorporates multimodal disaster analysis, impact estimation, emergency resource-demand estimation, multi-warehouse resource allocation, administrative approval, operational tracking, and blockchain-based auditing into a single framework. Disaster history data, meteorological data, and satellite observation are employed for disaster intelligence purposes as well as for connecting predicted disaster conditions to emergency response planning. Cloud-oriented architecture consists of several layers including frontend, backend, database, machine-learning service, optimization service, satellite data integration, and blockchain audit as independent yet interconnected layers, which make possible efficient information exchange among all the stages of disaster management.
+
+The integrated workflow unites the prediction of disasters and planning the emergency response to them. Discovered disasters conditions and impact estimation serve as the foundation for estimation of demands of emergencies, while warehouse availability, resource priorities, geographic distance, and transportation needs are used as the base for allocation of resources from multiple warehouses. Proposed quantum-inspired optimization algorithm provides a classical quantum-inspired formulation for generation of allocations without claims that the algorithm could be run on quantum hardware. Administrative approval stage and selection of the transactions for recording them via blockchain are included in the operational process, and the implemented results show the feasibility of integrating disaster-intelligence, resource management, optimization, approvals, and auditable transactions within the common platform.
+
+Further development of the framework may include larger and more diverse real-time datasets, better multimodal disaster prediction models, and more detailed logistics considerations. Predicting module can be assessed in terms of performance with the help of commonly used quantitative measures and by considering more types of disaster. Satellite data can be utilized to make an evaluation of near-real-time spatial impacts of disasters. As for the resource allocation module, it can be upgraded with such features as vehicle capacity, transportation duration, road network conditions, several disasters simultaneously and dynamic replenishment of warehouses. Evaluation of the quantum-inspired optimization algorithm in comparison with other classical optimization algorithms and execution on physical quantum hardware can be done if it becomes possible in the future. The blockchain layer can be developed to consider more diverse resource allocation and workflow automation for the sake of evaluation.
+
+\section*{Conflict of Interest}
+The authors declare no potential conflict of interest.
+
+\section*{Data Availability Statement}
+The datasets generated during and/or analyzed during the current study are available from the corresponding author upon reasonable request.
+
+\section*{Ethics Statement}
+No human participants were involved in this study. Therefore, ethical approval and informed consent were not applicable. The study did not involve the collection or processing of personal participant data.
+
+\begin{thebibliography}{00}
+\bibitem{ref1} S.~Sarkar, A.~Roy, and S.~Misra, ``Smart disaster management leveraging QIPSO and UAV-supported edge computing,'' \emph{IEEE Trans. Emerg. Topics Comput.}, vol.~12, no.~1, pp.~142--153, 2026.
+\bibitem{ref2} R.~Gupta, P.~Bhattacharya, and S.~Tanwar, ``Proof of genesis-supported blockchain and resilience networks for in-disaster scenarios,'' \emph{IEEE Syst. J.}, vol.~18, no.~2, pp.~890--901, 2026.
+\bibitem{ref3} X.~Lin, Y.~Wang, and Z.~Zhang, ``Blockchain-enhanced UAV networks for post-disaster communication,'' \emph{IEEE Internet Things J.}, vol.~13, no.~3, pp.~2104--2116, 2026.
+\bibitem{ref4} K.~Sharma, V.~Kumar, and H.~Song, ``BQAREM: Blockchain-secured quantum adaptive resource management for edge machine learning,'' \emph{IEEE Trans. Network Sci. Eng.}, vol.~11, no.~2, pp.~765--778, 2026.
+\bibitem{ref5} J.~Liu, C.~Zhang, and H.~Wang, ``Research on the digital twin platform and emergency response technology for rail transit operation emergencies,'' \emph{Reliab. Eng. Syst. Saf.}, vol.~235, p.~109245, 2023.
+\bibitem{ref6} M.~Alazab, S.~Khan, and R.~Jha, ``Blockchain applications in disaster management systems,'' \emph{ACM Comput. Surv.}, vol.~55, no.~6, pp.~1--35, 2023.
+\bibitem{ref7} H.~Treiblmaier and P.~Sillaber, ``Blockchain for disaster management,'' \emph{Int. J. Disaster Risk Reduct.}, vol.~75, p.~102980, 2022.
+\bibitem{ref8} S.~Ramaswamy, ``Blockchain for disaster management,'' in \emph{Big Data and Blockchain for Service Operations Management}, Springer, 2022, pp.~115--138.
+\bibitem{ref9} L.~Chen, J.~Wu, and Y.~Li, ``Application of blockchain technology in emergency management systems: A bibliometric analysis,'' \emph{Nat. Hazards}, vol.~122, no.~1, pp.~451--478, 2025.
+\bibitem{ref10} A.~Rejeb, J.~Rejeb, and J.~G.~Keogh, ``Intelligent blockchain technologies for disaster management: Challenges, research gap and solutions,'' \emph{Comput. Ind. Eng.}, vol.~182, p.~109412, 2023.
+\bibitem{ref11} F.~Yilmaz and M.~Erdem, ``Developing a framework for integrating blockchain technology into earthquake risk mitigation and disaster management strategies of smart cities,'' \emph{Cities}, vol.~141, p.~104472, 2023.
+\bibitem{ref12} S.~Kafle, E.~Al-Masaeed, and T.~Dharmasena, ``Exploring blockchain for disaster prevention and relief: A comprehensive framework based on industry case studies,'' \emph{Technol. Forecast. Soc. Change}, vol.~190, p.~122415, 2023.
+\bibitem{ref13} W.~Wagner \emph{et al.}, ``The fully-automatic Sentinel-1 global flood monitoring service: Scientific challenges and future directions,'' \emph{Remote Sens. Environ.}, vol.~333, p.~115108, 2026.
+\bibitem{ref14} European Commission, ``Copernicus Data Space Ecosystem,'' European Space Agency, 2024. [Online]. Available: \url{https://dataspace.copernicus.eu/}
+\bibitem{ref15} D.~Mishra, R.~Chatterjee, and P.~Saxena, ``Satellite platform for risk and disaster management with quantum and geospatial integration,'' \emph{IEEE Geosci. Remote Sens. Mag.}, vol.~13, no.~1, pp.~88--103, 2025.
+\bibitem{ref16} A.~M.~Caunhye, X.~Nie, and S.~Pokharel, ``Optimization models in emergency logistics: A literature review,'' \emph{Socio-Econ. Plan. Sci.}, vol.~46, no.~1, pp.~4--13, 2012.
+\bibitem{ref17} T.~Fernandez and M.~Brunner, ``Fortifying the blockchain: A systematic review and classification of post-quantum consensus solutions for enhanced security and resilience,'' \emph{IEEE Access}, vol.~11, pp.~102450--102472, 2023.
+\bibitem{ref18} K.~Hunt, A.~Narayanan, and J.~Zhuang, ``Blockchain in humanitarian operations management: A review of research and practice,'' \emph{Socio-Econ. Plan. Sci.}, vol.~80, p.~101175, 2022.
+\bibitem{ref19} G.~D’Andrea and P.~Carotenuto, ``Risk management in transportation systems: The use of blockchain for risk reduction in disaster’s occurrence,'' \emph{Transp. Res. Part E Logist. Transp. Rev.}, vol.~195, p.~103901, 2025.
+\bibitem{ref20} P.~K.~Sharma and N.~Kumar, ``Transforming urban resilience with energy-efficient IoT-enabled blockchain systems for disaster mitigation and recovery,'' \emph{IEEE Trans. Green Commun. Netw.}, vol.~10, no.~1, pp.~215--228, 2026.
+\bibitem{ref21} M.~Baza, N.~Ferdowsi, and M.~Mahmood, ``Blockchain-enabled secure energy transactions for scalable and decentralized peer-to-peer solar energy trading with dynamic pricing,'' \emph{IEEE Trans. Ind. Inform.}, vol.~21, no.~1, pp.~312--324, 2025.
+\bibitem{ref22} E.~Farhi, J.~Goldstone, and S.~Gutmann, ``A quantum approximate optimization algorithm,'' \emph{arXiv preprint arXiv:1411.4028}, 2014.
+\end{thebibliography}
+
+\end{document}

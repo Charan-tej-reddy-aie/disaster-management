@@ -1,0 +1,4 @@
+fastapi
+uvicorn
+numpy
+qiskit>=2.5

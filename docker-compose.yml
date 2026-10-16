@@ -1,0 +1,129 @@
+version: '3.8'
+
+services:
+  # ========================================================
+  # 1. Relational Database Tier: MySQL 8.0
+  # ========================================================
+  mysql:
+    image: mysql:8.0
+    container_name: disaster_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword123
+      MYSQL_DATABASE: disaster_management
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./database/init:/docker-entrypoint-initdb.d
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword123"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - disaster_net
+
+  # ========================================================
+  # 2. Blockchain Tier: Hardhat EVM Node & Contract Deployer
+  # ========================================================
+  blockchain:
+    build:
+      context: ./blockchain
+      dockerfile: Dockerfile
+    container_name: disaster_blockchain
+    restart: always
+    ports:
+      - "8545:8545"
+    networks:
+      - disaster_net
+
+  # ========================================================
+  # 3. Machine Learning Tier: Python FastAPI Service
+  # ========================================================
+  ml-service:
+    build:
+      context: ./ml-service
+      dockerfile: Dockerfile
+    container_name: disaster_ml_service
+    restart: always
+    ports:
+      - "8001:8001"
+    networks:
+      - disaster_net
+
+  # ========================================================
+  # 4. Quantum Optimization Tier: Qiskit QAOA FastAPI Service
+  # ========================================================
+  quantum-service:
+    build:
+      context: ./quantum
+      dockerfile: Dockerfile
+    container_name: disaster_quantum_service
+    restart: always
+    ports:
+      - "8002:8002"
+    networks:
+      - disaster_net
+
+  # ========================================================
+  # 5. Application Gateway Tier: Node.js Express API
+  # ========================================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: disaster_backend
+    restart: always
+    environment:
+      PORT: 5000
+      DB_HOST: mysql
+      DB_USER: root
+      DB_PASSWORD: rootpassword123
+      DB_NAME: disaster_management
+      DB_PORT: 3306
+      JWT_SECRET: supersecretjwtkey_production_disaster_management_sem5
+      QUANTUM_SERVICE_URL: http://quantum-service:8002
+      ML_SERVICE_URL: http://ml-service:8001
+      BLOCKCHAIN_RPC_URL: http://blockchain:8545
+      BLOCKCHAIN_PRIVATE_KEY: "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
+      DISASTER_AUDIT_CONTRACT: "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+      COPERNICUS_CLIENT_ID: sh-52f1d17f-1eef-49e5-962a-5266e1803a9c
+      COPERNICUS_CLIENT_SECRET: bwE5tU5Q069NbLApSt4l2G16oEbXON29
+    ports:
+      - "5000:5000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      blockchain:
+        condition: service_started
+      ml-service:
+        condition: service_started
+      quantum-service:
+        condition: service_started
+    networks:
+      - disaster_net
+
+  # ========================================================
+  # 6. Presentation / Client Tier: React + Nginx Reverse Proxy
+  # ========================================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: disaster_frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - disaster_net
+
+networks:
+  disaster_net:
+    driver: bridge
+
+volumes:
+  mysql_data:

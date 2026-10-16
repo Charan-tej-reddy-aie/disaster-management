@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>National Disaster Management System - Project Presentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #070a13;
+      --bg-card: rgba(17, 24, 39, 0.75);
+      --bg-card-border: rgba(255, 255, 255, 0.08);
+      --accent-blue: #38bdf8;
+      --accent-indigo: #6366f1;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --accent-purple: #a855f7;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --font-heading: 'Outfit', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* Background Ambient Glows */
+    .ambient-glow {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .glow-1 { top: -100px; left: -100px; width: 600px; height: 600px; background: #4f46e5; }
+    .glow-2 { bottom: -150px; right: -100px; width: 700px; height: 700px; background: #06b6d4; }
+    .glow-3 { top: 40%; left: 50%; width: 500px; height: 500px; background: #a855f7; transform: translate(-50%, -50%); }
+
+    /* Top Progress Bar & Header */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7, 10, 19, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--bg-card-border);
+      z-index: 50;
+    }
+
+    .brand-title {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: -0.01em;
+    }
+    .brand-badge {
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      background: rgba(99, 102, 241, 0.2);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      color: #818cf8;
+      border-radius: 9999px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .btn-header {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--bg-card-border);
+      color: var(--text-main);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      font-family: var(--font-body);
+    }
+    .btn-header:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+    .btn-primary-header {
+      background: linear-gradient(135deg, #4f46e5, #06b6d4);
+      border: none;
+      color: #fff;
+    }
+    .btn-primary-header:hover {
+      box-shadow: 0 0 15px rgba(79, 70, 229, 0.5);
+    }
+
+    .progress-bar-container {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #4f46e5, #06b6d4, #10b981);
+      width: 0%;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Presentation Slide Stage */
+    .deck-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      padding-top: 60px;
+      padding-bottom: 70px;
+      z-index: 10;
+    }
+
+    .slide {
+      position: absolute;
+      top: 60px;
+      left: 0;
+      width: 100%;
+      height: calc(100vh - 130px);
+      padding: 30px 60px;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(40px) scale(0.98);
+      transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s;
+      overflow-y: auto;
+    }
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0) scale(1);
+    }
+
+    /* Slide Typography */
+    .slide-header {
+      margin-bottom: 24px;
+    }
+    .slide-category {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent-blue);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .slide-title {
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      background: linear-gradient(135deg, #ffffff 40%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .slide-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    /* Slide Content Grid Layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      flex: 1;
+      align-items: center;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      flex: 1;
+    }
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      flex: 1;
+    }
+
+    /* Glass Cards */
+    .card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--bg-card-border);
+      border-radius: 16px;
+      padding: 24px;
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .card:hover {
+      border-color: rgba(255, 255, 255, 0.18);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+      transform: translateY(-2px);
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card-p {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    /* Screenshot Showcase Frame */
+    .screenshot-frame {
+      position: relative;
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(99, 102, 241, 0.15);
+      cursor: zoom-in;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .screenshot-frame:hover {
+      transform: scale(1.015);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 35px rgba(56, 189, 248, 0.25);
+    }
+    .screenshot-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .screenshot-badge {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #38bdf8;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Metrics & Stats Chips */
+    .stat-number {
+      font-family: var(--font-heading);
+      font-size: 2.4rem;
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 6px;
+      background: linear-gradient(135deg, #38bdf8, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .stat-label {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
+
+    /* Pill Badges */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .pill-blue { background: rgba(56, 189, 248, 0.12); color: #38bdf8; border-color: rgba(56, 189, 248, 0.3); }
+    .pill-green { background: rgba(16, 185, 129, 0.12); color: #10b981; border-color: rgba(16, 185, 129, 0.3); }
+    .pill-purple { background: rgba(168, 85, 247, 0.12); color: #c084fc; border-color: rgba(168, 85, 247, 0.3); }
+    .pill-amber { background: rgba(245, 158, 11, 0.12); color: #fbbf24; border-color: rgba(245, 158, 11, 0.3); }
+    .pill-rose { background: rgba(244, 63, 94, 0.12); color: #fb7185; border-color: rgba(244, 63, 94, 0.3); }
+
+    /* Code & Architecture Block */
+    pre.code-block {
+      background: #090d16;
+      border: 1px solid var(--bg-card-border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: #e2e8f0;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+    .code-comment { color: #64748b; }
+    .code-keyword { color: #f43f5e; font-weight: 600; }
+    .code-func { color: #38bdf8; }
+    .code-string { color: #34d399; }
+    .code-num { color: #fbbf24; }
+
+    /* Bottom Control Bar */
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 70px;
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(7, 10, 19, 0.85);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--bg-card-border);
+      z-index: 50;
+    }
+
+    .slide-indicator {
+      font-family: var(--font-heading);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .slide-counter {
+      color: var(--text-main);
+      font-feature-settings: "tnum";
+      font-variant-numeric: tabular-nums;
+    }
+
+    .nav-buttons {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .btn-nav {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-main);
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: all 0.2s ease;
+    }
+    .btn-nav:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
+    }
+    .btn-nav:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    /* Modal / Lightbox */
+    .lightbox-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(16px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.25s ease;
+      cursor: zoom-out;
+      padding: 40px;
+    }
+    .lightbox-modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .lightbox-img {
+      max-width: 95%;
+      max-height: 92%;
+      border-radius: 12px;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(56, 189, 248, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Slide Overview Drawer */
+    .overview-drawer {
+      position: fixed;
+      top: 60px;
+      right: 0;
+      width: 380px;
+      height: calc(100vh - 60px);
+      background: #090e1a;
+      border-left: 1px solid var(--bg-card-border);
+      padding: 24px;
+      overflow-y: auto;
+      z-index: 60;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .overview-drawer.active {
+      transform: translateX(0);
+    }
+    .overview-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.2s;
+      margin-bottom: 6px;
+      border: 1px solid transparent;
+    }
+    .overview-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+    }
+    .overview-item.current {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: rgba(99, 102, 241, 0.3);
+      color: #a5b4fc;
+      font-weight: 600;
+    }
+
+    /* Print / PDF Styling */
+    @media print {
+      body {
+        overflow: visible;
+        background: #fff !important;
+        color: #000 !important;
+      }
+      header, footer, .ambient-glow, .overview-drawer, .lightbox-modal {
+        display: none !important;
+      }
+      .deck-container {
+        padding: 0;
+        height: auto;
+      }
+      .slide {
+        position: relative !important;
+        top: 0 !important;
+        height: 100vh !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
+        page-break-after: always;
+        break-after: page;
+        padding: 40px !important;
+        background: #fff !important;
+        color: #111 !important;
+      }
+      .slide-title {
+        background: none !important;
+        -webkit-text-fill-color: #111 !important;
+      }
+      .card {
+        background: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #111 !important;
+      }
+      .card-p, .slide-subtitle {
+        color: #475569 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Glow Elements -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+  <div class="ambient-glow glow-3"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="brand-title">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+        <polyline points="2 17 12 22 22 17"></polyline>
+        <polyline points="2 12 12 17 22 12"></polyline>
+      </svg>
+      <span>NDMRAS Command Deck</span>
+      <span class="brand-badge">Cloud Computing Sem-5</span>
+    </div>
+
+    <div class="header-controls">
+      <button class="btn-header" onclick="toggleOverview()" title="Toggle slide list (O)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+        <span>Slides</span>
+      </button>
+
+      <button class="btn-header" onclick="toggleFullscreen()" title="Fullscreen mode (F)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+        </svg>
+        <span>Fullscreen</span>
+      </button>
+
+      <button class="btn-header" onclick="window.print()" title="Print / Save as PDF (P)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 6 2 18 2 18 9"></polyline>
+          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+          <rect x="6" y="14" width="12" height="8"></rect>
+        </svg>
+        <span>Save PDF</span>
+      </button>
+
+      <a href="http://localhost:5173" target="_blank" class="btn-header btn-primary-header" title="Open live running web application">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="10 8 16 12 10 16 10 8"></polygon>
+        </svg>
+        <span>Open Live App</span>
+      </a>
+    </div>
+
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+  </header>
+
+  <!-- Slide Stage -->
+  <div class="deck-container">
+
+    <!-- Slide 1: Title Slide -->
+    <section class="slide active" data-slide="1">
+      <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; max-width: 1050px; margin: 0 auto;">
+        <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+          <span class="pill pill-blue">Cloud Computing Project</span>
+          <span class="pill pill-purple">Artificial Intelligence</span>
+          <span class="pill pill-green">IBM Qiskit Quantum</span>
+          <span class="pill pill-amber">Ethereum Blockchain</span>
+        </div>
+
+        <h1 style="font-family: var(--font-heading); font-size: 3.4rem; font-weight: 900; line-height: 1.1; margin-bottom: 20px; letter-spacing: -0.03em;">
+          National Disaster Management &<br>
+          <span style="background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            Resource Allocation System
+          </span>
+        </h1>
+
+        <p style="font-size: 1.25rem; color: var(--text-muted); line-height: 1.6; max-width: 820px; margin-bottom: 36px;">
+          An enterprise-grade, distributed multi-tier cloud orchestration platform integrating 23-feature AI meteorology, Copernicus Sentinel remote sensing, Qiskit QAOA quantum multi-facility optimization, and immutable Ethereum blockchain auditing.
+        </p>
+
+        <div style="display: flex; gap: 40px; padding: 20px 40px; background: rgba(17, 24, 39, 0.6); border: 1px solid var(--bg-card-border); border-radius: 16px; backdrop-filter: blur(12px);">
+          <div>
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.05em;">Academic Subject</div>
+            <div style="font-size: 1rem; font-weight: 700; color: #f8fafc; margin-top: 4px;">Cloud Computing (Sem-5)</div>
+          </div>
+          <div style="width: 1px; background: rgba(255, 255, 255, 0.1);"></div>
+          <div>
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.05em;">Architecture</div>
+            <div style="font-size: 1rem; font-weight: 700; color: #38bdf8; margin-top: 4px;">Decoupled 6-Tier Distributed Platform</div>
+          </div>
+          <div style="width: 1px; background: rgba(255, 255, 255, 0.1);"></div>
+          <div>
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.05em;">System Status</div>
+            <div style="font-size: 1rem; font-weight: 700; color: #10b981; margin-top: 4px;">6 Active Microservices (Ports 5173 - 8545)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 2: Executive Summary & Motivation -->
+    <section class="slide" data-slide="2">
+      <div class="slide-header">
+        <div class="slide-category">Problem Statement & Vision</div>
+        <h2 class="slide-title">The Disaster Response Dilemma & Our Solution</h2>
+        <p class="slide-subtitle">Traditional civil defense operations suffer from critical systemic bottlenecks that cost lives and misallocate billions.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card" style="border-left: 4px solid var(--accent-rose);">
+          <div class="card-title" style="color: #fb7185;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+            Legacy Disaster Response Pitfalls
+          </div>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 14px; margin-top: 10px;">
+            <li style="display: flex; gap: 10px; font-size: 0.92rem; color: #cbd5e1;">
+              <span style="color: #f43f5e; font-weight: bold;">✕</span>
+              <span><strong>Fragmented Information Silos:</strong> Meteorological sensor data, satellite maps, and inventory databases remain isolated across regional agencies.</span>
+            </li>
+            <li style="display: flex; gap: 10px; font-size: 0.92rem; color: #cbd5e1;">
+              <span style="color: #f43f5e; font-weight: bold;">✕</span>
+              <span><strong>Reactive Relief Mobilization:</strong> Relief supplies are dispatched only days after ground flooding occurs, leading to avoidable loss of life.</span>
+            </li>
+            <li style="display: flex; gap: 10px; font-size: 0.92rem; color: #cbd5e1;">
+              <span style="color: #f43f5e; font-weight: bold;">✕</span>
+              <span><strong>Phantom Inventory Double-Booking:</strong> Competing disaster districts requisition identical supplies simultaneously without atomic reservation controls.</span>
+            </li>
+            <li style="display: flex; gap: 10px; font-size: 0.92rem; color: #cbd5e1;">
+              <span style="color: #f43f5e; font-weight: bold;">✕</span>
+              <span><strong>Supply Diversion & Audit Opacity:</strong> High-value emergency rations lack verifiable cryptographic chain of custody.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="card" style="border-left: 4px solid var(--accent-emerald);">
+          <div class="card-title" style="color: #34d399;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            The NDMRAS Engineered Breakthrough
+          </div>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 14px; margin-top: 10px;">
+            <li style="display: flex; gap: 10px; font-size: 0.92rem; color: #cbd5e1;">
+              <span style="color: #10b981; font-weight: bold;">✓</span>
+              <span><strong>Pre-emptive AI Inundation Forecasting:</strong> 23-feature Random Forest model detects flood risk 3 to 14 days in advance.</span>
+            </li>
+            <li style="display: flex; gap: 10px; font-size: 0.92rem; color: #cbd5e1;">
+              <span style="color: #10b981; font-weight: bold;">✓</span>
+              <span><strong>Algorithmic Demand Synthesis:</strong> Mathematical models calculate exact drinking water liters, food packets, and medical kits.</span>
+            </li>
+            <li style="display: flex; gap: 10px; font-size: 0.92rem; color: #10b981;">
+              <span style="color: #10b981; font-weight: bold;">✓</span>
+              <span><strong>Quantum QAOA Optimization:</strong> IBM Qiskit circuit calculates multi-warehouse dispatch considering distance, stock, and priority.</span>
+            </li>
+            <li style="display: flex; gap: 10px; font-size: 0.92rem; color: #10b981;">
+              <span style="color: #10b981; font-weight: bold;">✓</span>
+              <span><strong>Immutable Blockchain Audit:</strong> Smart contract records Keccak-256 hashes of dispatches and deliveries on Ethereum ledger.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 3: 6-Tier System Architecture -->
+    <section class="slide" data-slide="3">
+      <div class="slide-header">
+        <div class="slide-category">Cloud Engineering</div>
+        <h2 class="slide-title">6-Tier Distributed Cloud Architecture</h2>
+        <p class="slide-subtitle">Decoupled microservices architecture ensuring horizontal elasticity, zero single-point-of-failure, and asynchronous fault isolation.</p>
+      </div>
+
+      <div class="grid-3" style="margin-bottom: 20px;">
+        <div class="card">
+          <div style="font-size: 0.75rem; color: var(--accent-blue); font-weight: 700;">TIER 1 & 2</div>
+          <div class="card-title">Frontend & API Gateway</div>
+          <p class="card-p">
+            <strong>React 18 / Vite (Port 5173)</strong> provides responsive command dashboards.<br><br>
+            <strong>Express.js Gateway (Port 5000)</strong> enforces JWT security, connection pooling, and multi-service routing.
+          </p>
+        </div>
+
+        <div class="card">
+          <div style="font-size: 0.75rem; color: var(--accent-purple); font-weight: 700;">TIER 3 & 4</div>
+          <div class="card-title">Relational DB & AI Engine</div>
+          <p class="card-p">
+            <strong>MySQL 8.0 (Port 3306)</strong> stores 33 ACID-compliant tables and manages two-phase stock locking.<br><br>
+            <strong>Python FastAPI (Port 8001)</strong> executes the 23-feature Random Forest ML prediction pipeline.
+          </p>
+        </div>
+
+        <div class="card">
+          <div style="font-size: 0.75rem; color: var(--accent-emerald); font-weight: 700;">TIER 5 & 6</div>
+          <div class="card-title">Quantum Engine & Blockchain</div>
+          <p class="card-p">
+            <strong>Qiskit Microservice (Port 8002)</strong> simulates QAOA quantum statevector circuits for multi-warehouse allocation.<br><br>
+            <strong>Hardhat Ethereum Node (Port 8545)</strong> mines tamper-evident smart contract audits.
+          </p>
+        </div>
+      </div>
+
+      <pre class="code-block" style="flex: 0 0 auto;">
+<span class="code-comment">// Distributed Service Communication Topology</span>
+[Browser Client] ──(HTTPS/JWT)──> [Node.js Gateway :5000] ──(MySQL2 Pool)──> [MySQL 8.0 Database :3306]
+                                          ├──(HTTP POST /predict)──> [FastAPI ML Service :8001]
+                                          ├──(HTTP POST /optimize)─> [FastAPI Qiskit Quantum :8002]
+                                          ├──(JSON-RPC / Ethers.js)─> [Ethereum Hardhat Node :8545]
+                                          └──(OAuth2 Token API)────> [Copernicus Sentinel Hub / CDSE]
+      </pre>
+    </section>
+
+    <!-- Slide 4: Relational Database Schema -->
+    <section class="slide" data-slide="4">
+      <div class="slide-header">
+        <div class="slide-category">Data Architecture</div>
+        <h2 class="slide-title">Enterprise Relational Schema (33 Tables)</h2>
+        <p class="slide-subtitle">Engineered with InnoDB ACID transactions, cascading foreign keys, strict indexing, and atomic stock reservation guarantees.</p>
+      </div>
+
+      <div class="grid-3" style="gap: 20px;">
+        <div class="card">
+          <div class="card-title" style="color: #38bdf8;">1. Security & Master Data</div>
+          <ul style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.8; list-style: disc; padding-left: 18px;">
+            <li><code>roles</code> (5 hierarchical tiers)</li>
+            <li><code>users</code> (BCrypt hash, state/district link)</li>
+            <li><code>approval_actions</code> (Audit trail)</li>
+            <li><code>countries</code>, <code>states</code>, <code>districts</code></li>
+            <li><code>state_locations</code> (GPS coordinates)</li>
+            <li><code>audit_logs</code>, <code>notifications</code></li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color: #c084fc;">2. Logistics & Resources</div>
+          <ul style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.8; list-style: disc; padding-left: 18px;">
+            <li><code>resource_categories</code> (Food, Water, Medical)</li>
+            <li><code>resources</code> (Standard units, thresholds)</li>
+            <li><code>warehouses</code> (Manager isolation mapping)</li>
+            <li><code>warehouse_resources</code> (Available & Reserved)</li>
+            <li><code>resource_requirement_rules</code> (Per capita formulas)</li>
+          </ul>
+          <div style="margin-top: 10px; padding: 8px 12px; background: rgba(168,85,247,0.1); border-radius: 8px; font-size: 0.78rem; color: #c084fc;">
+            <strong>Usable Stock =</strong> max(Available - Reserved, 0)
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color: #34d399;">3. AI, Quantum & Chain</div>
+          <ul style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.8; list-style: disc; padding-left: 18px;">
+            <li><code>disaster_events</code> & <code>disaster_types</code></li>
+            <li><code>disaster_predictions</code> & <code>prediction_runs</code></li>
+            <li><code>resource_requests</code> & items</li>
+            <li><code>optimization_runs</code> (QAOA solution metrics)</li>
+            <li><code>resource_allocations</code> & movements</li>
+            <li><code>blockchain_transactions</code> (Block & Hash)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 5: Machine Learning Subsystem -->
+    <section class="slide" data-slide="5">
+      <div class="slide-header">
+        <div class="slide-category">Artificial Intelligence</div>
+        <h2 class="slide-title">23-Feature Random Forest Prediction Engine</h2>
+        <p class="slide-subtitle">Extracts sliding 14-day atmospheric and hydrological telemetry to classify disaster events and determine population exposure.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Feature Engineering Matrix</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 10px; font-size: 0.85rem;">
+            <div>
+              <div style="font-weight: 700; color: #38bdf8; margin-bottom: 6px;">Precipitation Signals</div>
+              <ul style="color: var(--text-muted); line-height: 1.6; list-style: disc; padding-left: 16px;">
+                <li>24-hour rainfall accumulation</li>
+                <li>3-day moving sum & mean</li>
+                <li>7-day moving sum & mean</li>
+                <li>14-day cumulative rainfall</li>
+              </ul>
+            </div>
+            <div>
+              <div style="font-weight: 700; color: #c084fc; margin-bottom: 6px;">Thermodynamic Metrics</div>
+              <ul style="color: var(--text-muted); line-height: 1.6; list-style: disc; padding-left: 16px;">
+                <li>Surface barometric pressure</li>
+                <li>24h & 72h pressure gradients</li>
+                <li>Diurnal temperature swing</li>
+                <li>Relative humidity 7-day mean</li>
+              </ul>
+            </div>
+          </div>
+
+          <div style="margin-top: 16px; border-top: 1px solid var(--bg-card-border); padding-top: 14px;">
+            <div style="font-weight: 700; color: #34d399; margin-bottom: 6px; font-size: 0.85rem;">Wind Vector Telemetry</div>
+            <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;">
+              10m sustained velocity, 7-day maximum wind gusts, and dominant azimuth angle to differentiate inland river floods from coastal storm surges.
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Population at Risk & Severity Synthesis</div>
+          <div style="padding: 16px; background: rgba(0, 0, 0, 0.3); border-radius: 12px; margin-top: 8px;">
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px;">Mathematical Formula:</div>
+            <code style="font-family: var(--font-mono); color: #38bdf8; font-size: 0.95rem;">
+              N_affected = Area_km² × Density_state × W_severity × P_model
+            </code>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px;">
+            <div style="padding: 10px; background: rgba(244, 63, 94, 0.1); border: 1px solid rgba(244, 63, 94, 0.3); border-radius: 8px; text-align: center;">
+              <div style="color: #fb7185; font-weight: 800; font-size: 0.95rem;">CRITICAL</div>
+              <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">P ≥ 80%</div>
+            </div>
+            <div style="padding: 10px; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; text-align: center;">
+              <div style="color: #fbbf24; font-weight: 800; font-size: 0.95rem;">HIGH</div>
+              <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">60% - 80%</div>
+            </div>
+            <div style="padding: 10px; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; text-align: center;">
+              <div style="color: #38bdf8; font-weight: 800; font-size: 0.95rem;">MEDIUM</div>
+              <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">40% - 60%</div>
+            </div>
+            <div style="padding: 10px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; text-align: center;">
+              <div style="color: #34d399; font-weight: 800; font-size: 0.95rem;">LOW</div>
+              <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">P &lt; 40%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 6: Earth Observation & Copernicus Satellites -->
+    <section class="slide" data-slide="6">
+      <div class="slide-header">
+        <div class="slide-category">Remote Sensing</div>
+        <h2 class="slide-title">ESA Copernicus Satellite Pipeline</h2>
+        <p class="slide-subtitle">Direct integration with Copernicus Data Space Ecosystem (CDSE) combining Synthetic Aperture Radar and Optical Imagery.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card" style="border-top: 3px solid var(--accent-blue);">
+          <div class="card-title">Sentinel-1 (SAR C-Band Radar)</div>
+          <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+            <span class="pill pill-blue">Cloud Penetrating</span>
+            <span class="pill pill-blue">All-Weather 24/7</span>
+          </div>
+          <p class="card-p">
+            During peak tropical cyclones and monsoon cloudbursts, optical satellites cannot see the surface. 
+            <strong>Sentinel-1 C-SAR</strong> radar pulses pierce dense clouds and rain to measure surface roughness deltas, mapping flood water extents with 10-meter ground resolution.
+          </p>
+        </div>
+
+        <div class="card" style="border-top: 3px solid var(--accent-emerald);">
+          <div class="card-title">Sentinel-2 (Multispectral Optical)</div>
+          <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+            <span class="pill pill-green">13 Spectral Bands</span>
+            <span class="pill pill-green">NDWI Analysis</span>
+          </div>
+          <p class="card-p">
+            Utilizes Visible, Red-Edge, and Near-Infrared (NIR) bands to compute the <strong>Normalized Difference Water Index (NDWI)</strong>:
+            <br><code style="font-family: var(--font-mono); color: #34d399; font-size: 0.85rem;">NDWI = (Green - NIR) / (Green + NIR)</code><br>
+            Enables high-fidelity spatial validation of submerged transport arteries and civic infrastructure.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 7: Quantum Resource Optimization Subsystem -->
+    <section class="slide" data-slide="7">
+      <div class="slide-header">
+        <div class="slide-category">Quantum Computing</div>
+        <h2 class="slide-title">IBM Qiskit QAOA Resource Optimizer</h2>
+        <p class="slide-subtitle">Solves NP-hard multi-warehouse combinatorial allocation using quantum superposition, phase separation, and mixer Hamiltonians.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Mathematical Problem Formulation</div>
+          <p class="card-p" style="margin-bottom: 14px;">
+            Minimizes a multi-objective cost Hamiltonian balancing transport distance, unfulfilled demand, and emergency priority:
+          </p>
+          <div style="padding: 14px; background: rgba(0,0,0,0.3); border-radius: 10px; font-family: var(--font-mono); font-size: 0.85rem; color: #38bdf8; line-height: 1.6;">
+            Cost(w_i) = α · (d_i / max_d) + β · (1 - f_i) · ω_priority + γ · (1 - f_i)
+          </div>
+          <ul style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.7; margin-top: 14px; list-style: disc; padding-left: 18px;">
+            <li><strong>d_i:</strong> Highway transit distance from warehouse <em>i</em> to disaster centroid.</li>
+            <li><strong>f_i:</strong> Demand fulfillment fraction from available usable stock.</li>
+            <li><strong>ω_priority:</strong> Dynamic urgency scalar (Low: 1.0, Critical: 3.0).</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Parameterized Quantum Circuit Design</div>
+          <pre class="code-block" style="font-size: 0.78rem;">
+<span class="code-comment"># Qiskit QAOA Circuit Layer Implementation</span>
+<span class="code-keyword">for</span> i <span class="code-keyword">in</span> range(num_qubits):
+    qc.<span class="code-func">h</span>(i)  <span class="code-comment"># Create equal superposition state |ψ₀⟩</span>
+
+<span class="code-comment"># Problem Hamiltonian Unitary U(C, γ)</span>
+<span class="code-keyword">for</span> i, cost <span class="code-keyword">in</span> enumerate(costs):
+    qc.<span class="code-func">rz</span>(<span class="code-num">2.0</span> * gamma * cost, i)
+
+<span class="code-comment"># Transverse Mixer Hamiltonian Unitary U(B, β)</span>
+<span class="code-keyword">for</span> i <span class="code-keyword">in</span> range(num_qubits):
+    qc.<span class="code-func">rx</span>(<span class="code-num">2.0</span> * beta, i)
+
+<span class="code-comment"># Statevector Sampling (1,024 shots)</span>
+sampler = <span class="code-func">StatevectorSampler</span>(seed=<span class="code-num">42</span>)
+          </pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 8: Blockchain Smart Contract Governance -->
+    <section class="slide" data-slide="8">
+      <div class="slide-header">
+        <div class="slide-category">Decentralized Governance</div>
+        <h2 class="slide-title">Ethereum Smart Contract Audit Ledger</h2>
+        <p class="slide-subtitle">Solidity 0.8.20 smart contract deployed on local Ethereum node, mining Keccak-256 cryptographic proofs of all relief dispatches.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">DisasterAudit.sol (EVM Contract)</div>
+          <div style="font-size: 0.8rem; color: var(--accent-blue); font-family: var(--font-mono); margin-bottom: 10px;">
+            Address: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+          </div>
+          <pre class="code-block" style="font-size: 0.76rem; max-height: 270px;">
+<span class="code-keyword">contract</span> DisasterAudit {
+    <span class="code-keyword">struct</span> AuditRecord {
+        uint256 recordId;
+        string eventType;      <span class="code-comment">// "RESOURCE_DISPATCHED"</span>
+        string referenceId;    <span class="code-comment">// "MOVEMENT:18"</span>
+        bytes32 dataHash;       <span class="code-comment">// Keccak-256</span>
+        uint256 timestamp;
+        address recordedBy;
+    }
+
+    <span class="code-keyword">function</span> <span class="code-func">recordAudit</span>(
+        string memory eventType,
+        string memory referenceId,
+        bytes32 dataHash
+    ) <span class="code-keyword">external</span> <span class="code-keyword">returns</span> (uint256);
+}
+          </pre>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Cryptographic Tamper-Proofing Guarantee</div>
+          <p class="card-p" style="margin-bottom: 12px;">
+            Before every supply shipment departs, the backend generates a deterministic Keccak-256 hash of the exact logistics payload:
+          </p>
+          <div style="padding: 12px; background: rgba(0,0,0,0.3); border-radius: 8px; font-family: var(--font-mono); font-size: 0.8rem; color: #34d399; word-break: break-all; margin-bottom: 16px;">
+            keccak256({ movementId: 18, originWarehouse: 1, toState: 1, qty: 15000, status: "DISPATCHED" })
+          </div>
+          <p class="card-p">
+            <strong>Non-Repudiation:</strong> Even if an internal database administrator alters records in MySQL, the cryptographic hash check against the Ethereum block immediately reveals the manipulation.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 9: Screenshot - National Command Dashboard -->
+    <section class="slide" data-slide="9">
+      <div class="slide-header">
+        <div class="slide-category">Website Walkthrough • 01</div>
+        <h2 class="slide-title">National Emergency Operations Command</h2>
+        <p class="slide-subtitle">Interactive Leaflet GIS map with pulsing disaster risk radii, live warning feeds, active service health chips, and simulation trigger.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="screenshot-frame" onclick="openLightbox('images/02_dashboard.png')">
+          <img src="images/02_dashboard.png" alt="National Dashboard Screenshot">
+          <div class="screenshot-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            Click to Enlarge
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div class="card">
+            <div class="card-title" style="color: #38bdf8;">Real-Time Operational Features</div>
+            <ul style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.8; list-style: disc; padding-left: 18px;">
+              <li><strong>Interactive Leaflet GIS Map:</strong> Renders disaster zones with dynamic risk circles and warehouse storage markers.</li>
+              <li><strong>Microservice Node Health Chips:</strong> Live status indicators verifying ports 5000 (API), 3306 (DB), 8002 (Quantum), and 8545 (Blockchain).</li>
+              <li><strong>One-Click Live Simulation:</strong> Instant 10-step full-lifecycle disaster test runner triggering AI, Quantum, and Blockchain mining.</li>
+            </ul>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+            <div class="card" style="padding: 14px; text-align: center;">
+              <div class="stat-number">4</div>
+              <div class="stat-label">Disaster Alerts</div>
+            </div>
+            <div class="card" style="padding: 14px; text-align: center;">
+              <div class="stat-number">2</div>
+              <div class="stat-label">Central Hubs</div>
+            </div>
+            <div class="card" style="padding: 14px; text-align: center;">
+              <div class="stat-number">100%</div>
+              <div class="stat-label">System Uptime</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 10: Screenshot - AI Predictions -->
+    <section class="slide" data-slide="10">
+      <div class="slide-header">
+        <div class="slide-category">Website Walkthrough • 02</div>
+        <h2 class="slide-title">AI Predictions & Weather Telemetry</h2>
+        <p class="slide-subtitle">Inundation probability gauges, estimated population impact figures, historical execution logs, and automated shortage synthesis.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="screenshot-frame" onclick="openLightbox('images/03_predictions.png')">
+          <img src="images/03_predictions.png" alt="Predictions Page Screenshot">
+          <div class="screenshot-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            Click to Enlarge
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div class="card">
+            <div class="card-title" style="color: #c084fc;">Early Warning Intelligence Hub</div>
+            <p class="card-p" style="margin-bottom: 12px;">
+              Presents state emergency authorities with instant visibility into incoming disaster events before ground devastation occurs.
+            </p>
+            <ul style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.8; list-style: disc; padding-left: 18px;">
+              <li><strong>Calibrated Inundation Gauge:</strong> Shows calculated event likelihood (e.g., 95.0% for Critical flood scenario).</li>
+              <li><strong>Impact Estimation Card:</strong> Automatically calculates affected population (15,000 citizens) and required emergency kits.</li>
+              <li><strong>Automated Requisition Creation:</strong> Seamlessly transfers identified shortages directly into formal requisition queues.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 11: Screenshot - Quantum Optimization Studio -->
+    <section class="slide" data-slide="11">
+      <div class="slide-header">
+        <div class="slide-category">Website Walkthrough • 03</div>
+        <h2 class="slide-title">Quantum Logistics Optimization Studio</h2>
+        <p class="slide-subtitle">Candidate warehouse comparisons, highway distance matrices, priority weight adjustment, and QAOA execution summaries.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="screenshot-frame" onclick="openLightbox('images/04_quantum.png')">
+          <img src="images/04_quantum.png" alt="Quantum Optimization Screenshot">
+          <div class="screenshot-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            Click to Enlarge
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div class="card">
+            <div class="card-title" style="color: #38bdf8;">Combinatorial Decision Studio</div>
+            <ul style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.8; list-style: disc; padding-left: 18px;">
+              <li><strong>Multi-Warehouse Candidate Evaluator:</strong> Compares primary local depot (Kerala) vs. backup regional depot (Tamil Nadu).</li>
+              <li><strong>Distance vs. Urgency Trade-off:</strong> Adjusts quantum penalty weights for emergency priority classes.</li>
+              <li><strong>Circuit Convergence Metrics:</strong> Displays quantum state sampling outputs, cost scores, and allocation splits.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 12: Screenshot - Blockchain Audit Ledger -->
+    <section class="slide" data-slide="12">
+      <div class="slide-header">
+        <div class="slide-category">Website Walkthrough • 04</div>
+        <h2 class="slide-title">Decentralized Blockchain Audit Explorer</h2>
+        <p class="slide-subtitle">Real-time Ethereum ledger table displaying verified block numbers, Keccak-256 hashes, copy buttons, and shipment references.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="screenshot-frame" onclick="openLightbox('images/05_blockchain.png')">
+          <img src="images/05_blockchain.png" alt="Blockchain Explorer Screenshot">
+          <div class="screenshot-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            Click to Enlarge
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div class="card">
+            <div class="card-title" style="color: #34d399;">Civil Oversight & Transparency</div>
+            <ul style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.8; list-style: disc; padding-left: 18px;">
+              <li><strong>Live On-Chain Ledger:</strong> Automatically loads all verified transactions from Hardhat Ethereum node.</li>
+              <li><strong>Mined Block Verification:</strong> Displays block numbers (Blocks #16, #17, #18) for recent emergency shipments.</li>
+              <li><strong>Cryptographic Proof Copying:</strong> One-click copy buttons for full 66-character Keccak-256 transaction hashes.</li>
+              <li><strong>Search & Filter Tools:</strong> Search by movement ID, event tag, or transaction hash.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 13: Screenshot - Warehouse Hub & Movements -->
+    <section class="slide" data-slide="13">
+      <div class="slide-header">
+        <div class="slide-category">Website Walkthrough • 05</div>
+        <h2 class="slide-title">Warehouse Management & Logistics Dispatch</h2>
+        <p class="slide-subtitle">Facility manager command hub showing usable stock bars, facility-level isolation barriers, and real-time movement trackers.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="screenshot-frame" onclick="openLightbox('images/07_warehouse.png')">
+          <img src="images/07_warehouse.png" alt="Warehouse Dashboard Screenshot">
+          <div class="screenshot-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            Click to Enlarge
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div class="card">
+            <div class="card-title" style="color: #fbbf24;">Warehouse Command Operations</div>
+            <ul style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.8; list-style: disc; padding-left: 18px;">
+              <li><strong>Three-Tier Inventory Gauges:</strong> Distinguishes Total Available, Reserved Stock, and Usable Free Capacity.</li>
+              <li><strong>Facility-Level Isolation:</strong> Enforces security barriers where warehouse managers only inspect and dispatch from their assigned facility.</li>
+              <li><strong>Actionable Dispatch Buttons:</strong> One-click actions to advance shipments from PLANNED ➔ DISPATCHED ➔ IN_TRANSIT ➔ DELIVERED.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 14: End-to-End Disaster Lifecycle -->
+    <section class="slide" data-slide="14">
+      <div class="slide-header">
+        <div class="slide-category">Operational Workflows</div>
+        <h2 class="slide-title">10-Step End-to-End Disaster Response Flow</h2>
+        <p class="slide-subtitle">The complete choreographed sequence connecting early prediction to physical delivery verification.</p>
+      </div>
+
+      <div class="grid-4" style="gap: 16px;">
+        <div class="card" style="padding: 16px;">
+          <div style="font-size: 0.72rem; color: var(--accent-blue); font-weight: 700;">STAGE 01 - 03</div>
+          <div style="font-weight: 700; margin-top: 6px; margin-bottom: 8px;">Detection & Requisition</div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.6;">
+            1. Weather telemetry ingested.<br>
+            2. ML classifies 95% flood risk.<br>
+            3. Automated calculation creates shortage requisition ticket.
+          </p>
+        </div>
+
+        <div class="card" style="padding: 16px;">
+          <div style="font-size: 0.72rem; color: var(--accent-purple); font-weight: 700;">STAGE 04 - 05</div>
+          <div style="font-weight: 700; margin-top: 6px; margin-bottom: 8px;">Two-Tier Approvals</div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.6;">
+            4. State Head reviews and escalates to National Command.<br>
+            5. National Head authorizes deployment of central stockpiles.
+          </p>
+        </div>
+
+        <div class="card" style="padding: 16px;">
+          <div style="font-size: 0.72rem; color: var(--accent-emerald); font-weight: 700;">STAGE 06 - 07</div>
+          <div style="font-weight: 700; margin-top: 6px; margin-bottom: 8px;">Quantum Optimization</div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.6;">
+            6. Qiskit QAOA selects optimal warehouse dispatch split.<br>
+            7. Allocation created; warehouse usable stock reserved atomically.
+          </p>
+        </div>
+
+        <div class="card" style="padding: 16px;">
+          <div style="font-size: 0.72rem; color: var(--accent-amber); font-weight: 700;">STAGE 08 - 10</div>
+          <div style="font-weight: 700; margin-top: 6px; margin-bottom: 8px;">Logistics & Blockchain</div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.6;">
+            8. Dispatch moves stock & mines Block #16.<br>
+            9. In-transit update mines Block #17.<br>
+            10. Field handover mines delivery receipt in Block #18.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 15: Security & Role-Based Access Control -->
+    <section class="slide" data-slide="15">
+      <div class="slide-header">
+        <div class="slide-category">System Security</div>
+        <h2 class="slide-title">Multi-Layer RBAC & Facility Isolation</h2>
+        <p class="slide-subtitle">Cryptographic JWT bearer authentication, route guards, and SQL-level facility access verification.</p>
+      </div>
+
+      <div class="card" style="overflow-x: auto; padding: 0;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
+          <thead>
+            <tr style="background: rgba(255,255,255,0.04); border-bottom: 1px solid var(--bg-card-border); color: #94a3b8;">
+              <th style="padding: 14px 20px;">System Capability</th>
+              <th style="padding: 14px 16px; text-align: center;">NATIONAL_HEAD</th>
+              <th style="padding: 14px 16px; text-align: center;">STATE_HEAD</th>
+              <th style="padding: 14px 16px; text-align: center;">WAREHOUSE_MGR</th>
+              <th style="padding: 14px 16px; text-align: center;">FIELD_OFFICER</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--bg-card-border);">
+              <td style="padding: 12px 20px; font-weight: 600;">National Command Dashboard</td>
+              <td style="text-align: center; color: #10b981;">Full / Simulate</td>
+              <td style="text-align: center; color: #38bdf8;">State Only</td>
+              <td style="text-align: center; color: #64748b;">—</td>
+              <td style="text-align: center; color: #64748b;">Read Only</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--bg-card-border);">
+              <td style="padding: 12px 20px; font-weight: 600;">State Requisition Approval</td>
+              <td style="text-align: center; color: #10b981;">Authorize</td>
+              <td style="text-align: center; color: #10b981;">Approve / Reject</td>
+              <td style="text-align: center; color: #64748b;">—</td>
+              <td style="text-align: center; color: #64748b;">—</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--bg-card-border);">
+              <td style="padding: 12px 20px; font-weight: 600;">National Deployment Approval</td>
+              <td style="text-align: center; color: #10b981;">Approve / Reject</td>
+              <td style="text-align: center; color: #64748b;">—</td>
+              <td style="text-align: center; color: #64748b;">—</td>
+              <td style="text-align: center; color: #64748b;">—</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--bg-card-border);">
+              <td style="padding: 12px 20px; font-weight: 600;">Quantum Allocation Optimization</td>
+              <td style="text-align: center; color: #10b981;">Execute</td>
+              <td style="text-align: center; color: #64748b;">—</td>
+              <td style="text-align: center; color: #64748b;">—</td>
+              <td style="text-align: center; color: #64748b;">—</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--bg-card-border);">
+              <td style="padding: 12px 20px; font-weight: 600;">Facility Dispatch & In-Transit</td>
+              <td style="text-align: center; color: #38bdf8;">Monitor</td>
+              <td style="text-align: center; color: #38bdf8;">Monitor</td>
+              <td style="text-align: center; color: #10b981;">Assigned Depot</td>
+              <td style="text-align: center; color: #38bdf8;">Confirm Delivery</td>
+            </tr>
+            <tr>
+              <td style="padding: 12px 20px; font-weight: 600;">Ethereum Blockchain Audit Ledger</td>
+              <td style="text-align: center; color: #10b981;">Full Access</td>
+              <td style="text-align: center; color: #10b981;">Full Access</td>
+              <td style="text-align: center; color: #10b981;">Full Access</td>
+              <td style="text-align: center; color: #38bdf8;">Read Only</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Slide 16: Academic Viva Voce Guide & Evaluation FAQ -->
+    <section class="slide" data-slide="16">
+      <div class="slide-header">
+        <div class="slide-category">Project Evaluation Defense</div>
+        <h2 class="slide-title">Academic Viva Voce & Evaluator Q&A</h2>
+        <p class="slide-subtitle">Ready technical answers for examiner defense in Cloud Computing, AI, Quantum, and Distributed Systems.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title" style="color: #38bdf8; font-size: 1rem;">Q1: How does Cloud Computing play a central role?</div>
+          <p class="card-p" style="font-size: 0.85rem;">
+            <strong>Answer:</strong> The platform is designed as an elastic multi-tier cloud microservices framework. Heterogeneous workloads (Node.js I/O, Python AI on 8001, Qiskit Quantum on 8002) run as decoupled services, allowing horizontal autoscaling without degrading the central transactional database.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color: #c084fc; font-size: 1rem;">Q2: Why use Quantum QAOA over greedy search?</div>
+          <p class="card-p" style="font-size: 0.85rem;">
+            <strong>Answer:</strong> Multi-facility emergency allocation is NP-hard. Greedy heuristics get trapped in local minima (e.g. picking a nearby warehouse with only 10% stock, causing fragmented dispatches). QAOA explores the full solution space in superposition using parameterized cost & mixer Hamiltonians.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color: #34d399; font-size: 1rem;">Q3: Why Blockchain if MySQL already provides ACID?</div>
+          <p class="card-p" style="font-size: 0.85rem;">
+            <strong>Answer:</strong> MySQL guarantees internal transactional integrity, but relief supplies are vulnerable to administrative tampering or audit disputes. Blockchain provides non-repudiation: deterministic Keccak-256 hashes of shipments cannot be altered post-facto without breaking on-chain cryptographic proofs.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="color: #fbbf24; font-size: 1rem;">Q4: How is inventory double-allocation prevented?</div>
+          <p class="card-p" style="font-size: 0.85rem;">
+            <strong>Answer:</strong> Through strict two-phase reservations. Approving an allocation increments <code>quantity_reserved</code> without decrementing <code>quantity_available</code>. Usable stock is calculated as <code>max(available - reserved, 0)</code>, preventing phantom inventory across simultaneous disasters.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 17: Future Roadmap & Conclusion -->
+    <section class="slide" data-slide="17">
+      <div class="slide-header">
+        <div class="slide-category">Vision & Conclusion</div>
+        <h2 class="slide-title">Future Roadmap & Engineering Summary</h2>
+        <p class="slide-subtitle">Next-generation enhancements and final academic conclusion.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Future Expansion Horizons</div>
+          <ul style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.8; list-style: disc; padding-left: 18px;">
+            <li><strong>Computer Vision Deep Learning:</strong> Integrate Convolutional Neural Networks (U-Net) to perform automated pixel-level water segmentation on Sentinel-2 optical imagery.</li>
+            <li><strong>Physical Quantum Hardware:</strong> Deploy QAOA circuits via IBM Quantum Runtime tokens onto physical superconducting QPUs (IBM Eagle / Heron).</li>
+            <li><strong>Public Testnet Migration:</strong> Transition Hardhat local node to Ethereum Sepolia or Polygon Amoy for public verifiable audits.</li>
+            <li><strong>Offline Mobile Edge Client:</strong> PWA client for field rescue units in zero-connectivity disaster zones.</li>
+          </ul>
+        </div>
+
+        <div class="card" style="background: linear-gradient(135deg, rgba(79, 70, 229, 0.15), rgba(6, 182, 212, 0.15)); border: 1px solid rgba(99, 102, 241, 0.3);">
+          <div class="card-title" style="color: #fff;">Conclusion</div>
+          <p class="card-p" style="color: #e2e8f0; font-size: 0.95rem; line-height: 1.7;">
+            The <strong>National Disaster Management and Resource Allocation System</strong> successfully proves that unifying <strong>Cloud Microservices, Machine Learning, Remote Sensing, Quantum Optimization, and Blockchain Smart Contracts</strong> establishes an unprecedented standard of speed, transparency, and accountability for national emergency response.
+          </p>
+          <div style="margin-top: 20px; display: flex; gap: 10px;">
+            <a href="http://localhost:5173" target="_blank" class="btn-header btn-primary-header" style="text-decoration: none; padding: 10px 20px;">
+              Launch Live Application (:5173)
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Bottom Control Bar -->
+  <footer>
+    <div class="slide-indicator">
+      <span>Slide</span>
+      <span class="slide-counter"><strong id="currentSlideNum">01</strong> / <span id="totalSlideNum">17</span></span>
+      <span id="currentSlideTitle" style="color: var(--text-muted); font-size: 0.85rem; margin-left: 8px;">Title Slide</span>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn-nav" id="btnPrev" onclick="prevSlide()" title="Previous slide (Left Arrow)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <button class="btn-nav" id="btnNext" onclick="nextSlide()" title="Next slide (Right Arrow / Space)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+    </div>
+  </footer>
+
+  <!-- Lightbox Modal -->
+  <div class="lightbox-modal" id="lightboxModal" onclick="closeLightbox()">
+    <img src="" alt="Enlarged Screenshot" class="lightbox-img" id="lightboxImg">
+  </div>
+
+  <!-- Slide Overview Drawer -->
+  <div class="overview-drawer" id="overviewDrawer">
+    <div style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+      <span>Presentation Slides</span>
+      <button onclick="toggleOverview()" style="background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.2rem;">✕</button>
+    </div>
+    <div id="overviewList"></div>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    let currentSlide = 0;
+
+    const currentSlideNumEl = document.getElementById('currentSlideNum');
+    const totalSlideNumEl = document.getElementById('totalSlideNum');
+    const currentSlideTitleEl = document.getElementById('currentSlideTitle');
+    const progressBar = document.getElementById('progressBar');
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+    const overviewList = document.getElementById('overviewList');
+    const overviewDrawer = document.getElementById('overviewDrawer');
+
+    totalSlideNumEl.textContent = String(totalSlides).padStart(2, '0');
+
+    // Build Overview List
+    slides.forEach((slide, index) => {
+      const title = slide.querySelector('.slide-title')?.textContent || (index === 0 ? 'Project Title' : `Slide ${index + 1}`);
+      const item = document.createElement('div');
+      item.className = `overview-item ${index === 0 ? 'current' : ''}`;
+      item.innerHTML = `<span style="font-family: var(--font-mono); font-size: 0.75rem; color: #64748b;">${String(index + 1).padStart(2, '0')}</span> <span>${title}</span>`;
+      item.onclick = () => {
+        goToSlide(index);
+        toggleOverview();
+      };
+      overviewList.appendChild(item);
+    });
+
+    function updateSlide() {
+      slides.forEach((s, idx) => {
+        s.classList.toggle('active', idx === currentSlide);
+      });
+
+      const currentSlideEl = slides[currentSlide];
+      const title = currentSlideEl.querySelector('.slide-title')?.textContent || (currentSlide === 0 ? 'Project Title' : `Slide ${currentSlide + 1}`);
+      
+      currentSlideNumEl.textContent = String(currentSlide + 1).padStart(2, '0');
+      currentSlideTitleEl.textContent = title;
+
+      const progress = ((currentSlide + 1) / totalSlides) * 100;
+      progressBar.style.width = `${progress}%`;
+
+      btnPrev.disabled = currentSlide === 0;
+      btnNext.disabled = currentSlide === totalSlides - 1;
+
+      // Update overview item highlighting
+      const overviewItems = document.querySelectorAll('.overview-item');
+      overviewItems.forEach((item, idx) => {
+        item.classList.toggle('current', idx === currentSlide);
+      });
+    }
+
+    function goToSlide(index) {
+      if (index >= 0 && index < totalSlides) {
+        currentSlide = index;
+        updateSlide();
+      }
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides - 1) {
+        currentSlide++;
+        updateSlide();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        currentSlide--;
+        updateSlide();
+      }
+    }
+
+    function toggleOverview() {
+      overviewDrawer.classList.toggle('active');
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    // Lightbox Modal
+    function openLightbox(src) {
+      const modal = document.getElementById('lightboxModal');
+      const img = document.getElementById('lightboxImg');
+      img.src = src;
+      modal.classList.add('active');
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightboxModal').classList.remove('active');
+    }
+
+    // Keyboard Navigation
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        prevSlide();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        goToSlide(0);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        goToSlide(totalSlides - 1);
+      } else if (e.key.toLowerCase() === 'f') {
+        toggleFullscreen();
+      } else if (e.key.toLowerCase() === 'o') {
+        toggleOverview();
+      } else if (e.key === 'Escape') {
+        closeLightbox();
+        overviewDrawer.classList.remove('active');
+      }
+    });
+
+    updateSlide();
+  </script>
+</body>
+</html>

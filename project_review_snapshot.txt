@@ -1,0 +1,3033 @@
+PROJECT STRUCTURE
+
+FOLDER: backend
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\createPasswordHash.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\package-lock.json
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\package.json
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\server.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\testBlockchain.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\testBlockchainAudit.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\testQuantum.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\testQuantumAllocation.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\testQuantumCandidates.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\testRealQuantum.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\config\database.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\controllers\authController.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\controllers\dashboardController.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\controllers\departmentController.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\controllers\disasterController.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\controllers\inventoryController.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\controllers\livePredictionController.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\controllers\mlPredictionController.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\controllers\monitoringController.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\controllers\nationalApprovalController.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\controllers\quantumOptimizationController.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\controllers\resourceAllocationController.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\controllers\resourceAllocationQueryController.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\controllers\resourceController.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\controllers\resourceMovementController.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\controllers\resourceRequestApprovalController.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\controllers\resourceRequestController.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\controllers\resourceRequirementController.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\controllers\satelliteController.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\controllers\stateController.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\controllers\warehouseController.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\controllers\weatherController.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\middleware\authMiddleware.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\middleware\roleMiddleware.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\routes\authRoutes.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\routes\dashboardRoutes.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\routes\departmentRoutes.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\routes\disasterRoutes.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\routes\inventoryRoutes.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\routes\livePredictionRoutes.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\routes\mlPredictionRoutes.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\routes\monitoringRoutes.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\routes\nationalApprovalRoutes.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\routes\resourceAllocationQueryRoutes.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\routes\resourceAllocationRoutes.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\routes\resourceMovementRoutes.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\routes\resourceRequestApprovalRoutes.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\routes\resourceRequestRoutes.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\routes\resourceRequirementRoutes.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\routes\resourceRoutes.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\routes\satelliteRoutes.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\routes\stateRoutes.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\routes\userRoutes.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\routes\warehouseRoutes.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\routes\weatherRoutes.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\scripts\repairMovement7Blockchain.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\services\blockchainAuditService.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\services\blockchainService.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\services\dashboardService.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\services\livePredictionService.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\services\mlPredictionService.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\services\nationalApprovalService.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\services\optimizationRunService.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\services\quantumAllocationService.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\services\quantumCandidateService.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\services\quantumOptimizationService.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\services\resourceAllocationQueryService.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\services\resourceAllocationService.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\services\resourceMovementService.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\services\resourceRequestApprovalService.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\services\resourceRequestService.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\services\resourceRequirementService.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\services\resourceService.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\services\satelliteService.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\backend\src\services\weatherService.js
+
+FOLDER: blockchain
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\hardhat.config.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\hardhat.config.ts
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\package-lock.json
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\package.json
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\tsconfig.json
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\artifacts\artifacts.d.ts
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\artifacts\build-info\solc-0_8_34-7fa9f41bf09c696c018c8ba15b32be63d6cb3cc7.json
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\artifacts\build-info\solc-0_8_34-7fa9f41bf09c696c018c8ba15b32be63d6cb3cc7.output.json
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\artifacts\build-info\solc-0_8_34-ad5aab669af14c62ff57375f10adcc42362f189b.json
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\artifacts\build-info\solc-0_8_34-ad5aab669af14c62ff57375f10adcc42362f189b.output.json
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\artifacts\build-info\solc-0_8_34-da179c1f35e2cd9a29c3ace6d8242afe9fa0e1b3.json
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\artifacts\build-info\solc-0_8_34-da179c1f35e2cd9a29c3ace6d8242afe9fa0e1b3.output.json
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\artifacts\build-info\solc-0_8_34-f7940fde2bb70d197b77edd8a4cfa0cd2eb80d65.json
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\artifacts\build-info\solc-0_8_34-f7940fde2bb70d197b77edd8a4cfa0cd2eb80d65.output.json
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\artifacts\contracts\Counter.sol\artifacts.d.ts
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\artifacts\contracts\Counter.sol\Counter.json
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\artifacts\contracts\Counter.t.sol\CounterTest.json
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\artifacts\contracts\DisasterAudit.sol\artifacts.d.ts
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\artifacts\contracts\DisasterAudit.sol\DisasterAudit.json
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\cache\.hardhat-network-instances.json
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\cache\compile-cache.json
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\ignition\deployments\chain-31337\deployed_addresses.json
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\ignition\deployments\chain-31337\artifacts\DisasterAuditModule#DisasterAudit.json
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\ignition\deployments\chain-31337\build-info\solc-0_8_34-7fa9f41bf09c696c018c8ba15b32be63d6cb3cc7.json
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\ignition\modules\Counter.ts
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\ignition\modules\DisasterAudit.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\ignition\modules\DisasterAudit.ts
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\scripts\deploy.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\scripts\send-op-tx.ts
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\blockchain\test\Counter.ts
+
+FOLDER: database
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\database\demo.sql
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\database\demo_data.sql
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\database\schema.sql
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\database\seed.sql
+
+FOLDER: frontend
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\frontend\.oxlintrc.json
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\frontend\package-lock.json
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\frontend\package.json
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\frontend\vite.config.js
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\frontend\src\App.css
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\frontend\src\App.jsx
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\frontend\src\index.css
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\frontend\src\main.jsx
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\frontend\src\components\DisasterAlert.jsx
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\frontend\src\components\DisasterMap.jsx
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\frontend\src\components\ProtectedRoute.jsx
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\frontend\src\components\Sidebar.jsx
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\frontend\src\components\StatCard.jsx
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\frontend\src\components\Topbar.jsx
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\frontend\src\context\AuthContext.jsx
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\frontend\src\pages\Allocations.jsx
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\frontend\src\pages\BlockchainAudit.jsx
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\frontend\src\pages\CreateResourceRequest.jsx
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\frontend\src\pages\Dashboard.jsx
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\frontend\src\pages\Login.jsx
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\frontend\src\pages\Movements.jsx
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\frontend\src\pages\Predictions.jsx
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\frontend\src\pages\QuantumOptimization.jsx
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\frontend\src\pages\ResourceRequests.jsx
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\frontend\src\pages\Resources.jsx
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\frontend\src\services\api.js
+
+FOLDER: ml-service
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\analyze_flood_model.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\analyze_india_districts.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\analyze_weather_requirements.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\app.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\audit_india_flood_data.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\build_kerala_flood_dataset.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\clean_india_flood_events.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\clean_kerala_districts.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\create_daily_flood_dataset.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\create_final_district_coordinates.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\create_india_district_master.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\create_weather_download_plan.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\diagnose_master_mismatch.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\download_historical_weather.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\download_india_historical_weather.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\download_missing_weather.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\download_weather_batched.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\engineer_flood_features.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\evaluate_flood_thresholds.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\fix_1979_weather_files.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\geocode_india_districts.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\geocode_kerala_districts.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\get_kerala_coordinates.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\inspect_dataset.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\inspect_master_mismatches.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\inspect_missing_dates.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\inspect_review_required.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\map_india_flood_districts.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\normalize_india_floods.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\normalize_kerala_floods.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\prepare_final_weather_requirements.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\resolve_india_districts.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\retry_india_geocoding.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\review_india_unmatched.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\train_flood_model.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\train_flood_prediction.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\train_improved_flood_model.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\validate_district_coordinates.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\validate_weather_files.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\scripts\build_coordinate_admin_mapping.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\scripts\build_event_region_mapping.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\scripts\build_ml_dataset.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\scripts\build_weather_features.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\scripts\inspect_emdat.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\scripts\inspect_ml_dataset.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\scripts\prepare_emdat.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\scripts\train_baseline.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\ml-service\services\preprocessing.py
+
+FOLDER: quantum
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\quantum\app.py
+C:\Users\yamma\Desktop\Sem-5\CLOUD COMPUTING\disaster-management\quantum\optimizer.py
+
+
+========== FILE: backend\server.js ==========
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
+require("dotenv").config();
+
+const pool = require("./src/config/database");
+const disasterRoutes = require("./src/routes/disasterRoutes");
+const authRoutes = require("./src/routes/authRoutes");
+const userRoutes = require("./src/routes/userRoutes");
+const stateRoutes = require("./src/routes/stateRoutes");
+const departmentRoutes = require("./src/routes/departmentRoutes");
+const warehouseRoutes = require("./src/routes/warehouseRoutes");
+const inventoryRoutes = require("./src/routes/inventoryRoutes");
+const satelliteRoutes = require("./src/routes/satelliteRoutes");
+const weatherRoutes = require("./src/routes/weatherRoutes");
+const resourceRequirementRoutes = require("./src/routes/resourceRequirementRoutes");
+const resourceRequestRoutes = require("./src/routes/resourceRequestRoutes");
+const resourceRequestApprovalRoutes = require("./src/routes/resourceRequestApprovalRoutes");
+const nationalApprovalRoutes = require("./src/routes/nationalApprovalRoutes");
+const resourceAllocationRoutes = require("./src/routes/resourceAllocationRoutes");
+const resourceMovementRoutes = require("./src/routes/resourceMovementRoutes");
+const dashboardRoutes = require("./src/routes/dashboardRoutes");
+const resourceRoutes = require("./src/routes/resourceRoutes");
+const mlPredictionRoutes = require("./src/routes/mlPredictionRoutes");
+const livePredictionRoutes =
+    require("./src/routes/livePredictionRoutes");
+const monitoringRoutes =
+    require("./src/routes/monitoringRoutes");
+const resourceAllocationQueryRoutes =
+    require("./src/routes/resourceAllocationQueryRoutes");
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+app.use("/api/disasters", disasterRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/states", stateRoutes);
+app.use("/api/departments", departmentRoutes);
+app.use("/api/warehouses", warehouseRoutes);
+app.use("/api/inventory", inventoryRoutes);
+app.use("/api/satellite", satelliteRoutes);
+app.use(
+  "/satellite-images",
+  express.static(
+    path.join(__dirname, "public/satellite-images")
+  )
+);
+app.use("/api/weather", weatherRoutes);
+app.use(
+  "/api/resource-requirements",
+  resourceRequirementRoutes
+);
+app.use(
+  "/api/resource-requests",
+  resourceRequestRoutes
+);
+app.use(
+  "/api/resource-requests",
+  resourceRequestApprovalRoutes
+);
+app.use(
+  "/api/resource-requests/national",
+  nationalApprovalRoutes
+);
+app.use(
+  "/api/resource-allocations",
+  resourceAllocationRoutes
+);
+
+app.use(
+    "/api/predictions",
+    livePredictionRoutes
+);
+
+app.use(
+    "/api/allocations",
+    resourceAllocationQueryRoutes
+);
+app.use(
+  "/api/resource-movements",
+  resourceMovementRoutes
+);
+app.use("/api/disasters", dashboardRoutes);
+
+app.use("/api/resources", resourceRoutes);
+
+app.use("/api/ml", mlPredictionRoutes);
+
+app.use(
+  "/api/monitoring",
+  monitoringRoutes
+);
+
+
+app.get("/", (req, res) => {
+    res.json({
+        message: "Disaster Management API is running"
+    });
+});
+
+app.get("/api/health", async (req, res) => {
+    try {
+        const [rows] = await pool.query("SELECT 1 AS database_status");
+
+        res.json({
+            server: "OK",
+            database: rows[0].database_status === 1 ? "CONNECTED" : "ERROR"
+        });
+    } catch (error) {
+        console.error("Database connection error:", error);
+
+        res.status(500).json({
+            server: "OK",
+            database: "DISCONNECTED"
+        });
+    }
+});
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});
+
+
+========== FILE: backend\package.json ==========
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.20.0",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "ethers": "^6.17.0",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.24.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
+
+
+
+========== FILE: backend\src\config\database.js ==========
+require("dotenv").config();
+
+const mysql = require("mysql2/promise");
+
+const pool = mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: Number(process.env.DB_PORT),
+
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+});
+
+module.exports = pool;
+
+
+========== FILE: backend\src\controllers\monitoringController.js ==========
+const pool = require("../config/database");
+
+/*
+ * GET /api/monitoring/states
+ *
+ * Returns the latest prediction/risk information
+ * for every configured state location.
+ */
+const getStateMonitoring = async (req, res) => {
+  try {
+    const [rows] = await pool.query(`
+      SELECT
+        s.state_id,
+        s.state_name,
+
+        sl.latitude,
+        sl.longitude,
+
+        dp.prediction_id,
+        dp.prediction_time,
+        dp.probability,
+        dp.severity,
+        dp.expected_start_time,
+        dp.expected_end_time,
+        dp.affected_area_km2,
+        dp.affected_population,
+        dp.confidence_score,
+
+        dt.disaster_type_id,
+        dt.type_name AS disaster_type,
+
+        de.disaster_event_id,
+        de.event_name,
+        de.event_status
+
+      FROM states s
+
+      LEFT JOIN state_locations sl
+        ON sl.state_id = s.state_id
+
+      LEFT JOIN (
+        SELECT dp1.*
+        FROM disaster_predictions dp1
+        INNER JOIN (
+          SELECT
+            disaster_event_id,
+            MAX(prediction_id) AS latest_prediction_id
+          FROM disaster_predictions
+          GROUP BY disaster_event_id
+        ) latest
+          ON latest.latest_prediction_id = dp1.prediction_id
+      ) dp
+        ON dp.prediction_id = (
+          SELECT MAX(dp2.prediction_id)
+          FROM disaster_predictions dp2
+          INNER JOIN disaster_events de2
+            ON de2.disaster_event_id = dp2.disaster_event_id
+          WHERE de2.state_id = s.state_id
+        )
+
+      LEFT JOIN disaster_events de
+        ON de.disaster_event_id = dp.disaster_event_id
+
+      LEFT JOIN disaster_types dt
+        ON dt.disaster_type_id = de.disaster_type_id
+
+      WHERE sl.state_location_id IS NOT NULL
+
+      ORDER BY s.state_id
+    `);
+
+    return res.json({
+      success: true,
+      count: rows.length,
+      states: rows
+    });
+
+  } catch (error) {
+    console.error("Monitoring states error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+
+/*
+ * GET /api/monitoring/statistics
+ *
+ * National dashboard statistics.
+ */
+const getMonitoringStatistics = async (req, res) => {
+  try {
+
+    const [[predictionStats]] = await pool.query(`
+      SELECT
+        COUNT(*) AS total_predictions,
+
+        SUM(
+          CASE
+            WHEN severity IN ('HIGH', 'CRITICAL')
+            THEN 1
+            ELSE 0
+          END
+        ) AS high_risk_predictions,
+
+        SUM(
+          CASE
+            WHEN severity = 'CRITICAL'
+            THEN 1
+            ELSE 0
+          END
+        ) AS critical_predictions
+
+      FROM disaster_predictions
+    `);
+
+
+    const [[eventStats]] = await pool.query(`
+      SELECT
+        COUNT(*) AS total_events,
+
+        SUM(
+          CASE
+            WHEN event_status IN ('WARNING', 'ACTIVE')
+            THEN 1
+            ELSE 0
+          END
+        ) AS active_warnings
+
+      FROM disaster_events
+    `);
+
+
+    const [[resourceStats]] = await pool.query(`
+      SELECT
+        COUNT(*) AS resource_requirement_records,
+
+        COALESCE(
+          SUM(quantity_required),
+          0
+        ) AS total_resources_required,
+
+        COALESCE(
+          SUM(quantity_shortage),
+          0
+        ) AS total_resource_shortage
+
+      FROM predicted_resource_requirements
+    `);
+
+
+    return res.json({
+      success: true,
+
+      statistics: {
+        totalPredictions:
+          Number(predictionStats.total_predictions || 0),
+
+        highRiskPredictions:
+          Number(predictionStats.high_risk_predictions || 0),
+
+        criticalPredictions:
+          Number(predictionStats.critical_predictions || 0),
+
+        totalEvents:
+          Number(eventStats.total_events || 0),
+
+        activeWarnings:
+          Number(eventStats.active_warnings || 0),
+
+        resourceRequirementRecords:
+          Number(resourceStats.resource_requirement_records || 0),
+
+        totalResourcesRequired:
+          Number(resourceStats.total_resources_required || 0),
+
+        totalResourceShortage:
+          Number(resourceStats.total_resource_shortage || 0)
+      }
+    });
+
+  } catch (error) {
+    console.error("Monitoring statistics error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+
+/*
+ * GET /api/monitoring/recent
+ *
+ * Recent disaster predictions.
+ */
+const getRecentPredictions = async (req, res) => {
+  try {
+
+    const limit = Math.min(
+      Math.max(Number(req.query.limit) || 20, 1),
+      100
+    );
+
+    const [rows] = await pool.query(
+      `
+      SELECT
+        dp.prediction_id,
+        dp.prediction_time,
+        dp.probability,
+        dp.severity,
+        dp.expected_start_time,
+        dp.expected_end_time,
+        dp.affected_area_km2,
+        dp.affected_population,
+        dp.confidence_score,
+
+        de.disaster_event_id,
+        de.event_name,
+        de.event_status,
+
+        dt.type_name AS disaster_type,
+
+        s.state_id,
+        s.state_name
+
+      FROM disaster_predictions dp
+
+      INNER JOIN disaster_events de
+        ON de.disaster_event_id = dp.disaster_event_id
+
+      INNER JOIN disaster_types dt
+        ON dt.disaster_type_id = de.disaster_type_id
+
+      INNER JOIN states s
+        ON s.state_id = de.state_id
+
+      ORDER BY dp.prediction_time DESC
+
+      LIMIT ${limit}
+      `
+    );
+
+    return res.json({
+      success: true,
+      count: rows.length,
+      predictions: rows
+    });
+
+  } catch (error) {
+    console.error("Recent predictions error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+
+module.exports = {
+  getStateMonitoring,
+  getMonitoringStatistics,
+  getRecentPredictions
+};
+
+
+========== FILE: backend\src\routes\monitoringRoutes.js ==========
+const express = require("express");
+
+const {
+  getStateMonitoring,
+  getMonitoringStatistics,
+  getRecentPredictions
+} = require("../controllers/monitoringController");
+
+const {
+  authenticate
+} = require("../middleware/authMiddleware");
+
+const router = express.Router();
+
+router.get(
+  "/states",
+  authenticate,
+  getStateMonitoring
+);
+
+router.get(
+  "/statistics",
+  authenticate,
+  getMonitoringStatistics
+);
+
+router.get(
+  "/recent",
+  authenticate,
+  getRecentPredictions
+);
+
+module.exports = router;
+
+
+========== FILE: backend\src\services\livePredictionService.js ==========
+const axios = require("axios");
+const pool = require("../config/database");
+
+const ML_SERVICE_URL =
+    process.env.ML_SERVICE_URL || "http://127.0.0.1:8001";
+
+
+// ============================================================
+// DISASTER TYPE MAPPING
+// ============================================================
+
+const DISASTER_TYPE_MAP = {
+    FLOOD: 1,
+    CYCLONE: 2,
+    EARTHQUAKE: 3,
+    LANDSLIDE: 4,
+    WILDFIRE: 5,
+    DROUGHT: 6,
+    TSUNAMI: 7
+};
+
+
+// ============================================================
+// FETCH 14 DAYS WEATHER
+// ============================================================
+
+async function fetchWeatherHistory(latitude, longitude) {
+
+    const endDate = new Date();
+
+    const startDate = new Date();
+    startDate.setUTCDate(
+        startDate.getUTCDate() - 13
+    );
+
+    const formatDate = (date) =>
+        date.toISOString().slice(0, 10);
+
+    const response = await axios.get(
+        "https://archive-api.open-meteo.com/v1/archive",
+        {
+            params: {
+                latitude,
+                longitude,
+
+                start_date: formatDate(startDate),
+                end_date: formatDate(endDate),
+
+                daily: [
+                    "temperature_2m_mean",
+                    "temperature_2m_max",
+                    "temperature_2m_min",
+                    "precipitation_sum",
+                    "relative_humidity_2m_mean",
+                    "surface_pressure_mean",
+                    "wind_speed_10m_mean",
+                    "wind_speed_10m_max",
+                    "wind_direction_10m_dominant"
+                ].join(","),
+
+                timezone: "UTC"
+            },
+
+            timeout: 60000
+        }
+    );
+
+    return response.data;
+}
+
+
+// ============================================================
+// BUILD MODEL FEATURES
+// ============================================================
+
+function buildFeatures(weather) {
+
+    const daily = weather.daily;
+
+    if (!daily || !daily.time || daily.time.length === 0) {
+        throw new Error(
+            "No historical weather data returned"
+        );
+    }
+
+    const last = daily.time.length - 1;
+
+    const get = (array, index = last) =>
+        Number(array?.[index] ?? 0);
+
+    const precipitation =
+        daily.precipitation_sum || [];
+
+    const humidity =
+        daily.relative_humidity_2m_mean || [];
+
+    const temperature =
+        daily.temperature_2m_mean || [];
+
+    const wind =
+        daily.wind_speed_10m_mean || [];
+
+    const windMax =
+        daily.wind_speed_10m_max || [];
+
+    const pressure =
+        daily.surface_pressure_mean || [];
+
+
+    const sumWindow = (array, window) => {
+
+        const start =
+            Math.max(0, array.length - window);
+
+        return array
+            .slice(start)
+            .reduce(
+                (sum, value) =>
+                    sum + Number(value || 0),
+                0
+            );
+    };
+
+
+    const meanWindow = (array, window) => {
+
+        const start =
+            Math.max(0, array.length - window);
+
+        const values =
+            array
+                .slice(start)
+                .map(Number)
+                .filter(Number.isFinite);
+
+        if (!values.length) {
+            return 0;
+        }
+
+        return (
+            values.reduce(
+                (sum, value) => sum + value,
+                0
+            ) / values.length
+        );
+    };
+
+
+    const maxWindow = (array, window) => {
+
+        const start =
+            Math.max(0, array.length - window);
+
+        const values =
+            array
+                .slice(start)
+                .map(Number)
+                .filter(Number.isFinite);
+
+        return values.length
+            ? Math.max(...values)
+            : 0;
+    };
+
+
+    const currentTemperature =
+        get(daily.temperature_2m_mean);
+
+    const currentTemperatureMax =
+        get(daily.temperature_2m_max);
+
+    const currentTemperatureMin =
+        get(daily.temperature_2m_min);
+
+
+    const currentPrecipitation =
+        get(precipitation);
+
+
+    const currentHumidity =
+        get(humidity);
+
+
+    const currentPressure =
+        get(pressure);
+
+
+    const previousPressure =
+        pressure.length >= 2
+            ? Number(pressure[pressure.length - 2] || 0)
+            : currentPressure;
+
+
+    const pressure3DaysAgo =
+        pressure.length >= 4
+            ? Number(pressure[pressure.length - 4] || 0)
+            : currentPressure;
+
+
+    return {
+
+        temperature_2m_mean:
+            currentTemperature,
+
+        temperature_2m_max:
+            currentTemperatureMax,
+
+        temperature_2m_min:
+            currentTemperatureMin,
+
+        temperature_range:
+            currentTemperatureMax -
+            currentTemperatureMin,
+
+
+        precipitation_sum:
+            currentPrecipitation,
+
+
+        rainfall_1d:
+            currentPrecipitation,
+
+        rainfall_3d:
+            sumWindow(
+                precipitation,
+                3
+            ),
+
+        rainfall_7d:
+            sumWindow(
+                precipitation,
+                7
+            ),
+
+        rainfall_14d:
+            sumWindow(
+                precipitation,
+                14
+            ),
+
+
+        rainfall_3d_mean:
+            meanWindow(
+                precipitation,
+                3
+            ),
+
+        rainfall_7d_mean:
+            meanWindow(
+                precipitation,
+                7
+            ),
+
+
+        relative_humidity_2m_mean:
+            currentHumidity,
+
+        humidity_3d_mean:
+            meanWindow(
+                humidity,
+                3
+            ),
+
+        humidity_7d_mean:
+            meanWindow(
+                humidity,
+                7
+            ),
+
+
+        surface_pressure_mean:
+            currentPressure,
+
+        pressure_change_1d:
+            currentPressure -
+            previousPressure,
+
+        pressure_change_3d:
+            currentPressure -
+            pressure3DaysAgo,
+
+
+        wind_speed_10m_mean:
+            get(
+                daily.wind_speed_10m_mean
+            ),
+
+        wind_speed_10m_max:
+            get(
+                daily.wind_speed_10m_max
+            ),
+
+        wind_3d_mean:
+            meanWindow(
+                wind,
+                3
+            ),
+
+        wind_7d_mean:
+            meanWindow(
+                wind,
+                7
+            ),
+
+        wind_max_7d:
+            maxWindow(
+                windMax,
+                7
+            ),
+
+        wind_direction_10m_dominant:
+            get(
+                daily.wind_direction_10m_dominant
+            )
+    };
+}
+
+
+// ============================================================
+// ESTIMATE AFFECTED POPULATION
+// ============================================================
+
+function estimateAffectedPopulation(
+    probability,
+    severity
+) {
+
+    const basePopulation = {
+        LOW: 5000,
+        MEDIUM: 10000,
+        HIGH: 25000,
+        CRITICAL: 50000
+    };
+
+    const base =
+        basePopulation[severity] || 5000;
+
+    return Math.round(
+        base * probability
+    );
+}
+
+
+// ============================================================
+// FIND STATE
+// ============================================================
+
+async function getState(stateId) {
+
+    const [rows] = await pool.query(
+        `
+        SELECT
+            state_id,
+            state_name
+        FROM states
+        WHERE state_id = ?
+        `,
+        [stateId]
+    );
+
+    if (!rows.length) {
+        throw new Error(
+            "State not found"
+        );
+    }
+
+    return rows[0];
+}
+
+
+// ============================================================
+// CREATE / UPDATE PREDICTION
+// ============================================================
+
+async function runLivePrediction({
+    latitude,
+    longitude,
+    stateId,
+    districtId = null
+}) {
+
+    latitude = Number(latitude);
+    longitude = Number(longitude);
+    stateId = Number(stateId);
+
+    if (
+        !Number.isFinite(latitude) ||
+        !Number.isFinite(longitude)
+    ) {
+        throw new Error(
+            "Valid latitude and longitude are required"
+        );
+    }
+
+    if (!Number.isInteger(stateId)) {
+        throw new Error(
+            "Valid stateId is required"
+        );
+    }
+
+
+    // --------------------------------------------------------
+    // 1. State
+    // --------------------------------------------------------
+
+    const state =
+        await getState(stateId);
+
+
+    // --------------------------------------------------------
+    // 2. Weather
+    // --------------------------------------------------------
+
+    const weather =
+        await fetchWeatherHistory(
+            latitude,
+            longitude
+        );
+
+
+    // --------------------------------------------------------
+    // 3. Features
+    // --------------------------------------------------------
+
+    const features =
+        buildFeatures(weather);
+
+
+    // --------------------------------------------------------
+    // 4. ML prediction
+    // --------------------------------------------------------
+
+    const mlResponse =
+        await axios.post(
+            `${ML_SERVICE_URL}/predict`,
+            features,
+            {
+                timeout: 30000
+            }
+        );
+
+
+    const prediction =
+        mlResponse.data;
+
+
+    if (!prediction.success) {
+        throw new Error(
+            "ML prediction failed"
+        );
+    }
+
+
+    // --------------------------------------------------------
+    // 5. Disaster type
+    // --------------------------------------------------------
+
+    const predictedDisaster =
+        String(
+            prediction.predicted_disaster
+        ).toUpperCase();
+
+
+    // ============================================================
+// NORMAL = NO DISASTER DETECTED
+// ============================================================
+
+if (predictedDisaster === "NORMAL") {
+
+    return {
+
+        success: true,
+
+        disasterDetected: false,
+
+        message:
+            "No disaster risk detected for the selected location.",
+
+        state: {
+            stateId:
+                state.state_id,
+
+            stateName:
+                state.state_name
+        },
+
+        location: {
+            latitude,
+            longitude
+        },
+
+        prediction: {
+            disaster: "NORMAL",
+
+            probability:
+                prediction.probability,
+
+            severity: "LOW",
+
+            confidence:
+                prediction.probability,
+
+            classProbabilities:
+                prediction.class_probabilities
+        },
+
+        affectedPopulation: 0,
+
+        resourceRequirements: {
+            success: true,
+            requirements: [],
+            message:
+                "No resources required because no disaster was detected."
+        },
+
+        weatherFeatures:
+            features
+    };
+}
+
+
+// ============================================================
+// ACTUAL DISASTER
+// ============================================================
+
+const disasterTypeId =
+    DISASTER_TYPE_MAP[
+        predictedDisaster
+    ];
+
+
+if (!disasterTypeId) {
+
+    throw new Error(
+        `Unsupported disaster type: ${predictedDisaster}`
+    );
+
+}
+
+
+    // --------------------------------------------------------
+    // 6. Affected population
+    // --------------------------------------------------------
+
+    const affectedPopulation =
+        estimateAffectedPopulation(
+            prediction.probability,
+            prediction.severity
+        );
+
+
+    // --------------------------------------------------------
+    // 7. Database transaction
+    // --------------------------------------------------------
+
+    const connection =
+        await pool.getConnection();
+
+
+    try {
+
+        await connection.beginTransaction();
+
+
+        // ----------------------------------------------------
+        // Disaster event
+        // ----------------------------------------------------
+
+        const eventName =
+            `${predictedDisaster} Prediction - ${state.state_name}`;
+
+
+        const [eventResult] =
+            await connection.query(
+                `
+                INSERT INTO disaster_events
+                (
+                    disaster_type_id,
+                    state_id,
+                    district_id,
+                    event_name,
+                    event_status
+                )
+                VALUES (?, ?, ?, ?, 'PREDICTED')
+                `,
+                [
+                    disasterTypeId,
+                    stateId,
+                    districtId,
+                    eventName
+                ]
+            );
+
+
+        const disasterEventId =
+            eventResult.insertId;
+
+
+        // ----------------------------------------------------
+        // Prediction
+        // ----------------------------------------------------
+
+        const predictionTime =
+            new Date()
+                .toISOString()
+                .slice(0, 19)
+                .replace("T", " ");
+
+
+        const [predictionResult] =
+            await connection.query(
+                `
+                INSERT INTO disaster_predictions
+                (
+                    disaster_event_id,
+                    prediction_model_id,
+                    prediction_time,
+                    probability,
+                    severity,
+                    expected_start_time,
+                    expected_end_time,
+                    affected_area_km2,
+                    affected_population,
+                    confidence_score,
+                    prediction_details
+                )
+                VALUES
+                (
+                    ?,
+                    1,
+                    ?,
+                    ?,
+                    ?,
+                    NULL,
+                    NULL,
+                    NULL,
+                    ?,
+                    ?,
+                    ?
+                )
+                `,
+                [
+                    disasterEventId,
+                    predictionTime,
+                    prediction.probability * 100,
+                    prediction.severity,
+                    affectedPopulation,
+                    prediction.probability * 100,
+                    JSON.stringify({
+                        source: "LIVE_WEATHER_ML",
+                        latitude,
+                        longitude,
+                        stateId,
+                        districtId,
+                        predictedDisaster,
+                        classProbabilities:
+                            prediction.class_probabilities,
+                        weatherFeatures:
+                            features
+                    })
+                ]
+            );
+
+
+        const predictionId =
+            predictionResult.insertId;
+
+
+        // ----------------------------------------------------
+        // Prediction area
+        // ----------------------------------------------------
+
+        if (districtId) {
+
+            await connection.query(
+                `
+                INSERT INTO prediction_areas
+                (
+                    prediction_id,
+                    district_id,
+                    risk_level,
+                    population_at_risk
+                )
+                VALUES (?, ?, ?, ?)
+                `,
+                [
+                    predictionId,
+                    districtId,
+                    prediction.severity,
+                    affectedPopulation
+                ]
+            );
+
+        }
+
+
+        await connection.commit();
+
+
+        // ----------------------------------------------------
+        // Resource requirements
+        // ----------------------------------------------------
+
+        const {
+            generateResourceRequirements
+        } = require(
+            "./resourceRequirementService"
+        );
+
+
+        let resourceRequirements = null;
+
+
+        try {
+
+            resourceRequirements =
+                await generateResourceRequirements(
+                    predictionId
+                );
+
+        } catch (resourceError) {
+
+            console.error(
+                "Resource requirement generation failed:",
+                resourceError.message
+            );
+
+            resourceRequirements = {
+                success: false,
+                message:
+                    resourceError.message
+            };
+        }
+
+
+        return {
+
+            success: true,
+
+            predictionId,
+
+            disasterEventId,
+
+            state: {
+                stateId:
+                    state.state_id,
+
+                stateName:
+                    state.state_name
+            },
+
+            location: {
+                latitude,
+                longitude
+            },
+
+            prediction: {
+                disaster:
+                    predictedDisaster,
+
+                probability:
+                    prediction.probability,
+
+                severity:
+                    prediction.severity,
+
+                confidence:
+                    prediction.probability,
+
+                classProbabilities:
+                    prediction.class_probabilities
+            },
+
+            affectedPopulation,
+
+            resourceRequirements,
+
+            weatherFeatures:
+                features
+        };
+
+
+    } catch (error) {
+
+        await connection.rollback();
+
+        throw error;
+
+    } finally {
+
+        connection.release();
+
+    }
+}
+
+
+module.exports = {
+    runLivePrediction
+};
+
+
+========== FILE: backend\src\controllers\livePredictionController.js ==========
+const {
+    runLivePrediction
+} = require("../services/livePredictionService");
+
+
+async function runPrediction(req, res) {
+
+    try {
+
+        const {
+            latitude,
+            longitude,
+            stateId,
+            districtId
+        } = req.body;
+
+
+        if (
+            latitude === undefined ||
+            longitude === undefined ||
+            stateId === undefined
+        ) {
+
+            return res.status(400).json({
+                success: false,
+                message:
+                    "latitude, longitude and stateId are required"
+            });
+
+        }
+
+
+        const result =
+            await runLivePrediction({
+                latitude,
+                longitude,
+                stateId,
+                districtId
+            });
+
+
+        return res.status(201).json(
+            result
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Live prediction error:",
+            error
+        );
+
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+
+    }
+}
+
+
+module.exports = {
+    runPrediction
+};
+
+
+========== FILE: backend\src\routes\livePredictionRoutes.js ==========
+const express = require("express");
+
+const {
+    runPrediction
+} = require("../controllers/livePredictionController");
+
+const router = express.Router();
+
+router.post(
+    "/run",
+    runPrediction
+);
+
+module.exports = router;
+
+
+========== FILE: backend\src\services\resourceRequirementService.js ==========
+const pool = require("../config/database");
+
+
+/*
+|--------------------------------------------------------------------------
+| CALCULATE RESOURCE REQUIREMENTS
+|--------------------------------------------------------------------------
+|
+| This function:
+|
+| 1. Gets prediction details
+| 2. Finds matching resource requirement rules
+| 3. Calculates required quantity
+| 4. Checks warehouse inventory
+| 5. Calculates available quantity
+| 6. Calculates shortage
+|
+| IMPORTANT:
+| This function DOES NOT modify the database.
+|
+*/
+
+async function calculateResourceRequirements(predictionId) {
+
+  // ---------------------------------------------------------
+  // 1. Get prediction details
+  // ---------------------------------------------------------
+
+  const [predictionRows] = await pool.query(
+    `
+    SELECT
+        dp.prediction_id,
+        dp.probability,
+        dp.severity,
+        dp.affected_population,
+
+        de.disaster_event_id,
+        de.disaster_type_id,
+
+        dt.disaster_name,
+
+        de.state_id,
+        s.state_name
+
+    FROM disaster_predictions dp
+
+    JOIN disaster_events de
+        ON de.disaster_event_id = dp.disaster_event_id
+
+    JOIN disaster_types dt
+        ON dt.disaster_type_id = de.disaster_type_id
+
+    JOIN states s
+        ON s.state_id = de.state_id
+
+    WHERE dp.prediction_id = ?
+    `,
+    [predictionId]
+  );
+
+
+  if (predictionRows.length === 0) {
+
+    throw new Error(
+      "Prediction not found"
+    );
+
+  }
+
+
+  const prediction = predictionRows[0];
+
+
+  // ---------------------------------------------------------
+  // 2. Validate affected population
+  // ---------------------------------------------------------
+
+  const affectedPopulation = Number(
+    prediction.affected_population || 0
+  );
+
+
+  if (affectedPopulation <= 0) {
+
+    throw new Error(
+      "Prediction does not contain a valid affected population"
+    );
+
+  }
+
+
+  // ---------------------------------------------------------
+  // 3. Find matching resource requirement rules
+  // ---------------------------------------------------------
+
+  const [rules] = await pool.query(
+    `
+    SELECT
+        rrr.disaster_type_id,
+        rrr.resource_id,
+        rrr.severity,
+        rrr.quantity_per_person,
+        rrr.fixed_quantity,
+
+        r.resource_name,
+        r.unit
+
+    FROM resource_requirement_rules rrr
+
+    JOIN resources r
+        ON r.resource_id = rrr.resource_id
+
+    WHERE rrr.disaster_type_id = ?
+      AND rrr.severity = ?
+
+    ORDER BY r.resource_id
+    `,
+    [
+      prediction.disaster_type_id,
+      prediction.severity
+    ]
+  );
+
+
+  // ---------------------------------------------------------
+  // No matching rules
+  // ---------------------------------------------------------
+
+  if (rules.length === 0) {
+
+    return {
+      prediction,
+      requirements: [],
+      message:
+        "No resource requirement rules configured for this disaster type and severity"
+    };
+
+  }
+
+
+  // ---------------------------------------------------------
+  // 4. Calculate requirements
+  // ---------------------------------------------------------
+
+  const requirements = [];
+
+
+  for (const rule of rules) {
+
+    let quantityRequired = 0;
+
+
+    // -------------------------------------------------------
+    // Quantity based on affected population
+    // -------------------------------------------------------
+
+    if (rule.quantity_per_person !== null) {
+
+      quantityRequired =
+        affectedPopulation *
+        Number(rule.quantity_per_person);
+
+    }
+
+
+    // -------------------------------------------------------
+    // Fixed quantity
+    // -------------------------------------------------------
+
+    else if (rule.fixed_quantity !== null) {
+
+      quantityRequired =
+        Number(rule.fixed_quantity);
+
+    }
+
+
+    quantityRequired = Number(
+      quantityRequired.toFixed(3)
+    );
+
+
+    // -------------------------------------------------------
+    // 5. Get inventory from all warehouses
+    // -------------------------------------------------------
+
+    const [inventoryRows] = await pool.query(
+      `
+      SELECT
+          w.warehouse_id,
+          w.warehouse_name,
+
+          w.state_id,
+          s.state_name,
+
+          wr.quantity_available,
+          wr.quantity_reserved,
+
+          (
+              wr.quantity_available -
+              wr.quantity_reserved
+          ) AS usable_quantity
+
+      FROM warehouse_resources wr
+
+      JOIN warehouses w
+          ON w.warehouse_id = wr.warehouse_id
+
+      JOIN states s
+          ON s.state_id = w.state_id
+
+      WHERE wr.resource_id = ?
+
+      ORDER BY usable_quantity DESC
+      `,
+      [rule.resource_id]
+    );
+
+
+    // -------------------------------------------------------
+    // 6. Calculate total usable inventory
+    // -------------------------------------------------------
+
+    const totalAvailable =
+      inventoryRows.reduce(
+        (total, row) =>
+          total +
+          Number(row.usable_quantity || 0),
+        0
+      );
+
+
+    // -------------------------------------------------------
+    // 7. Calculate shortage
+    // -------------------------------------------------------
+
+    const shortage = Math.max(
+      quantityRequired -
+      totalAvailable,
+      0
+    );
+
+
+    // -------------------------------------------------------
+    // 8. Add requirement to result
+    // -------------------------------------------------------
+
+    requirements.push({
+
+      resource_id:
+        rule.resource_id,
+
+      resource_name:
+        rule.resource_name,
+
+      unit:
+        rule.unit,
+
+      quantity_required:
+        quantityRequired,
+
+      quantity_available:
+        Number(
+          totalAvailable.toFixed(3)
+        ),
+
+      quantity_shortage:
+        Number(
+          shortage.toFixed(3)
+        ),
+
+      inventory:
+        inventoryRows.map((row) => ({
+
+          warehouse_id:
+            row.warehouse_id,
+
+          warehouse_name:
+            row.warehouse_name,
+
+          state_id:
+            row.state_id,
+
+          state_name:
+            row.state_name,
+
+          quantity_available:
+            Number(
+              row.quantity_available
+            ),
+
+          quantity_reserved:
+            Number(
+              row.quantity_reserved
+            ),
+
+          usable_quantity:
+            Number(
+              row.usable_quantity
+            )
+
+        }))
+
+    });
+
+  }
+
+
+  // ---------------------------------------------------------
+  // 9. Return calculated requirements
+  // ---------------------------------------------------------
+
+  return {
+
+    prediction,
+
+    requirements
+
+  };
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| GENERATE / SAVE RESOURCE REQUIREMENTS
+|--------------------------------------------------------------------------
+|
+| This function:
+|
+| 1. Calculates the resource requirements
+| 2. Starts a database transaction
+| 3. Removes previous generated requirements
+| 4. Saves the latest calculated requirements
+| 5. Commits the transaction
+|
+| This allows predictions such as Prediction #2,
+| which currently has no rows in predicted_resource_requirements,
+| to get their calculated requirements stored in the database.
+|
+*/
+
+async function generateResourceRequirements(predictionId) {
+
+  // ---------------------------------------------------------
+  // 1. Calculate requirements first
+  // ---------------------------------------------------------
+
+  const result =
+    await calculateResourceRequirements(
+      predictionId
+    );
+
+
+  // ---------------------------------------------------------
+  // 2. Make sure requirements exist
+  // ---------------------------------------------------------
+
+  if (
+    !result.requirements ||
+    result.requirements.length === 0
+  ) {
+
+    return {
+
+      success: false,
+
+      prediction:
+        result.prediction,
+
+      requirements: [],
+
+      message:
+        result.message ||
+        "No resource requirements could be generated"
+
+    };
+
+  }
+
+
+  // ---------------------------------------------------------
+  // 3. Get database connection
+  // ---------------------------------------------------------
+
+  const connection =
+    await pool.getConnection();
+
+
+  try {
+
+    // -------------------------------------------------------
+    // 4. Start transaction
+    // -------------------------------------------------------
+
+    await connection.beginTransaction();
+
+
+    // -------------------------------------------------------
+    // 5. Remove previously generated requirements
+    // -------------------------------------------------------
+    //
+    // This prevents duplicate rows if the user generates
+    // requirements for the same prediction more than once.
+    //
+    // Existing resource requests are NOT deleted.
+    //
+    // -------------------------------------------------------
+
+    await connection.query(
+      `
+      DELETE FROM predicted_resource_requirements
+      WHERE prediction_id = ?
+      `,
+      [predictionId]
+    );
+
+
+    // -------------------------------------------------------
+    // 6. Insert calculated requirements
+    // -------------------------------------------------------
+
+    const savedRequirements = [];
+
+
+    for (
+      const requirement
+      of result.requirements
+    ) {
+
+      const [insertResult] =
+        await connection.query(
+          `
+          INSERT INTO predicted_resource_requirements
+          (
+              prediction_id,
+              resource_id,
+              quantity_required,
+              quantity_available,
+              quantity_shortage
+          )
+
+          VALUES
+          (?, ?, ?, ?, ?)
+          `,
+          [
+
+            predictionId,
+
+            requirement.resource_id,
+
+            requirement.quantity_required,
+
+            requirement.quantity_available,
+
+            requirement.quantity_shortage
+
+          ]
+        );
+
+
+      savedRequirements.push({
+
+        predicted_requirement_id:
+          insertResult.insertId,
+
+        prediction_id:
+          predictionId,
+
+        resource_id:
+          requirement.resource_id,
+
+        resource_name:
+          requirement.resource_name,
+
+        unit:
+          requirement.unit,
+
+        quantity_required:
+          requirement.quantity_required,
+
+        quantity_available:
+          requirement.quantity_available,
+
+        quantity_shortage:
+          requirement.quantity_shortage,
+
+        inventory:
+          requirement.inventory
+
+      });
+
+    }
+
+
+    // -------------------------------------------------------
+    // 7. Commit transaction
+    // -------------------------------------------------------
+
+    await connection.commit();
+
+
+    // -------------------------------------------------------
+    // 8. Return result
+    // -------------------------------------------------------
+
+    return {
+
+      success: true,
+
+      prediction:
+        result.prediction,
+
+      requirements:
+        savedRequirements,
+
+      message:
+        "Resource requirements generated and saved successfully"
+
+    };
+
+
+  } catch (error) {
+
+    // -------------------------------------------------------
+    // Rollback if anything fails
+    // -------------------------------------------------------
+
+    await connection.rollback();
+
+    throw error;
+
+
+  } finally {
+
+    // -------------------------------------------------------
+    // Release connection
+    // -------------------------------------------------------
+
+    connection.release();
+
+  }
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| EXPORTS
+|--------------------------------------------------------------------------
+*/
+
+module.exports = {
+
+  calculateResourceRequirements,
+
+  generateResourceRequirements
+
+};
+
+
+========== FILE: backend\src\routes\dashboardRoutes.js ==========
+const express = require("express");
+
+const router = express.Router();
+
+const {
+  getDashboard,
+  getPredictions,
+  getStats,
+} = require("../controllers/dashboardController");
+
+const {
+  authenticate,
+} = require("../middleware/authMiddleware");
+
+
+router.get(
+  "/dashboard",
+  authenticate,
+  getDashboard
+);
+
+
+router.get(
+  "/predictions",
+  authenticate,
+  getPredictions
+);
+
+
+router.get(
+  "/stats",
+  authenticate,
+  getStats
+);
+
+
+module.exports = router;
+
+
+========== FILE: frontend\package.json ==========
+{
+  "name": "frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "oxlint",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "axios": "^1.20.0",
+    "leaflet": "^1.9.4",
+    "lucide-react": "^1.47.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-leaflet": "^5.0.0",
+    "react-router-dom": "^7.18.4",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@vitejs/plugin-react": "^6.1.0",
+    "oxlint": "^1.79.0",
+    "vite": "^8.2.2"
+  }
+}
+
+
+
+========== FILE: frontend\src\App.jsx ==========
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
+import { AuthProvider } from "./context/AuthContext";
+
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import Predictions from "./pages/Predictions";
+import ResourceRequests from "./pages/ResourceRequests";
+import Movements from "./pages/Movements";
+import BlockchainAudit from "./pages/BlockchainAudit";
+import ProtectedRoute from "./components/ProtectedRoute";
+import QuantumOptimization from "./pages/QuantumOptimization";
+import CreateResourceRequest from "./pages/CreateResourceRequest";
+import Resources from "./pages/Resources";
+import Allocations from "./pages/Allocations";
+
+
+function App() {
+  return (
+    <BrowserRouter>
+
+      <AuthProvider>
+
+        <Routes>
+
+          {/* Login */}
+          <Route
+            path="/login"
+            element={<Login />}
+          />
+
+
+          {/* Dashboard */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+
+
+          {/* Predictions */}
+          <Route
+            path="/predictions"
+            element={
+              <ProtectedRoute>
+                <Predictions />
+              </ProtectedRoute>
+            }
+          />
+
+
+          {/* Resource Requests */}
+          <Route
+            path="/resource-requests"
+            element={
+              <ProtectedRoute>
+                <ResourceRequests />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+  	        path="/movements"
+  	        element={
+    	        <ProtectedRoute>
+      	        <Movements />
+   	          </ProtectedRoute>
+ 	           }
+	        />
+
+          <Route
+            path="/blockchain"
+            element={
+              <ProtectedRoute>
+                <BlockchainAudit />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/resources"
+            element={
+              <ProtectedRoute>
+                <Resources />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/quantum"
+            element={
+              <ProtectedRoute>
+                <QuantumOptimization />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/resource-requests/create"
+            element={
+              <ProtectedRoute>
+                <CreateResourceRequest />
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route
+              path="/allocations"
+              element={
+                  <ProtectedRoute>
+                      <Allocations />
+                  </ProtectedRoute>
+              }
+          />
+
+          {/* Default */}
+          <Route
+            path="/"
+            element={
+              <Navigate
+                to="/dashboard"
+                replace
+              />
+            }
+          />
+
+
+          {/* Unknown routes */}
+          <Route
+            path="*"
+            element={
+              <Navigate
+                to="/dashboard"
+                replace
+              />
+            }
+          />
+
+        </Routes>
+
+      </AuthProvider>
+
+    </BrowserRouter>
+  );
+}
+
+export default App;
+
+
+========== FILE: frontend\src\pages\Dashboard.jsx ==========
+import { useEffect, useState } from "react";
+
+
+import {
+  TriangleAlert,
+  Activity,
+  ClipboardList,
+  Warehouse,
+  RefreshCw,
+} from "lucide-react";
+
+import api from "../services/api";
+import { useAuth } from "../context/AuthContext";
+
+import Sidebar from "../components/Sidebar";
+import Topbar from "../components/Topbar";
+import StatCard from "../components/StatCard";
+import DisasterAlert from "../components/DisasterAlert";
+import DisasterMap from "../components/DisasterMap";
+
+export default function Dashboard() {
+  const { user } = useAuth();
+
+  const [predictions, setPredictions] = useState([]);
+  const [warehouses, setWarehouses] = useState([]);
+  const [states, setStates] = useState([]);
+
+  const [statistics, setStatistics] = useState({
+    predictions: 0,
+    critical: 0,
+    high: 0,
+    medium: 0,
+    low: 0,
+    warehouses: 0,
+    pendingRequests: 0,
+  });
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const loadDashboard = async () => {
+  try {
+    setLoading(true);
+    setError("");
+
+    const response = await api.get("/disasters/dashboard");
+
+    console.log("Dashboard API:", response.data);
+
+    const data = response.data.data;
+
+    setPredictions(data.predictions || []);
+    setWarehouses(data.warehouses || []);
+    setStates(data.states || []);
+    setStatistics(data.statistics || {});
+
+  } catch (err) {
+    console.error("Dashboard loading error:", err);
+
+    setError(
+      err.response?.data?.message ||
+      "Unable to load dashboard data"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
+
+  useEffect(() => {
+    loadDashboard();
+  }, []);
+
+  const criticalCount = statistics.critical;
+  const highCount = statistics.high;
+
+  return (
+    <div className="min-h-screen bg-slate-100">
+
+      <Sidebar />
+
+      <div className="ml-64">
+
+        <Topbar />
+
+        <main className="p-6">
+
+          {/* Page header */}
+          <div className="mb-6 flex items-center justify-between">
+
+            <div>
+              <h1 className="text-2xl font-bold text-slate-800">
+                Dashboard
+              </h1>
+
+              <p className="mt-1 text-sm text-slate-500">
+                Welcome, {user?.full_name || "National Head"}
+              </p>
+            </div>
+
+            <button
+              onClick={loadDashboard}
+              className="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50"
+            >
+              <RefreshCw size={17} />
+              Refresh
+            </button>
+
+          </div>
+
+          {/* Error */}
+          {error && (
+            <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {error}
+            </div>
+          )}
+
+          {/* Statistics */}
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+
+            <StatCard
+              title="Active Predictions"
+              value={statistics.predictions}
+              subtitle="AI-generated disaster predictions"
+              icon={TriangleAlert}
+              iconClass="bg-blue-100 text-blue-600"
+            />
+
+          <StatCard
+              title="Critical Alerts"
+              value={statistics.critical}
+              subtitle="Immediate attention required"
+              icon={Activity}
+              iconClass="bg-red-100 text-red-600"
+          />
+
+          <StatCard
+            title="High Risk Events"
+            value={statistics.high}
+            subtitle="High severity predictions"
+            icon={ClipboardList}
+            iconClass="bg-orange-100 text-orange-600"
+          />
+
+          <StatCard
+            title="Government Warehouses"
+            value={statistics.warehouses}
+            subtitle="Connected emergency warehouses"
+            icon={Warehouse}
+            iconClass="bg-emerald-100 text-emerald-600"
+          />
+
+          </div>
+
+          {/* Main content */}
+          <div className="mt-6 grid gap-6 xl:grid-cols-3">
+
+            {/* Map placeholder */}
+            <div className="xl:col-span-2">
+
+              <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+
+                <div className="border-b border-slate-200 px-5 py-4">
+                  <h2 className="font-semibold text-slate-800">
+                    National Disaster Map
+                  </h2>
+
+                  <p className="mt-1 text-xs text-slate-500">
+                    Satellite and AI prediction monitoring
+                  </p>
+                </div>
+
+                <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+
+                  <div className="border-b border-slate-200 px-5 py-4">
+
+                    <div className="flex items-center justify-between">
+
+                      <div>
+
+                        <h2 className="font-semibold text-slate-800">
+                          National Disaster Map
+                        </h2>
+
+                        <p className="mt-1 text-xs text-slate-500">
+                          Live AI predictions and government warehouse locations
+                        </p>
+
+                      </div>
+
+                      <div className="flex items-center gap-3 text-xs">
+
+                        <div className="flex items-center gap-1">
+                          <span className="h-2.5 w-2.5 rounded-full bg-red-600" />
+                            Critical
+                        </div>
+
+                        <div className="flex items-center gap-1">
+                          <span className="h-2.5 w-2.5 rounded-full bg-orange-500" />
+                            High
+                        </div>
+
+                        <div className="flex items-center gap-1">
+                          <span className="h-2.5 w-2.5 rounded-full bg-yellow-500" />
+                            Medium
+                        </div>
+
+                        <div className="flex items-center gap-1">
+                          <span className="h-2.5 w-2.5 rounded-full bg-green-500" />
+                            Low
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+
+                  <DisasterMap
+                    states={states}
+                    predictions={predictions}
+                    warehouses={warehouses}
+                  />
+
+                </div>
+
+              </div>
+
+            </div>
+
+            {/* Alerts */}
+            <div>
+
+              <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
+
+                <div className="border-b border-slate-200 px-5 py-4">
+
+                  <h2 className="font-semibold text-slate-800">
+                    Disaster Alerts
+                  </h2>
+
+                  <p className="mt-1 text-xs text-slate-500">
+                    Latest prediction warnings
+                  </p>
+
+                </div>
+
+                <div className="max-h-[420px] space-y-3 overflow-y-auto p-4">
+
+                  {loading ? (
+                    <div className="py-10 text-center text-sm text-slate-500">
+                      Loading predictions...
+                    </div>
+                  ) : predictions.length === 0 ? (
+                    <div className="py-10 text-center text-sm text-slate-500">
+                      No active predictions
+                    </div>
+                  ) : (
+                    predictions.map((prediction) => (
+                      <DisasterAlert
+                        key={prediction.prediction_id}
+                        prediction={prediction}
+                      />
+                    ))
+                  )}
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* System status */}
+          <div className="mt-6 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+
+            <h2 className="font-semibold text-slate-800">
+              System Status
+            </h2>
+
+            <div className="mt-4 grid gap-4 md:grid-cols-4">
+
+              <StatusItem
+                name="Backend API"
+                status="Online"
+              />
+
+              <StatusItem
+                name="Database"
+                status="Connected"
+              />
+
+              <StatusItem
+                name="Quantum Optimizer"
+                status="Available"
+              />
+
+              <StatusItem
+                name="Blockchain Audit"
+                status="Connected"
+              />
+
+            </div>
+
+          </div>
+
+        </main>
+
+      </div>
+
+    </div>
+  );
+}
+
+function StatusItem({ name, status }) {
+  return (
+    <div className="flex items-center justify-between rounded-lg bg-slate-50 px-4 py-3">
+
+      <span className="text-sm text-slate-600">
+        {name}
+      </span>
+
+      <span className="flex items-center gap-2 text-xs font-semibold text-green-600">
+        <span className="h-2 w-2 rounded-full bg-green-500" />
+        {status}
+      </span>
+
+    </div>
+  );
+}
+
+
+========== FILE: frontend\src\services\api.js ==========
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: "http://localhost:5000/api",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+
+      window.location.href = "/login";
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+export default api;
+
+
+========== FILE: ml-service\app.py ==========
+from pathlib import Path
+
+import joblib
+import pandas as pd
+
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, Field
+
+
+# ============================================================
+# PATHS
+# ============================================================
+
+BASE_DIR = Path(__file__).resolve().parent
+
+MODEL_FILE = (
+    BASE_DIR
+    / "models"
+    / "disaster_random_forest.joblib"
+)
+
+
+# ============================================================
+# LOAD MODEL
+# ============================================================
+
+if not MODEL_FILE.exists():
+    raise FileNotFoundError(
+        f"Model not found: {MODEL_FILE}"
+    )
+
+artifact = joblib.load(MODEL_FILE)
+
+model = artifact["model"]
+FEATURES = artifact["features"]
+MEDIANS = artifact["medians"]
+CLASSES = artifact["classes"]
+
+
+# ============================================================
+# FASTAPI
+# ============================================================
+
+app = FastAPI(
+    title="Disaster Prediction ML Service",
+    version="1.0.0",
+    description="Weather-based disaster prediction service"
+)
+
+
+# ============================================================
+# REQUEST MODEL
+# ============================================================
+
+class WeatherInput(BaseModel):
+
+    temperature_2m_mean: float
+    temperature_2m_max: float
+    temperature_2m_min: float
+    temperature_range: float
+
+    precipitation_sum: float
+
+    rainfall_1d: float
+    rainfall_3d: float
+    rainfall_7d: float
+    rainfall_14d: float
+
+    rainfall_3d_mean: float
+    rainfall_7d_mean: float
+
+    relative_humidity_2m_mean: float
+    humidity_3d_mean: float
+    humidity_7d_mean: float
+
+    surface_pressure_mean: float
+    pressure_change_1d: float
+    pressure_change_3d: float
+
+    wind_speed_10m_mean: float
+    wind_speed_10m_max: float
+    wind_3d_mean: float
+    wind_7d_mean: float
+    wind_max_7d: float
+
+    wind_direction_10m_dominant: float
+
+
+# ============================================================
+# HEALTH
+# ============================================================
+
+@app.get("/")
+def root():
+
+    return {
+        "service": "Disaster Prediction ML Service",
+        "status": "running",
+        "model": "Random Forest baseline",
+        "classes": CLASSES
+    }
+
+
+@app.get("/health")
+def health():
+
+    return {
+        "status": "OK",
+        "model_loaded": True,
+        "model_file": str(MODEL_FILE),
+        "classes": CLASSES
+    }
+
+
+# ============================================================
+# SEVERITY
+# ============================================================
+
+def calculate_severity(probability: float):
+
+    if probability >= 0.80:
+        return "CRITICAL"
+
+    if probability >= 0.60:
+        return "HIGH"
+
+    if probability >= 0.40:
+        return "MEDIUM"
+
+    return "LOW"
+
+
+# ============================================================
+# PREDICTION
+# ============================================================
+
+@app.post("/predict")
+def predict(data: WeatherInput):
+
+    try:
+
+        values = data.model_dump()
+
+        # Keep exact feature order used during training
+        row = {}
+
+        for feature in FEATURES:
+
+            value = values.get(feature)
+
+            if value is None:
+                value = MEDIANS.get(feature, 0)
+
+            row[feature] = value
+
+        X = pd.DataFrame(
+            [row],
+            columns=FEATURES
+        )
+
+        # ----------------------------------------------------
+        # Prediction
+        # ----------------------------------------------------
+
+        probabilities = model.predict_proba(X)[0]
+
+        predicted_index = probabilities.argmax()
+
+        predicted_disaster = model.classes_[
+            predicted_index
+        ]
+
+        probability = float(
+            probabilities[predicted_index]
+        )
+
+        severity = calculate_severity(
+            probability
+        )
+
+        # ----------------------------------------------------
+        # Class probabilities
+        # ----------------------------------------------------
+
+        class_probabilities = {
+            str(cls): round(
+                float(prob),
+                6
+            )
+            for cls, prob in zip(
+                model.classes_,
+                probabilities
+            )
+        }
+
+        return {
+            "success": True,
+            "predicted_disaster": str(
+                predicted_disaster
+            ),
+            "probability": round(
+                probability,
+                6
+            ),
+            "severity": severity,
+            "class_probabilities":
+                class_probabilities
+        }
+
+    except Exception as e:
+
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
+
+
+========== FILE: quantum\app.py ==========
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+from optimizer import optimize_resource
+
+
+app = FastAPI(
+    title="Disaster Resource Quantum Optimizer",
+    version="2.0"
+)
+
+
+# ---------------------------------------------------------
+# Warehouse Candidate
+# ---------------------------------------------------------
+
+class WarehouseCandidate(BaseModel):
+
+    warehouse_id: int
+    warehouse_name: str
+    resource_id: int
+
+    required_quantity: float
+    usable_quantity: float
+
+    distance_km: float
+
+
+# ---------------------------------------------------------
+# Optimization Request
+# ---------------------------------------------------------
+
+class OptimizationRequest(BaseModel):
+
+    request_priority: str
+
+    required_quantity: float
+
+    candidates: list[WarehouseCandidate]
+
+
+# ---------------------------------------------------------
+# Root
+# ---------------------------------------------------------
+
+@app.get("/")
+def root():
+
+    return {
+        "success": True,
+        "message": "Quantum optimization service is running",
+        "version": "2.0"
+    }
+
+
+# ---------------------------------------------------------
+# Optimization API
+# ---------------------------------------------------------
+
+@app.post("/optimize")
+def optimize(request: OptimizationRequest):
+
+    candidates = [
+        candidate.model_dump()
+        for candidate in request.candidates
+    ]
+
+    result = optimize_resource(
+        candidates=candidates,
+        required_quantity=request.required_quantity,
+        request_priority=request.request_priority
+    )
+
+    return {
+        "success": True,
+        "algorithm": result["algorithm"],
+        "result": result
+    }

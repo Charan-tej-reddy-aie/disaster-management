@@ -1,0 +1,4633 @@
+
+========== FILE: frontend\src\pages\Dashboard.jsx ==========
+
+import { useEffect, useState } from "react";
+
+
+import {
+  TriangleAlert,
+  Activity,
+  ClipboardList,
+  Warehouse,
+  RefreshCw,
+} from "lucide-react";
+
+import api from "../services/api";
+import { useAuth } from "../context/AuthContext";
+
+import Sidebar from "../components/Sidebar";
+import Topbar from "../components/Topbar";
+import StatCard from "../components/StatCard";
+import DisasterAlert from "../components/DisasterAlert";
+import DisasterMap from "../components/DisasterMap";
+
+export default function Dashboard() {
+  const { user } = useAuth();
+
+  const [predictions, setPredictions] = useState([]);
+  const [warehouses, setWarehouses] = useState([]);
+  const [states, setStates] = useState([]);
+
+  const [statistics, setStatistics] = useState({
+    predictions: 0,
+    critical: 0,
+    high: 0,
+    medium: 0,
+    low: 0,
+    warehouses: 0,
+    pendingRequests: 0,
+  });
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const loadDashboard = async () => {
+  try {
+    setLoading(true);
+    setError("");
+
+    const response = await api.get("/disasters/dashboard");
+
+    console.log("Dashboard API:", response.data);
+
+    const data = response.data.data;
+
+    setPredictions(data.predictions || []);
+    setWarehouses(data.warehouses || []);
+    setStates(data.states || []);
+    setStatistics(data.statistics || {});
+
+  } catch (err) {
+    console.error("Dashboard loading error:", err);
+
+    setError(
+      err.response?.data?.message ||
+      "Unable to load dashboard data"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
+
+  useEffect(() => {
+    loadDashboard();
+  }, []);
+
+  const criticalCount = statistics.critical;
+  const highCount = statistics.high;
+
+  return (
+    <div className="min-h-screen bg-slate-100">
+
+      <Sidebar />
+
+      <div className="ml-64">
+
+        <Topbar />
+
+        <main className="p-6">
+
+          {/* Page header */}
+          <div className="mb-6 flex items-center justify-between">
+
+            <div>
+              <h1 className="text-2xl font-bold text-slate-800">
+                Dashboard
+              </h1>
+
+              <p className="mt-1 text-sm text-slate-500">
+                Welcome, {user?.full_name || "National Head"}
+              </p>
+            </div>
+
+            <button
+              onClick={loadDashboard}
+              className="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50"
+            >
+              <RefreshCw size={17} />
+              Refresh
+            </button>
+
+          </div>
+
+          {/* Error */}
+          {error && (
+            <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {error}
+            </div>
+          )}
+
+          {/* Statistics */}
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+
+            <StatCard
+              title="Active Predictions"
+              value={statistics.predictions}
+              subtitle="AI-generated disaster predictions"
+              icon={TriangleAlert}
+              iconClass="bg-blue-100 text-blue-600"
+            />
+
+          <StatCard
+              title="Critical Alerts"
+              value={statistics.critical}
+              subtitle="Immediate attention required"
+              icon={Activity}
+              iconClass="bg-red-100 text-red-600"
+          />
+
+          <StatCard
+            title="High Risk Events"
+            value={statistics.high}
+            subtitle="High severity predictions"
+            icon={ClipboardList}
+            iconClass="bg-orange-100 text-orange-600"
+          />
+
+          <StatCard
+            title="Government Warehouses"
+            value={statistics.warehouses}
+            subtitle="Connected emergency warehouses"
+            icon={Warehouse}
+            iconClass="bg-emerald-100 text-emerald-600"
+          />
+
+          </div>
+
+          {/* Main content */}
+          <div className="mt-6 grid gap-6 xl:grid-cols-3">
+
+            {/* Map placeholder */}
+            <div className="xl:col-span-2">
+
+              <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+
+                <div className="border-b border-slate-200 px-5 py-4">
+                  <h2 className="font-semibold text-slate-800">
+                    National Disaster Map
+                  </h2>
+
+                  <p className="mt-1 text-xs text-slate-500">
+                    Satellite and AI prediction monitoring
+                  </p>
+                </div>
+
+                <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+
+                  <div className="border-b border-slate-200 px-5 py-4">
+
+                    <div className="flex items-center justify-between">
+
+                      <div>
+
+                        <h2 className="font-semibold text-slate-800">
+                          National Disaster Map
+                        </h2>
+
+                        <p className="mt-1 text-xs text-slate-500">
+                          Live AI predictions and government warehouse locations
+                        </p>
+
+                      </div>
+
+                      <div className="flex items-center gap-3 text-xs">
+
+                        <div className="flex items-center gap-1">
+                          <span className="h-2.5 w-2.5 rounded-full bg-red-600" />
+                            Critical
+                        </div>
+
+                        <div className="flex items-center gap-1">
+                          <span className="h-2.5 w-2.5 rounded-full bg-orange-500" />
+                            High
+                        </div>
+
+                        <div className="flex items-center gap-1">
+                          <span className="h-2.5 w-2.5 rounded-full bg-yellow-500" />
+                            Medium
+                        </div>
+
+                        <div className="flex items-center gap-1">
+                          <span className="h-2.5 w-2.5 rounded-full bg-green-500" />
+                            Low
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+
+                  <DisasterMap
+                    states={states}
+                    predictions={predictions}
+                    warehouses={warehouses}
+                  />
+
+                </div>
+
+              </div>
+
+            </div>
+
+            {/* Alerts */}
+            <div>
+
+              <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
+
+                <div className="border-b border-slate-200 px-5 py-4">
+
+                  <h2 className="font-semibold text-slate-800">
+                    Disaster Alerts
+                  </h2>
+
+                  <p className="mt-1 text-xs text-slate-500">
+                    Latest prediction warnings
+                  </p>
+
+                </div>
+
+                <div className="max-h-[420px] space-y-3 overflow-y-auto p-4">
+
+                  {loading ? (
+                    <div className="py-10 text-center text-sm text-slate-500">
+                      Loading predictions...
+                    </div>
+                  ) : predictions.length === 0 ? (
+                    <div className="py-10 text-center text-sm text-slate-500">
+                      No active predictions
+                    </div>
+                  ) : (
+                    predictions.map((prediction) => (
+                      <DisasterAlert
+                        key={prediction.prediction_id}
+                        prediction={prediction}
+                      />
+                    ))
+                  )}
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* System status */}
+          <div className="mt-6 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+
+            <h2 className="font-semibold text-slate-800">
+              System Status
+            </h2>
+
+            <div className="mt-4 grid gap-4 md:grid-cols-4">
+
+              <StatusItem
+                name="Backend API"
+                status="Online"
+              />
+
+              <StatusItem
+                name="Database"
+                status="Connected"
+              />
+
+              <StatusItem
+                name="Quantum Optimizer"
+                status="Available"
+              />
+
+              <StatusItem
+                name="Blockchain Audit"
+                status="Connected"
+              />
+
+            </div>
+
+          </div>
+
+        </main>
+
+      </div>
+
+    </div>
+  );
+}
+
+function StatusItem({ name, status }) {
+  return (
+    <div className="flex items-center justify-between rounded-lg bg-slate-50 px-4 py-3">
+
+      <span className="text-sm text-slate-600">
+        {name}
+      </span>
+
+      <span className="flex items-center gap-2 text-xs font-semibold text-green-600">
+        <span className="h-2 w-2 rounded-full bg-green-500" />
+        {status}
+      </span>
+
+    </div>
+  );
+}
+
+========== FILE: frontend\src\components\DisasterMap.jsx ==========
+
+import {
+  MapContainer,
+  TileLayer,
+  CircleMarker,
+  Marker,
+  Popup,
+} from "react-leaflet";
+
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
+
+  iconUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
+
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
+});
+
+function getSeverityColor(severity) {
+  switch (severity) {
+    case "CRITICAL":
+      return "#dc2626";
+
+    case "HIGH":
+      return "#f97316";
+
+    case "MEDIUM":
+      return "#eab308";
+
+    case "LOW":
+      return "#22c55e";
+
+    default:
+      return "#64748b";
+  }
+}
+
+export default function DisasterMap({
+  states = [],
+  predictions = [],
+  warehouses = [],
+}) {
+  const defaultCenter = [12.9716, 78.6569];
+
+  return (
+    <div className="h-[520px] w-full overflow-hidden rounded-b-xl">
+
+      <MapContainer
+        center={defaultCenter}
+        zoom={6}
+        scrollWheelZoom={true}
+        className="h-full w-full"
+      >
+
+        <TileLayer
+          attribution="&copy; OpenStreetMap contributors"
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+
+        {/* States */}
+        {states.map((state) => (
+          <CircleMarker
+            key={`state-${state.state_id}`}
+            center={[
+              Number(state.latitude),
+              Number(state.longitude),
+            ]}
+            radius={8}
+            pathOptions={{
+              color: "#2563eb",
+              fillColor: "#3b82f6",
+              fillOpacity: 0.7,
+            }}
+          >
+            <Popup>
+              <div className="min-w-[150px]">
+                <h3 className="font-bold">
+                  {state.state_name}
+                </h3>
+
+                <p className="mt-1 text-xs text-slate-500">
+                  State monitoring location
+                </p>
+              </div>
+            </Popup>
+          </CircleMarker>
+        ))}
+
+        {/* Predictions */}
+        {predictions.map((prediction) => {
+          if (
+            !prediction.state_latitude ||
+            !prediction.state_longitude
+          ) {
+            return null;
+          }
+
+          const color = getSeverityColor(
+            prediction.severity
+          );
+
+          return (
+            <CircleMarker
+              key={`prediction-${prediction.prediction_id}`}
+              center={[
+                Number(prediction.state_latitude),
+                Number(prediction.state_longitude),
+              ]}
+              radius={
+                prediction.severity === "CRITICAL"
+                  ? 24
+                  : prediction.severity === "HIGH"
+                    ? 19
+                    : 14
+              }
+              pathOptions={{
+                color,
+                fillColor: color,
+                fillOpacity: 0.35,
+                weight: 3,
+              }}
+            >
+              <Popup>
+                <div className="min-w-[210px]">
+
+                  <h3 className="text-base font-bold">
+                    {prediction.disaster_name}
+                  </h3>
+
+                  <p className="mt-1 text-sm">
+                    {prediction.state_name}
+                  </p>
+
+                  <div className="mt-3 space-y-1 text-xs">
+
+                    <p>
+                      <strong>Severity:</strong>{" "}
+                      {prediction.severity}
+                    </p>
+
+                    <p>
+                      <strong>Probability:</strong>{" "}
+                      {(
+                        Number(prediction.probability) * 100
+                      ).toFixed(0)}
+                      %
+                    </p>
+
+                    <p>
+                      <strong>Affected Area:</strong>{" "}
+                      {Number(
+                        prediction.affected_area_km2 || 0
+                      ).toFixed(0)}
+                      {" "}km²
+                    </p>
+
+                    <p>
+                      <strong>Population:</strong>{" "}
+                      {Number(
+                        prediction.affected_population || 0
+                      ).toLocaleString()}
+                    </p>
+
+                  </div>
+
+                </div>
+              </Popup>
+            </CircleMarker>
+          );
+        })}
+
+        {/* Warehouses */}
+        {warehouses.map((warehouse) => (
+          <Marker
+            key={`warehouse-${warehouse.warehouse_id}`}
+            position={[
+              Number(warehouse.latitude),
+              Number(warehouse.longitude),
+            ]}
+          >
+            <Popup>
+              <div className="min-w-[220px]">
+
+                <h3 className="font-bold">
+                  {warehouse.warehouse_name}
+                </h3>
+
+                <p className="mt-1 text-xs text-slate-500">
+                  {warehouse.state_name}
+                </p>
+
+                <div className="mt-3">
+                  <p className="text-xs text-slate-600">
+                    Usable inventory
+                  </p>
+
+                  <p className="text-lg font-bold text-green-600">
+                    {Number(
+                      warehouse.total_usable_inventory || 0
+                    ).toLocaleString()}
+                  </p>
+                </div>
+
+              </div>
+            </Popup>
+          </Marker>
+        ))}
+
+      </MapContainer>
+
+    </div>
+  );
+}
+
+========== FILE: frontend\src\components\DisasterAlert.jsx ==========
+
+import {
+  TriangleAlert,
+  MapPin,
+  Clock,
+} from "lucide-react";
+
+export default function DisasterAlert({ prediction }) {
+  const severityClass = {
+    LOW: "bg-green-100 text-green-700",
+    MEDIUM: "bg-yellow-100 text-yellow-700",
+    HIGH: "bg-orange-100 text-orange-700",
+    CRITICAL: "bg-red-100 text-red-700",
+  };
+
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+
+      <div className="flex items-start justify-between">
+
+        <div className="flex gap-3">
+
+          <div className="rounded-lg bg-red-100 p-2 text-red-600">
+            <TriangleAlert size={20} />
+          </div>
+
+          <div>
+            <h3 className="font-semibold text-slate-800">
+              {prediction.disaster_name}
+            </h3>
+
+            <p className="text-xs text-slate-500">
+              {prediction.state_name}
+            </p>
+          </div>
+
+        </div>
+
+        <span
+          className={`rounded-full px-3 py-1 text-xs font-semibold ${
+            severityClass[prediction.severity] ||
+            "bg-slate-100 text-slate-600"
+          }`}
+        >
+          {prediction.severity}
+        </span>
+
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 gap-3">
+
+        <div className="flex items-center gap-2 text-xs text-slate-500">
+          <MapPin size={15} />
+          {Number(prediction.affected_area_km2 || 0).toFixed(0)} km²
+        </div>
+
+        <div className="flex items-center gap-2 text-xs text-slate-500">
+          <Clock size={15} />
+          {(Number(prediction.probability || 0) * 100).toFixed(0)}% probability
+        </div>
+
+      </div>
+
+    </div>
+  );
+}
+
+========== FILE: frontend\src\components\StatCard.jsx ==========
+
+export default function StatCard({
+  title,
+  value,
+  subtitle,
+  icon: Icon,
+  iconClass = "bg-blue-100 text-blue-600",
+}) {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+
+      <div className="flex items-start justify-between">
+
+        <div>
+          <p className="text-sm font-medium text-slate-500">
+            {title}
+          </p>
+
+          <h3 className="mt-2 text-3xl font-bold text-slate-800">
+            {value}
+          </h3>
+
+          {subtitle && (
+            <p className="mt-2 text-xs text-slate-500">
+              {subtitle}
+            </p>
+          )}
+        </div>
+
+        <div className={`rounded-xl p-3 ${iconClass}`}>
+          <Icon size={22} />
+        </div>
+
+      </div>
+
+    </div>
+  );
+}
+
+========== FILE: frontend\src\components\Sidebar.jsx ==========
+
+import {
+  LayoutDashboard,
+  TriangleAlert,
+  Package,
+  ClipboardList,
+  Truck,
+  ShieldCheck,
+  Atom,
+  LogOut,
+} from "lucide-react";
+
+import { Link, useLocation } from "react-router-dom";
+
+import { useAuth } from "../context/AuthContext";
+
+
+export default function Sidebar() {
+
+  const { user, logout } = useAuth();
+
+  const location = useLocation();
+
+
+  const menuItems = [
+    {
+      name: "Dashboard",
+      icon: LayoutDashboard,
+      path: "/dashboard",
+    },
+
+    {
+      name: "Predictions",
+      icon: TriangleAlert,
+      path: "/predictions",
+    },
+
+    {
+      name: "Resources",
+      icon: Package,
+      path: "/resources",
+    },
+
+    {
+      name: "Requests",
+      icon: ClipboardList,
+      path: "/resource-requests",
+    },
+
+    {
+      name: "Allocations",
+      icon: Package,
+      path: "/allocations",
+    },
+
+    {
+      name: "Movements",
+      icon: Truck,
+      path: "/movements",
+    },
+
+    {
+      name: "Blockchain Audit",
+      icon: ShieldCheck,
+      path: "/blockchain",
+    },
+
+    {
+      name: "Quantum Optimization",
+      icon: Atom,
+      path: "/quantum",
+    },
+  ];
+
+
+  return (
+
+    <aside className="fixed left-0 top-0 flex h-screen w-64 flex-col bg-slate-950 text-white">
+
+      {/* Logo */}
+
+      <div className="border-b border-slate-800 px-6 py-5">
+
+        <div className="flex items-center gap-3">
+
+          <div className="rounded-lg bg-blue-600 p-2">
+            <TriangleAlert size={22} />
+          </div>
+
+          <div>
+
+            <h1 className="font-bold">
+              Disaster Management
+            </h1>
+
+            <p className="text-xs text-slate-400">
+              National Command System
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      {/* User */}
+
+      <div className="border-b border-slate-800 px-5 py-4">
+
+        <p className="text-sm font-semibold">
+          {user?.full_name || "User"}
+        </p>
+
+        <p className="mt-1 text-xs text-slate-400">
+          {user?.role || "SYSTEM USER"}
+        </p>
+
+      </div>
+
+
+      {/* Navigation */}
+
+      <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
+
+        {menuItems.map((item) => {
+
+          const Icon = item.icon;
+
+          const isActive =
+            location.pathname === item.path;
+
+
+          return (
+
+            <Link
+              key={item.name}
+              to={item.path}
+              className={`flex items-center gap-3 rounded-lg px-4 py-3 text-sm transition ${
+                isActive
+                  ? "bg-blue-600 text-white"
+                  : "text-slate-300 hover:bg-slate-800 hover:text-white"
+              }`}
+            >
+
+              <Icon size={19} />
+
+              <span>
+                {item.name}
+              </span>
+
+            </Link>
+
+          );
+
+        })}
+
+      </nav>
+
+
+      {/* Logout */}
+
+      <div className="border-t border-slate-800 p-3">
+
+        <button
+          onClick={logout}
+          className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm text-slate-300 hover:bg-red-600 hover:text-white"
+        >
+
+          <LogOut size={19} />
+
+          Logout
+
+        </button>
+
+      </div>
+
+    </aside>
+
+  );
+}
+
+========== FILE: frontend\src\components\Topbar.jsx ==========
+
+import { Bell, Search } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
+
+export default function Topbar() {
+  const { user } = useAuth();
+
+  return (
+    <header className="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-6">
+
+      <div>
+        <h2 className="text-lg font-semibold text-slate-800">
+          National Disaster Command Center
+        </h2>
+
+        <p className="text-xs text-slate-500">
+          Real-time disaster prediction and resource coordination
+        </p>
+      </div>
+
+      <div className="flex items-center gap-5">
+
+        <div className="hidden items-center gap-2 rounded-lg bg-slate-100 px-3 py-2 md:flex">
+          <Search size={17} className="text-slate-400" />
+
+          <input
+            type="text"
+            placeholder="Search..."
+            className="w-40 bg-transparent text-sm outline-none"
+          />
+        </div>
+
+        <button className="relative text-slate-600">
+          <Bell size={21} />
+
+          <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] text-white">
+            3
+          </span>
+        </button>
+
+        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">
+          {user?.full_name?.charAt(0)?.toUpperCase() || "U"}
+        </div>
+
+      </div>
+    </header>
+  );
+}
+
+========== FILE: frontend\src\pages\Predictions.jsx ==========
+
+import { useEffect, useState } from "react";
+import {
+  AlertTriangle,
+  MapPin,
+  Users,
+  Activity,
+  Clock,
+  X,
+  ShieldAlert,
+  Package,
+  Warehouse,
+  AlertCircle,
+} from "lucide-react";
+import api from "../services/api";
+
+/* =========================================================
+   SEVERITY STYLING
+========================================================= */
+
+function getSeverityClass(severity) {
+  switch (severity) {
+    case "CRITICAL":
+      return "bg-red-100 text-red-700 border-red-200";
+
+    case "HIGH":
+      return "bg-orange-100 text-orange-700 border-orange-200";
+
+    case "MEDIUM":
+      return "bg-yellow-100 text-yellow-700 border-yellow-200";
+
+    case "LOW":
+      return "bg-green-100 text-green-700 border-green-200";
+
+    default:
+      return "bg-gray-100 text-gray-700 border-gray-200";
+  }
+}
+
+/* =========================================================
+   DATE FORMATTER
+========================================================= */
+
+function formatDate(date) {
+  if (!date) return "Not available";
+
+  return new Date(date).toLocaleString("en-IN", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+}
+
+/* =========================================================
+   PREDICTION CARD
+========================================================= */
+
+function PredictionCard({ prediction, onClick }) {
+  const probability = Number(prediction.probability || 0);
+
+  /*
+    Probability is stored as:
+    0.93 → 93%
+
+    Confidence can be stored as:
+    0.91 → 91%
+    OR
+    91 → 91%
+
+    This handles both cases.
+  */
+  const rawConfidence = Number(
+    prediction.confidence_score || 0
+  );
+
+  const confidence =
+    rawConfidence <= 1
+      ? rawConfidence * 100
+      : rawConfidence;
+
+  return (
+    <div
+      onClick={() => onClick(prediction)}
+      className="cursor-pointer rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+    >
+      {/* Header */}
+      <div className="flex items-start justify-between">
+        <div>
+          <div className="flex items-center gap-2">
+            <AlertTriangle
+              size={20}
+              className="text-orange-500"
+            />
+
+            <h3 className="text-lg font-bold text-gray-900">
+              {prediction.disaster_name}
+            </h3>
+          </div>
+
+          <div className="mt-2 flex items-center gap-2 text-sm text-gray-500">
+            <MapPin size={15} />
+
+            {prediction.state_name || "Unknown State"}
+          </div>
+        </div>
+
+        <span
+          className={`rounded-full border px-3 py-1 text-xs font-semibold ${getSeverityClass(
+            prediction.severity
+          )}`}
+        >
+          {prediction.severity}
+        </span>
+      </div>
+
+      {/* Probability / Confidence */}
+      <div className="mt-5 grid grid-cols-2 gap-4">
+        <div className="rounded-xl bg-gray-50 p-3">
+          <p className="text-xs text-gray-500">
+            Probability
+          </p>
+
+          <p className="mt-1 text-xl font-bold text-gray-900">
+            {(probability * 100).toFixed(0)}%
+          </p>
+        </div>
+
+        <div className="rounded-xl bg-gray-50 p-3">
+          <p className="text-xs text-gray-500">
+            Confidence
+          </p>
+
+          <p className="mt-1 text-xl font-bold text-gray-900">
+            {confidence.toFixed(0)}%
+          </p>
+        </div>
+      </div>
+
+      {/* Population / Area */}
+      <div className="mt-4 grid grid-cols-2 gap-4">
+        <div className="flex items-center gap-2 text-sm text-gray-600">
+          <Users size={16} />
+
+          {Number(
+            prediction.affected_population || 0
+          ).toLocaleString()}{" "}
+          people
+        </div>
+
+        <div className="flex items-center gap-2 text-sm text-gray-600">
+          <Activity size={16} />
+
+          {Number(
+            prediction.affected_area_km2 || 0
+          ).toLocaleString()}{" "}
+          km²
+        </div>
+      </div>
+
+      {/* Expected date */}
+      <div className="mt-4 flex items-center gap-2 border-t border-gray-100 pt-4 text-xs text-gray-500">
+        <Clock size={14} />
+
+        Expected:{" "}
+        {formatDate(prediction.expected_start_time)}
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   RESOURCE REQUIREMENT COMPONENT
+========================================================= */
+
+function ResourceRequirements({
+  requirements,
+  loading,
+  error,
+}) {
+  if (loading) {
+    return (
+      <div className="rounded-xl border border-gray-200 p-5">
+        <div className="flex items-center gap-3">
+          <Package
+            size={20}
+            className="text-blue-600"
+          />
+
+          <h3 className="font-semibold text-gray-900">
+            Resource Requirements
+          </h3>
+        </div>
+
+        <div className="flex items-center justify-center py-8">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
+
+          <span className="ml-3 text-sm text-gray-500">
+            Calculating resource requirements...
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="rounded-xl border border-red-200 bg-red-50 p-5">
+        <div className="flex items-center gap-2 text-red-700">
+          <AlertCircle size={20} />
+
+          <h3 className="font-semibold">
+            Resource Requirement Error
+          </h3>
+        </div>
+
+        <p className="mt-2 text-sm text-red-600">
+          {error}
+        </p>
+      </div>
+    );
+  }
+
+  if (!requirements || requirements.length === 0) {
+    return (
+      <div className="rounded-xl border border-gray-200 p-5">
+        <div className="flex items-center gap-2">
+          <Package
+            size={20}
+            className="text-gray-500"
+          />
+
+          <h3 className="font-semibold text-gray-900">
+            Resource Requirements
+          </h3>
+        </div>
+
+        <div className="mt-5 rounded-lg bg-gray-50 p-6 text-center">
+          <p className="text-sm text-gray-500">
+            No resource requirement rules are configured
+            for this prediction.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-xl border border-gray-200 p-5">
+      {/* Section Header */}
+      <div>
+        <div className="flex items-center gap-2">
+          <Package
+            size={20}
+            className="text-blue-600"
+          />
+
+          <h3 className="font-semibold text-gray-900">
+            Resource Requirements
+          </h3>
+        </div>
+
+        <p className="mt-1 text-sm text-gray-500">
+          Required resources calculated from the predicted
+          affected population and disaster severity.
+        </p>
+      </div>
+
+      {/* Resource Cards */}
+      <div className="mt-5 space-y-4">
+        {requirements.map((resource) => {
+          const required = Number(
+            resource.quantity_required || 0
+          );
+
+          const available = Number(
+            resource.quantity_available || 0
+          );
+
+          const shortage = Number(
+            resource.quantity_shortage || 0
+          );
+
+          const coverage =
+            required > 0
+              ? Math.min(
+                  (available / required) * 100,
+                  100
+                )
+              : 100;
+
+          return (
+            <div
+              key={resource.resource_id}
+              className="rounded-xl border border-gray-200 p-4"
+            >
+              {/* Resource header */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-semibold text-gray-900">
+                    {resource.resource_name}
+                  </h4>
+
+                  <p className="mt-1 text-xs text-gray-500">
+                    Unit: {resource.unit}
+                  </p>
+                </div>
+
+                {shortage > 0 ? (
+                  <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
+                    Shortage
+                  </span>
+                ) : (
+                  <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                    Sufficient
+                  </span>
+                )}
+              </div>
+
+              {/* Numbers */}
+              <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <div className="rounded-lg bg-gray-50 p-3">
+                  <p className="text-xs text-gray-500">
+                    Required
+                  </p>
+
+                  <p className="mt-1 font-bold text-gray-900">
+                    {required.toLocaleString()}{" "}
+                    {resource.unit}
+                  </p>
+                </div>
+
+                <div className="rounded-lg bg-gray-50 p-3">
+                  <p className="text-xs text-gray-500">
+                    Available
+                  </p>
+
+                  <p className="mt-1 font-bold text-blue-600">
+                    {available.toLocaleString()}{" "}
+                    {resource.unit}
+                  </p>
+                </div>
+
+                <div className="rounded-lg bg-gray-50 p-3">
+                  <p className="text-xs text-gray-500">
+                    Shortage
+                  </p>
+
+                  <p
+                    className={`mt-1 font-bold ${
+                      shortage > 0
+                        ? "text-red-600"
+                        : "text-green-600"
+                    }`}
+                  >
+                    {shortage.toLocaleString()}{" "}
+                    {resource.unit}
+                  </p>
+                </div>
+              </div>
+
+              {/* Coverage */}
+              <div className="mt-4">
+                <div className="mb-1 flex justify-between text-xs text-gray-500">
+                  <span>
+                    Inventory Coverage
+                  </span>
+
+                  <span>
+                    {coverage.toFixed(0)}%
+                  </span>
+                </div>
+
+                <div className="h-2 overflow-hidden rounded-full bg-gray-200">
+                  <div
+                    className={`h-full rounded-full ${
+                      shortage > 0
+                        ? "bg-red-500"
+                        : "bg-green-500"
+                    }`}
+                    style={{
+                      width: `${coverage}%`,
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Warehouse inventory */}
+              {resource.inventory &&
+                resource.inventory.length > 0 && (
+                  <div className="mt-5 border-t border-gray-100 pt-4">
+                    <div className="mb-3 flex items-center gap-2">
+                      <Warehouse
+                        size={16}
+                        className="text-gray-500"
+                      />
+
+                      <p className="text-sm font-semibold text-gray-700">
+                        Warehouse Inventory
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      {resource.inventory.map(
+                        (warehouse) => (
+                          <div
+                            key={
+                              warehouse.warehouse_id
+                            }
+                            className="flex flex-col gap-2 rounded-lg bg-gray-50 p-3 sm:flex-row sm:items-center sm:justify-between"
+                          >
+                            <div>
+                              <p className="text-sm font-medium text-gray-800">
+                                {
+                                  warehouse.warehouse_name
+                                }
+                              </p>
+
+                              <p className="text-xs text-gray-500">
+                                {
+                                  warehouse.state_name
+                                }
+                              </p>
+                            </div>
+
+                            <div className="text-left sm:text-right">
+                              <p className="text-sm font-semibold text-gray-800">
+                                Usable:{" "}
+                                {Number(
+                                  warehouse.usable_quantity ||
+                                    0
+                                ).toLocaleString()}{" "}
+                                {resource.unit}
+                              </p>
+
+                              <p className="text-xs text-gray-500">
+                                Available:{" "}
+                                {Number(
+                                  warehouse.quantity_available ||
+                                    0
+                                ).toLocaleString()}{" "}
+                                | Reserved:{" "}
+                                {Number(
+                                  warehouse.quantity_reserved ||
+                                    0
+                                ).toLocaleString()}
+                              </p>
+                            </div>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </div>
+                )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Shortage summary */}
+      {requirements.some(
+        (resource) =>
+          Number(resource.quantity_shortage || 0) > 0
+      ) && (
+        <div className="mt-5 rounded-xl border border-orange-200 bg-orange-50 p-4">
+          <div className="flex items-start gap-3">
+            <AlertTriangle
+              size={20}
+              className="mt-0.5 text-orange-600"
+            />
+
+            <div>
+              <p className="font-semibold text-orange-800">
+                Resource shortage detected
+              </p>
+
+              <p className="mt-1 text-sm text-orange-700">
+                One or more required resources are
+                currently unavailable in sufficient
+                quantities. A resource request can be
+                created for further approval and
+                allocation.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* =========================================================
+   PREDICTION MODAL
+========================================================= */
+
+function PredictionModal({
+  prediction,
+  resourceRequirements,
+  requirementsLoading,
+  requirementsError,
+  onClose,
+  onCreateRequest,
+}) {
+  if (!prediction) return null;
+
+  const probability = Number(
+    prediction.probability || 0
+  );
+
+  const rawConfidence = Number(
+    prediction.confidence_score || 0
+  );
+
+  const confidence =
+    rawConfidence <= 1
+      ? rawConfidence * 100
+      : rawConfidence;
+
+  const hasShortage =
+    resourceRequirements &&
+    resourceRequirements.some(
+      (resource) =>
+        Number(resource.quantity_shortage || 0) > 0
+    );
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+      <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl bg-white shadow-2xl">
+        {/* Modal Header */}
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white p-6">
+          <div>
+            <div className="flex items-center gap-2">
+              <ShieldAlert className="text-red-500" />
+
+              <h2 className="text-2xl font-bold text-gray-900">
+                {prediction.disaster_name}
+              </h2>
+            </div>
+
+            <p className="mt-1 text-sm text-gray-500">
+              Prediction #{prediction.prediction_id}
+            </p>
+          </div>
+
+          <button
+            onClick={onClose}
+            className="rounded-lg p-2 text-gray-500 transition hover:bg-gray-100"
+          >
+            <X size={22} />
+          </button>
+        </div>
+
+        {/* Modal Content */}
+        <div className="space-y-6 p-6">
+          {/* Severity */}
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-gray-500">
+              Severity
+            </span>
+
+            <span
+              className={`rounded-full border px-4 py-2 text-sm font-bold ${getSeverityClass(
+                prediction.severity
+              )}`}
+            >
+              {prediction.severity}
+            </span>
+          </div>
+
+          {/* Main Statistics */}
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="rounded-xl bg-gray-50 p-5">
+              <p className="text-sm text-gray-500">
+                Probability
+              </p>
+
+              <p className="mt-2 text-3xl font-bold text-gray-900">
+                {(probability * 100).toFixed(1)}%
+              </p>
+            </div>
+
+            <div className="rounded-xl bg-gray-50 p-5">
+              <p className="text-sm text-gray-500">
+                Affected Population
+              </p>
+
+              <p className="mt-2 text-3xl font-bold text-gray-900">
+                {Number(
+                  prediction.affected_population || 0
+                ).toLocaleString()}
+              </p>
+            </div>
+
+            <div className="rounded-xl bg-gray-50 p-5">
+              <p className="text-sm text-gray-500">
+                Affected Area
+              </p>
+
+              <p className="mt-2 text-3xl font-bold text-gray-900">
+                {Number(
+                  prediction.affected_area_km2 || 0
+                ).toLocaleString()}{" "}
+                km²
+              </p>
+            </div>
+          </div>
+
+          {/* Location */}
+          <div className="rounded-xl border border-gray-200 p-5">
+            <h3 className="font-semibold text-gray-900">
+              Predicted Location
+            </h3>
+
+            <div className="mt-3 flex items-center gap-2 text-gray-600">
+              <MapPin size={18} />
+
+              <span>
+                {prediction.state_name ||
+                  "Unknown State"}
+              </span>
+            </div>
+
+            {prediction.district_name && (
+              <p className="mt-2 text-sm text-gray-500">
+                District: {prediction.district_name}
+              </p>
+            )}
+          </div>
+
+          {/* Timing */}
+          <div className="rounded-xl border border-gray-200 p-5">
+            <h3 className="font-semibold text-gray-900">
+              Expected Timeline
+            </h3>
+
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
+              <div>
+                <p className="text-xs text-gray-500">
+                  Expected Start
+                </p>
+
+                <p className="mt-1 font-medium text-gray-800">
+                  {formatDate(
+                    prediction.expected_start_time
+                  )}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-xs text-gray-500">
+                  Expected End
+                </p>
+
+                <p className="mt-1 font-medium text-gray-800">
+                  {formatDate(
+                    prediction.expected_end_time
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Model Confidence */}
+          <div className="rounded-xl border border-gray-200 p-5">
+            <div className="flex justify-between">
+              <h3 className="font-semibold text-gray-900">
+                Model Confidence
+              </h3>
+
+              <span className="font-bold text-gray-900">
+                {confidence.toFixed(0)}%
+              </span>
+            </div>
+
+            <div className="mt-3 h-3 overflow-hidden rounded-full bg-gray-200">
+              <div
+                className="h-full rounded-full bg-blue-600"
+                style={{
+                  width: `${Math.min(
+                    Math.max(confidence, 0),
+                    100
+                  )}%`,
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Resource Requirements */}
+          <ResourceRequirements
+            requirements={resourceRequirements}
+            loading={requirementsLoading}
+            error={requirementsError}
+          />
+
+          {/* Create Request */}
+          {!requirementsLoading &&
+            !requirementsError &&
+            hasShortage && (
+              <button
+                onClick={() =>
+                  onCreateRequest(
+                    prediction,
+                    resourceRequirements
+                  )
+                }
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white transition hover:bg-blue-700"
+              >
+                <Package size={19} />
+
+                Create Resource Request
+              </button>
+            )}
+
+          {/* Prediction Details */}
+          {prediction.prediction_details && (
+            <div className="rounded-xl border border-gray-200 p-5">
+              <h3 className="font-semibold text-gray-900">
+                Prediction Details
+              </h3>
+
+              <pre className="mt-3 overflow-x-auto rounded-lg bg-gray-50 p-4 text-xs text-gray-600">
+                {typeof prediction.prediction_details ===
+                "string"
+                  ? prediction.prediction_details
+                  : JSON.stringify(
+                      prediction.prediction_details,
+                      null,
+                      2
+                    )}
+              </pre>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   MAIN PREDICTIONS PAGE
+========================================================= */
+
+export default function Predictions() {
+  const [predictions, setPredictions] =
+    useState([]);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState("");
+
+  const [selectedPrediction, setSelectedPrediction] =
+    useState(null);
+
+  const [resourceRequirements, setResourceRequirements] =
+    useState([]);
+
+  const [requirementsLoading, setRequirementsLoading] =
+    useState(false);
+
+  const [requirementsError, setRequirementsError] =
+    useState("");
+
+  /* =======================================================
+     LOAD PREDICTIONS
+  ======================================================= */
+
+  const loadPredictions = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await api.get(
+        "/disasters/predictions"
+      );
+
+      console.log(
+        "FULL PREDICTIONS RESPONSE:",
+        JSON.stringify(
+          response.data,
+          null,
+          2
+        )
+      );
+
+      const responseData = response.data;
+
+      const predictionData =
+        Array.isArray(responseData.data)
+          ? responseData.data
+          : Array.isArray(
+              responseData.data?.predictions
+            )
+          ? responseData.data.predictions
+          : Array.isArray(
+              responseData.predictions
+            )
+          ? responseData.predictions
+          : [];
+
+      console.log(
+        "EXTRACTED PREDICTIONS:",
+        predictionData
+      );
+
+      setPredictions(predictionData);
+    } catch (err) {
+      console.error(
+        "Prediction loading error:",
+        err
+      );
+
+      setError(
+        err.response?.data?.message ||
+          "Unable to load disaster predictions"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /* =======================================================
+     LOAD RESOURCE REQUIREMENTS
+  ======================================================= */
+
+  const loadResourceRequirements = async (
+    predictionId
+  ) => {
+    try {
+      setRequirementsLoading(true);
+      setRequirementsError("");
+      setResourceRequirements([]);
+
+      console.log(
+        "Loading resource requirements for prediction:",
+        predictionId
+      );
+
+      const response = await api.get(
+        `/resource-requirements/prediction/${predictionId}`
+      );
+
+      console.log(
+        "RESOURCE REQUIREMENTS RESPONSE:",
+        JSON.stringify(
+          response.data,
+          null,
+          2
+        )
+      );
+
+      setResourceRequirements(
+        response.data?.data?.requirements || []
+      );
+    } catch (err) {
+      console.error(
+        "Resource requirement loading error:",
+        err
+      );
+
+      setRequirementsError(
+        err.response?.data?.message ||
+          "Unable to calculate resource requirements"
+      );
+    } finally {
+      setRequirementsLoading(false);
+    }
+  };
+
+  /* =======================================================
+     HANDLE PREDICTION CLICK
+  ======================================================= */
+
+  const handlePredictionClick = (
+    prediction
+  ) => {
+    setSelectedPrediction(prediction);
+
+    loadResourceRequirements(
+      prediction.prediction_id
+    );
+  };
+
+  /* =======================================================
+     CREATE RESOURCE REQUEST
+     
+     TEMPORARY:
+     We are only testing the button here.
+     The actual POST request will be implemented
+     in the next step.
+  ======================================================= */
+const handleCreateRequest = async (prediction, requirements) => {
+  try {
+    if (!requirements) {
+      alert("Resource requirements are not loaded yet.");
+      return;
+    }
+
+    const predictionData = requirements.prediction || {};
+
+    const predictionId =
+      prediction.prediction_id || predictionData.prediction_id;
+
+    const stateId =
+      prediction.state_id || predictionData.state_id;
+
+    if (!predictionId) {
+      alert("Prediction ID is missing.");
+      return;
+    }
+
+    if (!stateId) {
+      alert("State ID is missing.");
+      return;
+    }
+
+    const priorityMap = {
+      LOW: "LOW",
+      MEDIUM: "MEDIUM",
+      HIGH: "HIGH",
+      CRITICAL: "CRITICAL"
+    };
+
+    const priority =
+      priorityMap[prediction.severity] || "MEDIUM";
+
+    const disasterName =
+      prediction.disaster_name ||
+      predictionData.disaster_name ||
+      "Disaster";
+
+    const stateName =
+      prediction.state_name ||
+      predictionData.state_name ||
+      "affected state";
+
+    const payload = {
+      predictionId,
+      stateId,
+      priority,
+      reason: `Resource shortage for predicted ${disasterName} in ${stateName}`
+    };
+
+    console.log("=================================");
+    console.log("CREATING RESOURCE REQUEST");
+    console.log("=================================");
+    console.log(payload);
+
+    const response = await api.post(
+      "/resource-requests/from-shortage",
+      payload
+    );
+
+    console.log("Resource request response:");
+    console.log(response.data);
+
+    if (response.data.success) {
+      const requestId =
+        response.data.data?.resourceRequest?.resourceRequestId;
+
+      alert(
+        requestId
+          ? `Resource Request #${requestId} created successfully.\n\nStatus: PENDING_STATE_APPROVAL`
+          : response.data.message
+      );
+
+      // Refresh requirements after creating the request
+      await loadResourceRequirements(predictionId);
+
+    } else {
+      alert(
+        response.data.message ||
+        "Unable to create resource request."
+      );
+    }
+
+  } catch (error) {
+    console.error("=================================");
+    console.error("CREATE RESOURCE REQUEST ERROR");
+    console.error("=================================");
+    console.error(error);
+
+    const message =
+      error.response?.data?.message ||
+      "Failed to create resource request.";
+
+    alert(message);
+  }
+};
+
+  /* =======================================================
+     INITIAL LOAD
+  ======================================================= */
+
+  useEffect(() => {
+    loadPredictions();
+  }, []);
+
+  /* =======================================================
+     LOADING SCREEN
+  ======================================================= */
+
+  if (loading) {
+    return (
+      <div className="flex min-h-[70vh] items-center justify-center">
+        <div className="text-center">
+          <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
+
+          <p className="mt-4 text-gray-500">
+            Loading predictions...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  /* =======================================================
+     PAGE
+  ======================================================= */
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900">
+          Disaster Predictions
+        </h1>
+
+        <p className="mt-1 text-gray-500">
+          Monitor AI-generated disaster predictions
+          across the country.
+        </p>
+      </div>
+
+      {/* Error */}
+      {error && (
+        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
+          {error}
+        </div>
+      )}
+
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+        {/* Total */}
+        <div className="rounded-2xl bg-white p-5 shadow-sm">
+          <p className="text-sm text-gray-500">
+            Total Predictions
+          </p>
+
+          <p className="mt-2 text-3xl font-bold text-gray-900">
+            {predictions.length}
+          </p>
+        </div>
+
+        {/* Critical */}
+        <div className="rounded-2xl bg-white p-5 shadow-sm">
+          <p className="text-sm text-gray-500">
+            Critical
+          </p>
+
+          <p className="mt-2 text-3xl font-bold text-red-600">
+            {
+              predictions.filter(
+                (p) =>
+                  p.severity === "CRITICAL"
+              ).length
+            }
+          </p>
+        </div>
+
+        {/* High */}
+        <div className="rounded-2xl bg-white p-5 shadow-sm">
+          <p className="text-sm text-gray-500">
+            High Risk
+          </p>
+
+          <p className="mt-2 text-3xl font-bold text-orange-600">
+            {
+              predictions.filter(
+                (p) =>
+                  p.severity === "HIGH"
+              ).length
+            }
+          </p>
+        </div>
+
+        {/* Population */}
+        <div className="rounded-2xl bg-white p-5 shadow-sm">
+          <p className="text-sm text-gray-500">
+            Population at Risk
+          </p>
+
+          <p className="mt-2 text-3xl font-bold text-blue-600">
+            {predictions
+              .reduce(
+                (total, prediction) =>
+                  total +
+                  Number(
+                    prediction.affected_population ||
+                      0
+                  ),
+                0
+              )
+              .toLocaleString()}
+          </p>
+        </div>
+      </div>
+
+      {/* Prediction Cards */}
+      {predictions.length === 0 ? (
+        <div className="rounded-2xl bg-white p-12 text-center shadow-sm">
+          <AlertTriangle
+            size={40}
+            className="mx-auto text-gray-400"
+          />
+
+          <h3 className="mt-4 text-lg font-semibold text-gray-700">
+            No predictions available
+          </h3>
+
+          <p className="mt-1 text-sm text-gray-500">
+            No disaster predictions have been
+            generated yet.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 xl:grid-cols-3">
+          {predictions.map((prediction) => (
+            <PredictionCard
+              key={prediction.prediction_id}
+              prediction={prediction}
+              onClick={handlePredictionClick}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Prediction Detail Modal */}
+      <PredictionModal
+        prediction={selectedPrediction}
+        resourceRequirements={
+          resourceRequirements
+        }
+        requirementsLoading={
+          requirementsLoading
+        }
+        requirementsError={
+          requirementsError
+        }
+        onClose={() =>
+          setSelectedPrediction(null)
+        }
+        onCreateRequest={
+          handleCreateRequest
+        }
+      />
+    </div>
+  );
+}
+
+========== FILE: frontend\src\services\api.js ==========
+
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: "http://localhost:5000/api",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+
+      window.location.href = "/login";
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+export default api;
+
+========== FILE: backend\src\controllers\dashboardController.js ==========
+
+const {
+  getDashboardData,
+  getDashboardPredictions,
+  getDashboardStats,
+} = require("../services/dashboardService");
+
+
+const getDashboard = async (req, res) => {
+
+  try {
+
+    const data = await getDashboardData();
+
+    return res.json({
+      success: true,
+      data,
+    });
+
+  } catch (error) {
+
+    console.error(
+      "Dashboard data error:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
+};
+
+
+const getPredictions = async (req, res) => {
+
+  try {
+
+    const predictions =
+      await getDashboardPredictions();
+
+    return res.json({
+      success: true,
+      predictions,
+    });
+
+  } catch (error) {
+
+    console.error(
+      "Dashboard predictions error:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
+};
+
+
+const getStats = async (req, res) => {
+
+  try {
+
+    const stats =
+      await getDashboardStats();
+
+    return res.json({
+      success: true,
+      stats,
+    });
+
+  } catch (error) {
+
+    console.error(
+      "Dashboard stats error:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
+};
+
+
+module.exports = {
+  getDashboard,
+  getPredictions,
+  getStats,
+};
+
+========== FILE: backend\src\services\dashboardService.js ==========
+
+const pool = require("../config/database");
+
+async function getDashboardData() {
+
+  // --------------------------------------------------
+  // 1. Prediction statistics
+  // --------------------------------------------------
+
+  const [[predictionStats]] = await pool.query(`
+    SELECT
+      COUNT(*) AS total_predictions,
+
+      SUM(
+        CASE
+          WHEN severity = 'CRITICAL'
+          THEN 1
+          ELSE 0
+        END
+      ) AS critical_predictions,
+
+      SUM(
+        CASE
+          WHEN severity = 'HIGH'
+          THEN 1
+          ELSE 0
+        END
+      ) AS high_predictions,
+
+      SUM(
+        CASE
+          WHEN severity = 'MEDIUM'
+          THEN 1
+          ELSE 0
+        END
+      ) AS medium_predictions,
+
+      SUM(
+        CASE
+          WHEN severity = 'LOW'
+          THEN 1
+          ELSE 0
+        END
+      ) AS low_predictions
+
+    FROM disaster_predictions
+  `);
+
+
+  // --------------------------------------------------
+  // 2. Warehouse statistics
+  // --------------------------------------------------
+
+  const [[warehouseStats]] = await pool.query(`
+    SELECT
+      COUNT(*) AS total_warehouses
+    FROM warehouses
+  `);
+
+
+  // --------------------------------------------------
+  // 3. Pending resource requests
+  // --------------------------------------------------
+
+  const [[requestStats]] = await pool.query(`
+    SELECT
+      COUNT(*) AS pending_requests
+    FROM resource_requests
+    WHERE request_status IN (
+      'PENDING_STATE_APPROVAL',
+      'PENDING_NATIONAL_APPROVAL'
+    )
+  `);
+
+
+  // --------------------------------------------------
+  // 4. Disaster predictions
+  // --------------------------------------------------
+
+  const [predictions] = await pool.query(`
+    SELECT
+      dp.prediction_id,
+      dp.disaster_event_id,
+      dp.prediction_time,
+      dp.probability,
+      dp.severity,
+      dp.expected_start_time,
+      dp.expected_end_time,
+      dp.affected_area_km2,
+      dp.affected_population,
+      dp.confidence_score,
+
+      dt.disaster_type_id,
+      dt.disaster_name,
+
+      de.event_name,
+      de.event_status,
+
+      s.state_id,
+      s.state_name,
+
+      sl.latitude AS state_latitude,
+      sl.longitude AS state_longitude
+
+    FROM disaster_predictions dp
+
+    JOIN disaster_events de
+      ON de.disaster_event_id = dp.disaster_event_id
+
+    JOIN disaster_types dt
+      ON dt.disaster_type_id = de.disaster_type_id
+
+    JOIN states s
+      ON s.state_id = de.state_id
+
+    LEFT JOIN state_locations sl
+      ON sl.state_id = s.state_id
+
+    ORDER BY dp.prediction_time DESC
+
+    LIMIT 50
+  `);
+
+
+  // --------------------------------------------------
+  // 5. Warehouses
+  // --------------------------------------------------
+
+  const [warehouses] = await pool.query(`
+    SELECT
+      w.warehouse_id,
+      w.warehouse_name,
+      w.state_id,
+      s.state_name,
+      w.district_id,
+      w.latitude,
+      w.longitude,
+      w.address,
+
+      COALESCE(
+        SUM(wr.quantity_available - wr.quantity_reserved),
+        0
+      ) AS total_usable_inventory
+
+    FROM warehouses w
+
+    JOIN states s
+      ON s.state_id = w.state_id
+
+    LEFT JOIN warehouse_resources wr
+      ON wr.warehouse_id = w.warehouse_id
+
+    GROUP BY
+      w.warehouse_id,
+      w.warehouse_name,
+      w.state_id,
+      s.state_name,
+      w.district_id,
+      w.latitude,
+      w.longitude,
+      w.address
+
+    ORDER BY w.warehouse_id
+  `);
+
+
+  // --------------------------------------------------
+  // 6. State locations
+  // --------------------------------------------------
+
+  const [states] = await pool.query(`
+    SELECT
+      sl.state_location_id,
+      sl.state_id,
+      s.state_name,
+      sl.latitude,
+      sl.longitude
+
+    FROM state_locations sl
+
+    JOIN states s
+      ON s.state_id = sl.state_id
+
+    ORDER BY s.state_name
+  `);
+
+
+  return {
+    statistics: {
+      predictions: Number(
+        predictionStats.total_predictions || 0
+      ),
+
+      critical: Number(
+        predictionStats.critical_predictions || 0
+      ),
+
+      high: Number(
+        predictionStats.high_predictions || 0
+      ),
+
+      medium: Number(
+        predictionStats.medium_predictions || 0
+      ),
+
+      low: Number(
+        predictionStats.low_predictions || 0
+      ),
+
+      warehouses: Number(
+        warehouseStats.total_warehouses || 0
+      ),
+
+      pendingRequests: Number(
+        requestStats.pending_requests || 0
+      ),
+    },
+
+    predictions,
+
+    warehouses,
+
+    states,
+  };
+}
+
+
+// --------------------------------------------------
+// Existing functions
+// --------------------------------------------------
+
+async function getDashboardPredictions() {
+
+  const [rows] = await pool.query(`
+    SELECT
+      dp.prediction_id,
+      dp.disaster_event_id,
+      dp.prediction_time,
+      dp.probability,
+      dp.severity,
+      dp.expected_start_time,
+      dp.expected_end_time,
+      dp.affected_area_km2,
+      dp.affected_population,
+      dp.confidence_score,
+
+      dt.disaster_name,
+
+      s.state_id,
+      s.state_name,
+
+      de.event_name,
+      de.event_status
+
+    FROM disaster_predictions dp
+
+    JOIN disaster_events de
+      ON de.disaster_event_id = dp.disaster_event_id
+
+    JOIN disaster_types dt
+      ON dt.disaster_type_id = de.disaster_type_id
+
+    JOIN states s
+      ON s.state_id = de.state_id
+
+    ORDER BY dp.prediction_time DESC
+
+    LIMIT 20
+  `);
+
+  return rows;
+}
+
+
+async function getDashboardStats() {
+
+  const [[predictionStats]] = await pool.query(`
+    SELECT
+      COUNT(*) AS total_predictions,
+
+      SUM(
+        CASE
+          WHEN severity = 'CRITICAL'
+          THEN 1
+          ELSE 0
+        END
+      ) AS critical_predictions,
+
+      SUM(
+        CASE
+          WHEN severity = 'HIGH'
+          THEN 1
+          ELSE 0
+        END
+      ) AS high_predictions
+
+    FROM disaster_predictions
+  `);
+
+
+  const [[warehouseStats]] = await pool.query(`
+    SELECT COUNT(*) AS total_warehouses
+    FROM warehouses
+  `);
+
+
+  const [[requestStats]] = await pool.query(`
+    SELECT COUNT(*) AS pending_requests
+    FROM resource_requests
+    WHERE request_status IN (
+      'PENDING_STATE_APPROVAL',
+      'PENDING_NATIONAL_APPROVAL'
+    )
+  `);
+
+
+  return {
+    predictions: predictionStats,
+    warehouses: warehouseStats,
+    requests: requestStats,
+  };
+}
+
+
+module.exports = {
+  getDashboardData,
+  getDashboardPredictions,
+  getDashboardStats,
+};
+
+========== FILE: backend\src\controllers\disasterController.js ==========
+
+const pool = require("../config/database");
+
+const getDisasterTypes = async (req, res) => {
+    try {
+        const [rows] = await pool.query(`
+            SELECT
+                disaster_type_id,
+                disaster_name,
+                description
+            FROM disaster_types
+            ORDER BY disaster_name
+        `);
+
+        res.json({
+            success: true,
+            data: rows
+        });
+    } catch (error) {
+        console.error("Error fetching disaster types:", error);
+
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch disaster types"
+        });
+    }
+};
+
+module.exports = {
+    getDisasterTypes
+};
+
+========== FILE: backend\src\routes\disasterRoutes.js ==========
+
+const express = require("express");
+
+const {
+    getDisasterTypes
+} = require("../controllers/disasterController");
+
+const router = express.Router();
+
+router.get("/types", getDisasterTypes);
+
+module.exports = router;
+
+========== FILE: backend\src\middleware\authMiddleware.js ==========
+
+const jwt = require("jsonwebtoken");
+
+const authenticate = (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+      return res.status(401).json({
+        success: false,
+        message: "Authorization token is required",
+      });
+    }
+
+    const parts = authHeader.split(" ");
+
+    if (parts.length !== 2 || parts[0] !== "Bearer") {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid authorization format",
+      });
+    }
+
+    const token = parts[1];
+
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
+
+    req.user = decoded;
+
+    next();
+
+  } catch (error) {
+    console.error("Authentication error:", error.message);
+
+    return res.status(401).json({
+      success: false,
+      message: "Invalid or expired token",
+    });
+  }
+};
+
+module.exports = {
+  authenticate,
+};
+
+========== FILE: database\schema.sql ==========
+
+CREATE DATABASE IF NOT EXISTS disaster_management
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
+USE disaster_management;
+
+-- =========================================================
+-- 1. LOCATION / GOVERNMENT HIERARCHY
+-- =========================================================
+
+CREATE TABLE countries (
+    country_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    country_name VARCHAR(100) NOT NULL,
+    country_code CHAR(2) NOT NULL UNIQUE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE states (
+    state_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    country_id BIGINT UNSIGNED NOT NULL,
+    state_name VARCHAR(100) NOT NULL,
+    state_code VARCHAR(20) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT uq_state_country
+        UNIQUE (country_id, state_name),
+
+    CONSTRAINT uq_state_code
+        UNIQUE (country_id, state_code),
+
+    CONSTRAINT fk_states_country
+        FOREIGN KEY (country_id)
+        REFERENCES countries(country_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+);
+
+CREATE TABLE districts (
+    district_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    state_id BIGINT UNSIGNED NOT NULL,
+    district_name VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT uq_district_state
+        UNIQUE (state_id, district_name),
+
+    CONSTRAINT fk_districts_state
+        FOREIGN KEY (state_id)
+        REFERENCES states(state_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+);
+
+-- =========================================================
+-- 2. USER / ROLE MANAGEMENT
+-- =========================================================
+
+CREATE TABLE roles (
+    role_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    role_name VARCHAR(50) NOT NULL UNIQUE,
+    description VARCHAR(255),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE users (
+    user_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    role_id BIGINT UNSIGNED NOT NULL,
+    state_id BIGINT UNSIGNED NULL,
+    district_id BIGINT UNSIGNED NULL,
+
+    full_name VARCHAR(150) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_users_role
+        FOREIGN KEY (role_id)
+        REFERENCES roles(role_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_users_state
+        FOREIGN KEY (state_id)
+        REFERENCES states(state_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_users_district
+        FOREIGN KEY (district_id)
+        REFERENCES districts(district_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+);
+
+-- =========================================================
+-- 3. DEPARTMENTS
+-- =========================================================
+
+CREATE TABLE departments (
+    department_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    state_id BIGINT UNSIGNED NOT NULL,
+    department_name VARCHAR(150) NOT NULL,
+    department_code VARCHAR(50) NOT NULL,
+    description TEXT,
+
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT uq_department_state
+        UNIQUE (state_id, department_name),
+
+    CONSTRAINT uq_department_code
+        UNIQUE (state_id, department_code),
+
+    CONSTRAINT fk_departments_state
+        FOREIGN KEY (state_id)
+        REFERENCES states(state_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+);
+
+-- =========================================================
+-- 4. DISASTER TYPES
+-- =========================================================
+
+CREATE TABLE disaster_types (
+    disaster_type_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    disaster_name VARCHAR(100) NOT NULL UNIQUE,
+    description TEXT,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =========================================================
+-- 5. RESOURCE CATEGORIES / RESOURCES
+-- =========================================================
+
+CREATE TABLE resource_categories (
+    resource_category_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    category_name VARCHAR(100) NOT NULL UNIQUE,
+    description TEXT
+);
+
+CREATE TABLE resources (
+    resource_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    resource_category_id BIGINT UNSIGNED NOT NULL,
+    resource_name VARCHAR(150) NOT NULL UNIQUE,
+    unit VARCHAR(50) NOT NULL,
+    description TEXT,
+
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_resources_category
+        FOREIGN KEY (resource_category_id)
+        REFERENCES resource_categories(resource_category_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+);
+
+-- =========================================================
+-- 6. WAREHOUSES
+-- =========================================================
+
+CREATE TABLE warehouses (
+    warehouse_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    state_id BIGINT UNSIGNED NOT NULL,
+    district_id BIGINT UNSIGNED NULL,
+    department_id BIGINT UNSIGNED NULL,
+
+    warehouse_name VARCHAR(150) NOT NULL,
+
+    latitude DECIMAL(10,7) NOT NULL,
+    longitude DECIMAL(10,7) NOT NULL,
+
+    address TEXT,
+
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_warehouses_state
+        FOREIGN KEY (state_id)
+        REFERENCES states(state_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_warehouses_district
+        FOREIGN KEY (district_id)
+        REFERENCES districts(district_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_warehouses_department
+        FOREIGN KEY (department_id)
+        REFERENCES departments(department_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+);
+
+-- =========================================================
+-- 7. WAREHOUSE INVENTORY
+-- =========================================================
+
+CREATE TABLE warehouse_resources (
+    warehouse_resource_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    warehouse_id BIGINT UNSIGNED NOT NULL,
+    resource_id BIGINT UNSIGNED NOT NULL,
+
+    quantity_available DECIMAL(15,3) NOT NULL DEFAULT 0,
+    quantity_reserved DECIMAL(15,3) NOT NULL DEFAULT 0,
+
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT uq_warehouse_resource
+        UNIQUE (warehouse_id, resource_id),
+
+    CONSTRAINT chk_quantity_available
+        CHECK (quantity_available >= 0),
+
+    CONSTRAINT chk_quantity_reserved
+        CHECK (quantity_reserved >= 0),
+
+    CONSTRAINT fk_warehouse_resources_warehouse
+        FOREIGN KEY (warehouse_id)
+        REFERENCES warehouses(warehouse_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_warehouse_resources_resource
+        FOREIGN KEY (resource_id)
+        REFERENCES resources(resource_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+);
+
+-- =========================================================
+-- 8. SATELLITE DATA SOURCES
+-- =========================================================
+
+CREATE TABLE satellite_sources (
+    satellite_source_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    source_name VARCHAR(150) NOT NULL UNIQUE,
+    provider_name VARCHAR(150),
+    api_name VARCHAR(150),
+    description TEXT,
+
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =========================================================
+-- 9. SATELLITE OBSERVATIONS
+-- =========================================================
+
+CREATE TABLE satellite_observations (
+    observation_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    satellite_source_id BIGINT UNSIGNED NOT NULL,
+
+    observation_time DATETIME NOT NULL,
+
+    min_latitude DECIMAL(10,7) NOT NULL,
+    max_latitude DECIMAL(10,7) NOT NULL,
+    min_longitude DECIMAL(10,7) NOT NULL,
+    max_longitude DECIMAL(10,7) NOT NULL,
+
+    image_url TEXT,
+    data_url TEXT,
+
+    cloud_coverage DECIMAL(5,2) NULL,
+
+    metadata JSON NULL,
+
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_satellite_observations_source
+        FOREIGN KEY (satellite_source_id)
+        REFERENCES satellite_sources(satellite_source_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+);
+
+-- =========================================================
+-- 10. WEATHER OBSERVATIONS
+-- =========================================================
+
+CREATE TABLE weather_observations (
+    weather_observation_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    district_id BIGINT UNSIGNED NULL,
+
+    observation_time DATETIME NOT NULL,
+
+    latitude DECIMAL(10,7),
+    longitude DECIMAL(10,7),
+
+    temperature DECIMAL(6,2),
+    rainfall DECIMAL(10,2),
+    humidity DECIMAL(6,2),
+    wind_speed DECIMAL(8,2),
+    wind_direction DECIMAL(6,2),
+    pressure DECIMAL(8,2),
+
+    provider_name VARCHAR(150),
+
+    metadata JSON NULL,
+
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_weather_district
+        FOREIGN KEY (district_id)
+        REFERENCES districts(district_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
+);
+
+-- =========================================================
+-- 11. DISASTER EVENTS
+-- =========================================================
+
+CREATE TABLE disaster_events (
+    disaster_event_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    disaster_type_id BIGINT UNSIGNED NOT NULL,
+    state_id BIGINT UNSIGNED NOT NULL,
+    district_id BIGINT UNSIGNED NULL,
+
+    event_name VARCHAR(200) NOT NULL,
+
+    event_status ENUM(
+        'PREDICTED',
+        'WARNING',
+        'ACTIVE',
+        'RESOLVED',
+        'CANCELLED'
+    ) NOT NULL DEFAULT 'PREDICTED',
+
+    actual_start_time DATETIME NULL,
+    actual_end_time DATETIME NULL,
+
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_disaster_events_type
+        FOREIGN KEY (disaster_type_id)
+        REFERENCES disaster_types(disaster_type_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_disaster_events_state
+        FOREIGN KEY (state_id)
+        REFERENCES states(state_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_disaster_events_district
+        FOREIGN KEY (district_id)
+        REFERENCES districts(district_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+);
+
+-- =========================================================
+-- 12. AI / ML MODELS
+-- =========================================================
+
+CREATE TABLE prediction_models (
+    prediction_model_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    model_name VARCHAR(150) NOT NULL,
+    model_version VARCHAR(50) NOT NULL,
+
+    model_type VARCHAR(100),
+    description TEXT,
+
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT uq_model_version
+        UNIQUE (model_name, model_version)
+);
+
+-- =========================================================
+-- 13. DISASTER PREDICTIONS
+-- =========================================================
+
+CREATE TABLE disaster_predictions (
+    prediction_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    disaster_event_id BIGINT UNSIGNED NOT NULL,
+    prediction_model_id BIGINT UNSIGNED NOT NULL,
+    satellite_observation_id BIGINT UNSIGNED NULL,
+    weather_observation_id BIGINT UNSIGNED NULL,
+
+    prediction_time DATETIME NOT NULL,
+
+    probability DECIMAL(5,2) NOT NULL,
+
+    severity ENUM(
+        'LOW',
+        'MEDIUM',
+        'HIGH',
+        'CRITICAL'
+    ) NOT NULL,
+
+    expected_start_time DATETIME NULL,
+    expected_end_time DATETIME NULL,
+
+    affected_area_km2 DECIMAL(15,3) NULL,
+    affected_population BIGINT UNSIGNED NULL,
+
+    confidence_score DECIMAL(5,2) NULL,
+
+    prediction_details JSON NULL,
+
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT chk_prediction_probability
+        CHECK (probability >= 0 AND probability <= 100),
+
+    CONSTRAINT chk_prediction_confidence
+        CHECK (
+            confidence_score IS NULL
+            OR (confidence_score >= 0 AND confidence_score <= 100)
+        ),
+
+    CONSTRAINT fk_predictions_event
+        FOREIGN KEY (disaster_event_id)
+        REFERENCES disaster_events(disaster_event_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_predictions_model
+        FOREIGN KEY (prediction_model_id)
+        REFERENCES prediction_models(prediction_model_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_predictions_satellite
+        FOREIGN KEY (satellite_observation_id)
+        REFERENCES satellite_observations(observation_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
+
+    CONSTRAINT fk_predictions_weather
+        FOREIGN KEY (weather_observation_id)
+        REFERENCES weather_observations(weather_observation_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
+);
+
+-- =========================================================
+-- 14. PREDICTION AREAS
+-- =========================================================
+
+CREATE TABLE prediction_areas (
+    prediction_area_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    prediction_id BIGINT UNSIGNED NOT NULL,
+    district_id BIGINT UNSIGNED NOT NULL,
+
+    risk_level ENUM(
+        'LOW',
+        'MEDIUM',
+        'HIGH',
+        'CRITICAL'
+    ) NOT NULL,
+
+    population_at_risk BIGINT UNSIGNED NULL,
+
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT uq_prediction_district
+        UNIQUE (prediction_id, district_id),
+
+    CONSTRAINT fk_prediction_areas_prediction
+        FOREIGN KEY (prediction_id)
+        REFERENCES disaster_predictions(prediction_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_prediction_areas_district
+        FOREIGN KEY (district_id)
+        REFERENCES districts(district_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+);
+
+-- =========================================================
+-- 15. RESOURCE REQUIREMENT RULES
+-- =========================================================
+
+CREATE TABLE resource_requirement_rules (
+    rule_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    disaster_type_id BIGINT UNSIGNED NOT NULL,
+    resource_id BIGINT UNSIGNED NOT NULL,
+
+    severity ENUM(
+        'LOW',
+        'MEDIUM',
+        'HIGH',
+        'CRITICAL'
+    ) NOT NULL,
+
+    quantity_per_person DECIMAL(15,5) NULL,
+    fixed_quantity DECIMAL(15,5) NULL,
+
+    description TEXT,
+
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT uq_requirement_rule
+        UNIQUE (
+            disaster_type_id,
+            resource_id,
+            severity
+        ),
+
+    CONSTRAINT fk_rules_disaster_type
+        FOREIGN KEY (disaster_type_id)
+        REFERENCES disaster_types(disaster_type_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_rules_resource
+        FOREIGN KEY (resource_id)
+        REFERENCES resources(resource_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+);
+
+-- =========================================================
+-- 16. PREDICTED RESOURCE REQUIREMENTS
+-- =========================================================
+
+CREATE TABLE predicted_resource_requirements (
+    predicted_requirement_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    prediction_id BIGINT UNSIGNED NOT NULL,
+    resource_id BIGINT UNSIGNED NOT NULL,
+
+    quantity_required DECIMAL(15,3) NOT NULL,
+    quantity_available DECIMAL(15,3) NOT NULL DEFAULT 0,
+    quantity_shortage DECIMAL(15,3) NOT NULL DEFAULT 0,
+
+    calculated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT uq_prediction_resource
+        UNIQUE (prediction_id, resource_id),
+
+    CONSTRAINT chk_requirement_quantity
+        CHECK (quantity_required >= 0),
+
+    CONSTRAINT chk_requirement_available
+        CHECK (quantity_available >= 0),
+
+    CONSTRAINT chk_requirement_shortage
+        CHECK (quantity_shortage >= 0),
+
+    CONSTRAINT fk_predicted_requirements_prediction
+        FOREIGN KEY (prediction_id)
+        REFERENCES disaster_predictions(prediction_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_predicted_requirements_resource
+        FOREIGN KEY (resource_id)
+        REFERENCES resources(resource_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+);
+
+-- =========================================================
+-- 17. RESOURCE REQUESTS
+-- =========================================================
+
+CREATE TABLE resource_requests (
+    resource_request_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    prediction_id BIGINT UNSIGNED NOT NULL,
+    requested_by BIGINT UNSIGNED NOT NULL,
+
+    state_id BIGINT UNSIGNED NOT NULL,
+
+    request_status ENUM(
+        'PENDING_STATE_APPROVAL',
+        'STATE_APPROVED',
+        'STATE_REJECTED',
+        'PENDING_NATIONAL_APPROVAL',
+        'NATIONAL_APPROVED',
+        'NATIONAL_REJECTED',
+        'ALLOCATED',
+        'COMPLETED',
+        'CANCELLED'
+    ) NOT NULL DEFAULT 'PENDING_STATE_APPROVAL',
+
+    priority ENUM(
+        'LOW',
+        'MEDIUM',
+        'HIGH',
+        'CRITICAL'
+    ) NOT NULL DEFAULT 'MEDIUM',
+
+    reason TEXT,
+
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_requests_prediction
+        FOREIGN KEY (prediction_id)
+        REFERENCES disaster_predictions(prediction_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_requests_user
+        FOREIGN KEY (requested_by)
+        REFERENCES users(user_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_requests_state
+        FOREIGN KEY (state_id)
+        REFERENCES states(state_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+);
+
+-- =========================================================
+-- 18. RESOURCE REQUEST ITEMS
+-- =========================================================
+
+CREATE TABLE resource_request_items (
+    request_item_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    resource_request_id BIGINT UNSIGNED NOT NULL,
+    resource_id BIGINT UNSIGNED NOT NULL,
+
+    quantity_requested DECIMAL(15,3) NOT NULL,
+    quantity_approved DECIMAL(15,3) NOT NULL DEFAULT 0,
+
+    CONSTRAINT uq_request_resource
+        UNIQUE (resource_request_id, resource_id),
+
+    CONSTRAINT chk_requested_quantity
+        CHECK (quantity_requested > 0),
+
+    CONSTRAINT chk_approved_quantity
+        CHECK (quantity_approved >= 0),
+
+    CONSTRAINT fk_request_items_request
+        FOREIGN KEY (resource_request_id)
+        REFERENCES resource_requests(resource_request_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_request_items_resource
+        FOREIGN KEY (resource_id)
+        REFERENCES resources(resource_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+);
+
+-- =========================================================
+-- 19. APPROVAL ACTIONS
+-- =========================================================
+
+CREATE TABLE approval_actions (
+    approval_action_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    resource_request_id BIGINT UNSIGNED NOT NULL,
+    acted_by BIGINT UNSIGNED NOT NULL,
+
+    approval_level ENUM(
+        'STATE',
+        'NATIONAL'
+    ) NOT NULL,
+
+    action ENUM(
+        'APPROVED',
+        'REJECTED'
+    ) NOT NULL,
+
+    comments TEXT,
+
+    acted_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_approval_request
+        FOREIGN KEY (resource_request_id)
+        REFERENCES resource_requests(resource_request_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_approval_user
+        FOREIGN KEY (acted_by)
+        REFERENCES users(user_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+);
+
+-- =========================================================
+-- 20. QUANTUM OPTIMIZATION RUNS
+-- =========================================================
+
+CREATE TABLE optimization_runs (
+    optimization_run_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    resource_request_id BIGINT UNSIGNED NOT NULL,
+
+    algorithm_name VARCHAR(150) NOT NULL,
+    algorithm_version VARCHAR(50),
+
+    status ENUM(
+        'PENDING',
+        'RUNNING',
+        'COMPLETED',
+        'FAILED'
+    ) NOT NULL DEFAULT 'PENDING',
+
+    objective_value DECIMAL(20,6) NULL,
+
+    input_data JSON NULL,
+    output_data JSON NULL,
+
+    started_at DATETIME NULL,
+    completed_at DATETIME NULL,
+
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_optimization_request
+        FOREIGN KEY (resource_request_id)
+        REFERENCES resource_requests(resource_request_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+);
+
+-- =========================================================
+-- 21. RESOURCE ALLOCATIONS
+-- =========================================================
+
+CREATE TABLE resource_allocations (
+    allocation_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    resource_request_id BIGINT UNSIGNED NOT NULL,
+    optimization_run_id BIGINT UNSIGNED NULL,
+
+    allocated_by BIGINT UNSIGNED NOT NULL,
+
+    allocation_status ENUM(
+        'PLANNED',
+        'APPROVED',
+        'DISPATCHED',
+        'IN_TRANSIT',
+        'DELIVERED',
+        'CANCELLED'
+    ) NOT NULL DEFAULT 'PLANNED',
+
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_allocations_request
+        FOREIGN KEY (resource_request_id)
+        REFERENCES resource_requests(resource_request_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_allocations_optimization
+        FOREIGN KEY (optimization_run_id)
+        REFERENCES optimization_runs(optimization_run_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
+
+    CONSTRAINT fk_allocations_user
+        FOREIGN KEY (allocated_by)
+        REFERENCES users(user_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+);
+
+-- =========================================================
+-- 22. RESOURCE ALLOCATION ITEMS
+-- =========================================================
+
+CREATE TABLE resource_allocation_items (
+    allocation_item_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    allocation_id BIGINT UNSIGNED NOT NULL,
+    resource_id BIGINT UNSIGNED NOT NULL,
+    warehouse_id BIGINT UNSIGNED NOT NULL,
+
+    quantity_allocated DECIMAL(15,3) NOT NULL,
+
+    CONSTRAINT uq_allocation_resource_warehouse
+        UNIQUE (
+            allocation_id,
+            resource_id,
+            warehouse_id
+        ),
+
+    CONSTRAINT chk_allocated_quantity
+        CHECK (quantity_allocated > 0),
+
+    CONSTRAINT fk_allocation_items_allocation
+        FOREIGN KEY (allocation_id)
+        REFERENCES resource_allocations(allocation_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_allocation_items_resource
+        FOREIGN KEY (resource_id)
+        REFERENCES resources(resource_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_allocation_items_warehouse
+        FOREIGN KEY (warehouse_id)
+        REFERENCES warehouses(warehouse_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+);
+
+-- =========================================================
+-- 23. RESOURCE MOVEMENTS
+-- =========================================================
+
+CREATE TABLE resource_movements (
+    movement_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    allocation_id BIGINT UNSIGNED NOT NULL,
+
+    from_warehouse_id BIGINT UNSIGNED NOT NULL,
+    to_state_id BIGINT UNSIGNED NOT NULL,
+    to_district_id BIGINT UNSIGNED NULL,
+
+    resource_id BIGINT UNSIGNED NOT NULL,
+
+    quantity DECIMAL(15,3) NOT NULL,
+
+    movement_status ENUM(
+        'PLANNED',
+        'DISPATCHED',
+        'IN_TRANSIT',
+        'DELIVERED',
+        'CANCELLED'
+    ) NOT NULL DEFAULT 'PLANNED',
+
+    dispatched_at DATETIME NULL,
+    delivered_at DATETIME NULL,
+
+    tracking_reference VARCHAR(150) NULL,
+
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_movements_allocation
+        FOREIGN KEY (allocation_id)
+        REFERENCES resource_allocations(allocation_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_movements_warehouse
+        FOREIGN KEY (from_warehouse_id)
+        REFERENCES warehouses(warehouse_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_movements_state
+        FOREIGN KEY (to_state_id)
+        REFERENCES states(state_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_movements_district
+        FOREIGN KEY (to_district_id)
+        REFERENCES districts(district_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_movements_resource
+        FOREIGN KEY (resource_id)
+        REFERENCES resources(resource_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+
+    CONSTRAINT chk_movement_quantity
+        CHECK (quantity > 0)
+);
+
+-- =========================================================
+-- 24. RESOURCE RECEIPTS
+-- =========================================================
+
+CREATE TABLE resource_receipts (
+    receipt_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    movement_id BIGINT UNSIGNED NOT NULL,
+    received_by BIGINT UNSIGNED NOT NULL,
+
+    quantity_received DECIMAL(15,3) NOT NULL,
+
+    received_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    remarks TEXT,
+
+    CONSTRAINT fk_receipts_movement
+        FOREIGN KEY (movement_id)
+        REFERENCES resource_movements(movement_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_receipts_user
+        FOREIGN KEY (received_by)
+        REFERENCES users(user_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+
+    CONSTRAINT chk_received_quantity
+        CHECK (quantity_received > 0)
+);
+
+-- =========================================================
+-- 25. BLOCKCHAIN TRANSACTIONS
+-- =========================================================
+
+CREATE TABLE blockchain_transactions (
+    blockchain_transaction_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    entity_type VARCHAR(100) NOT NULL,
+    entity_id BIGINT UNSIGNED NOT NULL,
+
+    transaction_hash VARCHAR(255) NOT NULL UNIQUE,
+
+    blockchain_network VARCHAR(100) NOT NULL,
+    block_number BIGINT UNSIGNED NULL,
+
+    transaction_status ENUM(
+        'PENDING',
+        'CONFIRMED',
+        'FAILED'
+    ) NOT NULL DEFAULT 'PENDING',
+
+    recorded_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =========================================================
+-- 26. NOTIFICATIONS
+-- =========================================================
+
+CREATE TABLE notifications (
+    notification_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    user_id BIGINT UNSIGNED NOT NULL,
+
+    notification_type VARCHAR(100) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+
+    related_entity_type VARCHAR(100),
+    related_entity_id BIGINT UNSIGNED,
+
+    is_read BOOLEAN NOT NULL DEFAULT FALSE,
+
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_notifications_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(user_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
+-- =========================================================
+-- 27. AUDIT LOGS
+-- =========================================================
+
+CREATE TABLE audit_logs (
+    audit_log_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    user_id BIGINT UNSIGNED NULL,
+
+    action VARCHAR(100) NOT NULL,
+    entity_type VARCHAR(100) NOT NULL,
+    entity_id BIGINT UNSIGNED NULL,
+
+    old_data JSON NULL,
+    new_data JSON NULL,
+
+    ip_address VARCHAR(45),
+    user_agent TEXT,
+
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_audit_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(user_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
+);
+
+CREATE TABLE state_locations (
+    state_location_id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    state_id BIGINT UNSIGNED NOT NULL,
+    latitude DECIMAL(10,7) NOT NULL,
+    longitude DECIMAL(10,7) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_state_locations_state
+        FOREIGN KEY (state_id)
+        REFERENCES states(state_id),
+
+    CONSTRAINT uq_state_location
+        UNIQUE (state_id)
+);
+
+-- =========================================================
+-- INDEXES
+-- =========================================================
+
+CREATE INDEX idx_satellite_observation_time
+    ON satellite_observations(observation_time);
+
+CREATE INDEX idx_weather_observation_time
+    ON weather_observations(observation_time);
+
+CREATE INDEX idx_disaster_event_state
+    ON disaster_events(state_id);
+
+CREATE INDEX idx_disaster_event_status
+    ON disaster_events(event_status);
+
+CREATE INDEX idx_prediction_event
+    ON disaster_predictions(disaster_event_id);
+
+CREATE INDEX idx_prediction_time
+    ON disaster_predictions(prediction_time);
+
+CREATE INDEX idx_request_status
+    ON resource_requests(request_status);
+
+CREATE INDEX idx_request_state
+    ON resource_requests(state_id);
+
+CREATE INDEX idx_movements_status
+    ON resource_movements(movement_status);
+
+CREATE INDEX idx_notifications_user_read
+    ON notifications(user_id, is_read);
+
+CREATE INDEX idx_audit_entity
+    ON audit_logs(entity_type, entity_id);
+    
+    
+    
+DESCRIBE satellite_observations;
+
+SELECT * FROM satellite_sources;
+
+SELECT
+    observation_id,
+    satellite_source_id,
+    observation_time,
+    min_latitude,
+    max_latitude,
+    min_longitude,
+    max_longitude,
+    image_url,
+    cloud_coverage,
+    metadata,
+    created_at
+FROM satellite_observations
+ORDER BY observation_id DESC
+LIMIT 5;
+
+INSERT INTO users (
+    role_id,
+    state_id,
+    district_id,
+    full_name,
+    email,
+    password_hash
+)
+SELECT
+    role_id,
+    1,
+    NULL,
+    'Kerala State Disaster Management Head',
+    'KeralaState.head@disaster.local',
+    '$2b$10$kyXXB3.k3VTOjZGeWKUXzOb89/gB0ArN/TSArkjI1wxC98LU2k.bC'
+FROM roles
+WHERE role_name = 'STATE_HEAD';
+
+delete from users where role_id = 2;
+
+Alter table satellite_observations rename column observation_time to observationDateTime;
+
+DESCRIBE weather_observations;
+
+
+UPDATE users
+SET password_hash = '$2b$10$bFtbgv0vmPEnwqGplL2tgekqRxLnpfBOIFRrRwh7vV0pgZJkS0Ga6'
+WHERE email = 'national.head@disaster.local';
+
+USE disaster_management;
+
+INSERT INTO disaster_events
+(
+    disaster_type_id,
+    state_id,
+    district_id,
+    event_name,
+    event_status
+)
+VALUES
+(
+    1,
+    1,
+    NULL,
+    'Test Kerala Flood - Resource Engine',
+    'PREDICTED'
+);
+
+SELECT *
+FROM disaster_events
+ORDER BY disaster_event_id DESC
+LIMIT 1;
+
+
+INSERT INTO disaster_predictions
+(
+    disaster_event_id,
+    prediction_model_id,
+    satellite_observation_id,
+    weather_observation_id,
+    prediction_time,
+    probability,
+    severity,
+    expected_start_time,
+    expected_end_time,
+    affected_area_km2,
+    affected_population,
+    confidence_score,
+    prediction_details
+)
+VALUES
+(
+    2,
+    1,
+    1,
+    1,
+    NOW(),
+    0.87,
+    'HIGH',
+    DATE_ADD(NOW(), INTERVAL 6 HOUR),
+    DATE_ADD(NOW(), INTERVAL 30 HOUR),
+    250.000,
+    25000,
+    0.82,
+    JSON_OBJECT(
+        'test_prediction', true,
+        'source', 'manual_test',
+        'disaster', 'FLOOD',
+        'note', 'Controlled test for resource requirement engine'
+    )
+);
+
+
+SELECT
+    prediction_id,
+    disaster_event_id,
+    prediction_model_id,
+    satellite_observation_id,
+    weather_observation_id,
+    probability,
+    severity,
+    affected_population,
+    confidence_score
+FROM disaster_predictions
+ORDER BY prediction_id DESC
+LIMIT 1;
+
+
+SELECT
+    pr.predicted_requirement_id,
+    pr.prediction_id,
+    pr.resource_id,
+    r.resource_name,
+    r.unit,
+    pr.quantity_required,
+    pr.quantity_available,
+    pr.quantity_shortage,
+    pr.calculated_at
+FROM predicted_resource_requirements pr
+JOIN resources r
+    ON r.resource_id = pr.resource_id
+WHERE pr.prediction_id = 1;
+
+
+INSERT INTO disaster_events
+(
+    disaster_type_id,
+    state_id,
+    district_id,
+    event_name,
+    event_status
+)
+VALUES
+(
+    1,
+    1,
+    NULL,
+    'Test Kerala Flood - Shortage Scenario',
+    'PREDICTED'
+);
+
+
+SELECT *
+FROM disaster_events
+ORDER BY disaster_event_id DESC
+LIMIT 1;
+
+
+INSERT INTO disaster_predictions
+(
+    disaster_event_id,
+    prediction_model_id,
+    satellite_observation_id,
+    weather_observation_id,
+    prediction_time,
+    probability,
+    severity,
+    expected_start_time,
+    expected_end_time,
+    affected_area_km2,
+    affected_population,
+    confidence_score,
+    prediction_details
+)
+VALUES
+(
+    3,
+    1,
+    1,
+    1,
+    NOW(),
+    0.93,
+    'HIGH',
+    DATE_ADD(NOW(), INTERVAL 4 HOUR),
+    DATE_ADD(NOW(), INTERVAL 36 HOUR),
+    750.000,
+    200000,
+    0.91,
+    JSON_OBJECT(
+        'test_prediction', true,
+        'scenario', 'shortage_test',
+        'source', 'manual_test',
+        'disaster', 'FLOOD',
+        'note', 'Controlled shortage scenario for resource request workflow'
+    )
+);
+
+
+SELECT
+    prediction_id,
+    disaster_event_id,
+    probability,
+    severity,
+    affected_population,
+    confidence_score
+FROM disaster_predictions
+ORDER BY prediction_id DESC
+LIMIT 1;
+
+
+SELECT
+    pr.predicted_requirement_id,
+    pr.prediction_id,
+    r.resource_name,
+    r.unit,
+    pr.quantity_required,
+    pr.quantity_available,
+    pr.quantity_shortage
+FROM predicted_resource_requirements pr
+JOIN resources r
+    ON r.resource_id = pr.resource_id
+WHERE pr.prediction_id = 3;
+
+
+SELECT
+    user_id,
+    email,
+    role_id,
+    state_id
+FROM users
+ORDER BY user_id;
+
+SELECT
+    u.user_id,
+    u.email,
+    u.role_id,
+    r.role_name,
+    u.state_id
+FROM users u
+JOIN roles r
+    ON r.role_id = u.role_id
+ORDER BY u.user_id;
+
+
+SELECT
+    prediction_id,
+    severity,
+    affected_population
+FROM disaster_predictions
+ORDER BY prediction_id DESC
+LIMIT 1;
+
+
+SELECT
+    ri.request_item_id,
+    ri.resource_request_id,
+    r.resource_name,
+    r.unit,
+    ri.quantity_requested,
+    ri.quantity_approved
+FROM resource_request_items ri
+JOIN resources r
+    ON r.resource_id = ri.resource_id
+ORDER BY ri.request_item_id DESC;
+
+
+SELECT
+    user_id,
+    email,
+    role_id,
+    state_id
+FROM users;
+
+
+DESCRIBE disaster_types;
+
+DESCRIBE states;
+
+
+DESCRIBE approval_actions;
+
+
+SELECT
+    resource_request_id,
+    prediction_id,
+    requested_by,
+    state_id,
+    request_status,
+    priority,
+    reason
+FROM resource_requests
+WHERE resource_request_id = 1;
+
+SELECT
+    approval_action_id,
+    resource_request_id,
+    acted_by,
+    approval_level,
+    action,
+    comments,
+    acted_at
+FROM approval_actions
+WHERE resource_request_id = 1
+ORDER BY approval_action_id;
+
+
+SELECT
+    resource_request_id,
+    request_status,
+    state_id,
+    priority
+FROM resource_requests
+WHERE resource_request_id = 1;
+
+
+SELECT
+    approval_action_id,
+    resource_request_id,
+    acted_by,
+    approval_level,
+    action,
+    comments,
+    acted_at
+FROM approval_actions
+WHERE resource_request_id = 1
+ORDER BY approval_action_id;
+
+SELECT
+    resource_request_id,
+    request_status
+FROM resource_requests
+WHERE resource_request_id = 1;
+
+SELECT
+    approval_action_id,
+    resource_request_id,
+    acted_by,
+    approval_level,
+    action,
+    comments,
+    acted_at
+FROM approval_actions
+WHERE resource_request_id = 1
+ORDER BY approval_action_id;
+
+DESCRIBE resource_allocations;
+
+DESCRIBE resource_allocation_items;
+
+DESCRIBE resource_movements;
+
+DESCRIBE warehouses;
+
+DESCRIBE warehouse_resources;
+
+SELECT *
+FROM warehouses;
+
+SELECT
+    wr.warehouse_resource_id,
+    wr.warehouse_id,
+    w.warehouse_name,
+    wr.resource_id,
+    r.resource_name,
+    r.unit,
+    wr.quantity_available,
+    wr.quantity_reserved
+FROM warehouse_resources wr
+JOIN warehouses w
+    ON w.warehouse_id = wr.warehouse_id
+JOIN resources r
+    ON r.resource_id = wr.resource_id
+ORDER BY wr.warehouse_id, r.resource_name;
+
+SELECT
+    allocation_id,
+    resource_request_id,
+    optimization_run_id,
+    allocated_by,
+    allocation_status,
+    created_at
+FROM resource_allocations
+WHERE resource_request_id = 1;
+
+
+SELECT
+    rai.allocation_item_id,
+    rai.allocation_id,
+    r.resource_name,
+    w.warehouse_name,
+    rai.quantity_allocated
+FROM resource_allocation_items rai
+JOIN resources r
+    ON r.resource_id = rai.resource_id
+JOIN warehouses w
+    ON w.warehouse_id = rai.warehouse_id
+WHERE rai.allocation_id = 1
+ORDER BY rai.allocation_item_id;
+
+SELECT
+    w.warehouse_name,
+    r.resource_name,
+    wr.quantity_available,
+    wr.quantity_reserved
+FROM warehouse_resources wr
+JOIN warehouses w
+    ON w.warehouse_id = wr.warehouse_id
+JOIN resources r
+    ON r.resource_id = wr.resource_id
+WHERE wr.resource_id IN (1, 2)
+ORDER BY wr.warehouse_id, wr.resource_id;
+
+SELECT
+    movement_id,
+    allocation_id,
+    from_warehouse_id,
+    to_state_id,
+    to_district_id,
+    resource_id,
+    quantity,
+    movement_status
+FROM resource_movements
+WHERE allocation_id = 1
+ORDER BY movement_id;
+
+
+DESCRIBE optimization_runs;
+
+DESCRIBE prediction_areas;
+
+SELECT *
+FROM prediction_areas
+WHERE prediction_id = 3;
+
+
+
+SELECT
+    dp.prediction_id,
+    dp.disaster_event_id,
+    de.disaster_type_id,
+    dt.disaster_name,
+    de.state_id,
+    s.state_name,
+    de.district_id
+FROM disaster_predictions dp
+JOIN disaster_events de
+    ON de.disaster_event_id = dp.disaster_event_id
+JOIN disaster_types dt
+    ON dt.disaster_type_id = de.disaster_type_id
+JOIN states s
+    ON s.state_id = de.state_id
+WHERE dp.prediction_id = 3;
+
+
+DESCRIBE states;
+
+INSERT INTO state_locations
+(state_id, latitude, longitude)
+VALUES
+(1, 10.8505169, 76.2710833),
+(2, 13.0826802, 80.2707184),
+(3, 15.3172775, 75.7138884);
+
+SELECT
+    sl.state_location_id,
+    sl.state_id,
+    s.state_name,
+    sl.latitude,
+    sl.longitude
+FROM state_locations sl
+JOIN states s
+    ON s.state_id = sl.state_id;
+    
+    
+SELECT
+    w.warehouse_id,
+    w.warehouse_name,
+    w.state_id,
+    s.state_name,
+    w.latitude AS warehouse_latitude,
+    w.longitude AS warehouse_longitude,
+    r.resource_id,
+    r.resource_name,
+    r.unit,
+    wr.quantity_available,
+    wr.quantity_reserved,
+    (wr.quantity_available - wr.quantity_reserved) AS usable_quantity
+FROM warehouses w
+JOIN states s
+    ON s.state_id = w.state_id
+JOIN warehouse_resources wr
+    ON wr.warehouse_id = w.warehouse_id
+JOIN resources r
+    ON r.resource_id = wr.resource_id
+WHERE r.resource_id IN (1, 2)
+ORDER BY r.resource_id, w.warehouse_id;
+
+
+SELECT
+    rr.resource_request_id,
+    rr.prediction_id,
+    rr.request_status,
+    rr.priority,
+    ra.allocation_id,
+    ra.allocation_status
+FROM resource_requests rr
+LEFT JOIN resource_allocations ra
+    ON ra.resource_request_id = rr.resource_request_id
+WHERE rr.resource_request_id = 1;
+
+
+SELECT
+    rai.allocation_item_id,
+    rai.allocation_id,
+    w.warehouse_name,
+    r.resource_name,
+    rai.quantity_allocated
+FROM resource_allocation_items rai
+JOIN warehouses w
+    ON w.warehouse_id = rai.warehouse_id
+JOIN resources r
+    ON r.resource_id = rai.resource_id
+WHERE rai.allocation_id = (
+    SELECT allocation_id
+    FROM resource_allocations
+    WHERE resource_request_id = 1
+    LIMIT 1
+);
+
+SELECT
+    w.warehouse_id,
+    w.warehouse_name,
+    r.resource_id,
+    r.resource_name,
+    r.unit,
+    wr.quantity_available,
+    wr.quantity_reserved,
+    (wr.quantity_available - wr.quantity_reserved) AS usable_quantity
+FROM warehouse_resources wr
+JOIN warehouses w
+    ON w.warehouse_id = wr.warehouse_id
+JOIN resources r
+    ON r.resource_id = wr.resource_id
+WHERE (wr.quantity_available - wr.quantity_reserved) > 0
+ORDER BY w.warehouse_id, r.resource_id;
+
+SELECT
+    resource_request_id,
+    prediction_id,
+    requested_by,
+    state_id,
+    request_status,
+    priority,
+    reason
+FROM resource_requests
+ORDER BY resource_request_id;
+
+
+INSERT INTO resource_requests
+(
+    prediction_id,
+    requested_by,
+    state_id,
+    request_status,
+    priority,
+    reason
+)
+VALUES
+(
+    3,
+    1,
+    1,
+    'PENDING_STATE_APPROVAL',
+    'CRITICAL',
+    'Quantum optimization integration test for Kerala Medical Kit allocation'
+);
+
+SELECT
+    resource_request_id,
+    prediction_id,
+    requested_by,
+    state_id,
+    request_status,
+    priority,
+    reason
+FROM resource_requests
+ORDER BY resource_request_id DESC
+LIMIT 1;
+
+INSERT INTO resource_request_items
+(
+    resource_request_id,
+    resource_id,
+    quantity_requested,
+    quantity_approved
+)
+VALUES
+(
+    2,
+    3,
+    15000,
+    0
+);
+
+
+SELECT
+    rri.request_item_id,
+    rri.resource_request_id,
+    rri.resource_id,
+    r.resource_name,
+    r.unit,
+    rri.quantity_requested,
+    rri.quantity_approved
+FROM resource_request_items rri
+JOIN resources r
+    ON r.resource_id = rri.resource_id
+WHERE rri.resource_request_id = 2;
+
+
+SELECT
+    optimization_run_id,
+    input_data
+FROM optimization_runs
+WHERE optimization_run_id = 3;
+
+
+SELECT
+    optimization_run_id,
+    output_data
+FROM optimization_runs
+WHERE optimization_run_id = 3;
+
+SELECT
+    resource_request_id,
+    request_status,
+    priority
+FROM resource_requests
+WHERE resource_request_id = 2;
+
+
+SELECT
+    optimization_run_id,
+    resource_request_id,
+    algorithm_name,
+    status
+FROM optimization_runs
+WHERE optimization_run_id = 3;
+
+SELECT
+    resource_request_id,
+    prediction_id,
+    requested_by,
+    state_id,
+    request_status,
+    priority
+FROM resource_requests
+WHERE resource_request_id = 2;
+
+SELECT
+    allocation_id,
+    resource_request_id,
+    optimization_run_id,
+    allocated_by,
+    allocation_status
+FROM resource_allocations
+WHERE allocation_id = 2;
+
+SELECT
+    allocation_item_id,
+    allocation_id,
+    resource_id,
+    warehouse_id,
+    quantity_allocated
+FROM resource_allocation_items
+WHERE allocation_id = 2;
+
+SELECT
+    movement_id,
+    allocation_id,
+    from_warehouse_id,
+    to_state_id,
+    to_district_id,
+    resource_id,
+    quantity,
+    movement_status
+FROM resource_movements
+WHERE allocation_id = 2;
+
+SELECT
+    warehouse_id,
+    resource_id,
+    quantity_available,
+    quantity_reserved,
+    quantity_available - quantity_reserved AS usable_quantity
+FROM warehouse_resources
+WHERE resource_id = 3
+ORDER BY warehouse_id;
+
+
+SELECT
+    rm.movement_id,
+    rm.movement_status,
+    rm.quantity,
+    rm.tracking_reference,
+    rm.dispatched_at,
+    rm.delivered_at,
+    ra.allocation_status,
+    rr.request_status
+FROM resource_movements rm
+JOIN resource_allocations ra
+    ON ra.allocation_id = rm.allocation_id
+JOIN resource_requests rr
+    ON rr.resource_request_id = ra.resource_request_id
+WHERE rm.allocation_id = 2
+ORDER BY rm.movement_id;
+
+DESCRIBE blockchain_transactions;
+
+USE disaster_management;
+
+SELECT
+    resource_request_id,
+    request_status
+FROM resource_requests
+WHERE resource_request_id = 5;
+
+========== FILE: database\seed.sql ==========
+
+USE disaster_management;
+
+-- =========================================================
+-- COUNTRY
+-- =========================================================
+
+INSERT INTO countries (country_name, country_code)
+VALUES ('India', 'IN');
+
+-- =========================================================
+-- ROLES
+-- =========================================================
+
+INSERT INTO roles (role_name, description)
+VALUES
+('NATIONAL_HEAD', 'Single national-level disaster management head'),
+('STATE_HEAD', 'Head responsible for a state'),
+('DEPARTMENT_HEAD', 'Head of a disaster/resource department'),
+('WAREHOUSE_MANAGER', 'Manages government resource warehouse'),
+('FIELD_OFFICER', 'Field-level disaster response officer');
+
+-- =========================================================
+-- STATES
+-- =========================================================
+
+INSERT INTO states (country_id, state_name, state_code)
+SELECT country_id, 'Kerala', 'KL'
+FROM countries
+WHERE country_code = 'IN';
+
+INSERT INTO states (country_id, state_name, state_code)
+SELECT country_id, 'Tamil Nadu', 'TN'
+FROM countries
+WHERE country_code = 'IN';
+
+INSERT INTO states (country_id, state_name, state_code)
+SELECT country_id, 'Karnataka', 'KA'
+FROM countries
+WHERE country_code = 'IN';
+
+-- =========================================================
+-- DISASTER TYPES
+-- =========================================================
+
+INSERT INTO disaster_types (disaster_name, description)
+VALUES
+('FLOOD', 'Flooding caused by excessive rainfall, rivers or other water events'),
+('CYCLONE', 'Tropical cyclone and associated severe weather'),
+('EARTHQUAKE', 'Seismic event causing ground movement and possible damage'),
+('LANDSLIDE', 'Movement of soil, rock or debris down a slope'),
+('WILDFIRE', 'Uncontrolled fire affecting vegetation and land'),
+('DROUGHT', 'Extended period of unusually low precipitation'),
+('TSUNAMI', 'Large sea waves caused by underwater disturbance');
+
+-- =========================================================
+-- RESOURCE CATEGORIES
+-- =========================================================
+
+INSERT INTO resource_categories (category_name, description)
+VALUES
+('FOOD', 'Food and emergency ration resources'),
+('WATER', 'Drinking and water supply resources'),
+('MEDICAL', 'Medical and healthcare resources'),
+('RESCUE', 'Search and rescue resources'),
+('SHELTER', 'Temporary shelter resources'),
+('TRANSPORT', 'Transportation resources'),
+('FIRE_RESPONSE', 'Fire fighting resources'),
+('COMMUNICATION', 'Emergency communication resources'),
+('POWER', 'Emergency power resources');
+
+-- =========================================================
+-- RESOURCES
+-- =========================================================
+
+INSERT INTO resources
+(resource_category_id, resource_name, unit, description)
+SELECT resource_category_id, 'Food Kit', 'KIT',
+       'Emergency food supply kit'
+FROM resource_categories
+WHERE category_name = 'FOOD';
+
+INSERT INTO resources
+(resource_category_id, resource_name, unit, description)
+SELECT resource_category_id, 'Drinking Water', 'LITRE',
+       'Emergency drinking water'
+FROM resource_categories
+WHERE category_name = 'WATER';
+
+INSERT INTO resources
+(resource_category_id, resource_name, unit, description)
+SELECT resource_category_id, 'Medical Kit', 'KIT',
+       'Emergency medical kit'
+FROM resource_categories
+WHERE category_name = 'MEDICAL';
+
+INSERT INTO resources
+(resource_category_id, resource_name, unit, description)
+SELECT resource_category_id, 'Rescue Boat', 'UNIT',
+       'Emergency rescue boat'
+FROM resource_categories
+WHERE category_name = 'RESCUE';
+
+INSERT INTO resources
+(resource_category_id, resource_name, unit, description)
+SELECT resource_category_id, 'Emergency Shelter', 'UNIT',
+       'Temporary emergency shelter'
+FROM resource_categories
+WHERE category_name = 'SHELTER';
+
+INSERT INTO resources
+(resource_category_id, resource_name, unit, description)
+SELECT resource_category_id, 'Fire Truck', 'UNIT',
+       'Fire response vehicle'
+FROM resource_categories
+WHERE category_name = 'FIRE_RESPONSE';
+
+INSERT INTO resources
+(resource_category_id, resource_name, unit, description)
+SELECT resource_category_id, 'Emergency Generator', 'UNIT',
+       'Portable emergency power generator'
+FROM resource_categories
+WHERE category_name = 'POWER';
+
+-- =========================================================
+-- SATELLITE SOURCES
+-- =========================================================
+
+INSERT INTO satellite_sources
+(source_name, provider_name, api_name, description)
+VALUES
+(
+    'Sentinel-1',
+    'Copernicus / ESA',
+    'Sentinel Hub',
+    'Synthetic aperture radar Earth observation data'
+),
+(
+    'Sentinel-2',
+    'Copernicus / ESA',
+    'Sentinel Hub',
+    'Multispectral Earth observation data'
+);
+
+-- =========================================================
+-- PREDICTION MODELS
+-- =========================================================
+
+INSERT INTO prediction_models
+(model_name, model_version, model_type, description)
+VALUES
+(
+    'Disaster Prediction Model',
+    '1.0',
+    'MACHINE_LEARNING',
+    'Initial disaster prediction model'
+);
+
+-- =========================================================
+-- RESOURCE REQUIREMENT RULES
+-- =========================================================
+
+-- Example flood rules
+
+INSERT INTO resource_requirement_rules
+(disaster_type_id, resource_id, severity,
+ quantity_per_person, fixed_quantity, description)
+
+SELECT
+    dt.disaster_type_id,
+    r.resource_id,
+    'HIGH',
+    1.0,
+    NULL,
+    'One food kit per affected person'
+FROM disaster_types dt
+JOIN resources r
+    ON r.resource_name = 'Food Kit'
+WHERE dt.disaster_name = 'FLOOD';
+
+INSERT INTO resource_requirement_rules
+(disaster_type_id, resource_id, severity,
+ quantity_per_person, fixed_quantity, description)
+
+SELECT
+    dt.disaster_type_id,
+    r.resource_id,
+    'HIGH',
+    2.0,
+    NULL,
+    'Two litres of drinking water per affected person'
+FROM disaster_types dt
+JOIN resources r
+    ON r.resource_name = 'Drinking Water'
+WHERE dt.disaster_name = 'FLOOD';
+
+INSERT INTO resource_requirement_rules
+(disaster_type_id, resource_id, severity,
+ quantity_per_person, fixed_quantity, description)
+
+SELECT
+    dt.disaster_type_id,
+    r.resource_id,
+    'HIGH',
+    0.10,
+    NULL,
+    'Medical kits based on affected population'
+FROM disaster_types dt
+JOIN resources r
+    ON r.resource_name = 'Medical Kit'
+WHERE dt.disaster_name = 'FLOOD';
+
+
+
+

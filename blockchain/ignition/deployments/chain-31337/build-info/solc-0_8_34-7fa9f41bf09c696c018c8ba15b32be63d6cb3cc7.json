@@ -1,0 +1,49 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_34-7fa9f41bf09c696c018c8ba15b32be63d6cb3cc7",
+  "solcVersion": "0.8.34",
+  "solcLongVersion": "0.8.34+commit.80d5c536",
+  "compilerType": "solc",
+  "toolVersions": {
+    "hardhat": "3.18.0"
+  },
+  "userSourceNameMap": {
+    "contracts/DisasterAudit.sol": "project/contracts/DisasterAudit.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "osaka",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode.linkReferences",
+            "evm.bytecode.object",
+            "evm.bytecode.opcodes",
+            "evm.bytecode.sourceMap",
+            "evm.deployedBytecode.immutableReferences",
+            "evm.deployedBytecode.linkReferences",
+            "evm.deployedBytecode.object",
+            "evm.deployedBytecode.opcodes",
+            "evm.deployedBytecode.sourceMap",
+            "evm.methodIdentifiers"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/DisasterAudit.sol": {
+        "content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.20;\r\n\r\ncontract DisasterAudit {\r\n\r\n    struct AuditRecord {\r\n        uint256 recordId;\r\n        string eventType;\r\n        string referenceId;\r\n        bytes32 dataHash;\r\n        uint256 timestamp;\r\n        address recordedBy;\r\n    }\r\n\r\n    uint256 private nextRecordId = 1;\r\n\r\n    mapping(uint256 => AuditRecord) private auditRecords;\r\n\r\n    event AuditRecorded(\r\n        uint256 indexed recordId,\r\n        string eventType,\r\n        string referenceId,\r\n        bytes32 dataHash,\r\n        uint256 timestamp,\r\n        address recordedBy\r\n    );\r\n\r\n    function recordAudit(\r\n        string memory eventType,\r\n        string memory referenceId,\r\n        bytes32 dataHash\r\n    ) external returns (uint256) {\r\n\r\n        uint256 recordId = nextRecordId;\r\n\r\n        auditRecords[recordId] = AuditRecord({\r\n            recordId: recordId,\r\n            eventType: eventType,\r\n            referenceId: referenceId,\r\n            dataHash: dataHash,\r\n            timestamp: block.timestamp,\r\n            recordedBy: msg.sender\r\n        });\r\n\r\n        nextRecordId++;\r\n\r\n        emit AuditRecorded(\r\n            recordId,\r\n            eventType,\r\n            referenceId,\r\n            dataHash,\r\n            block.timestamp,\r\n            msg.sender\r\n        );\r\n\r\n        return recordId;\r\n    }\r\n\r\n    function getAudit(uint256 recordId)\r\n        external\r\n        view\r\n        returns (\r\n            uint256,\r\n            string memory,\r\n            string memory,\r\n            bytes32,\r\n            uint256,\r\n            address\r\n        )\r\n    {\r\n        AuditRecord memory record = auditRecords[recordId];\r\n\r\n        return (\r\n            record.recordId,\r\n            record.eventType,\r\n            record.referenceId,\r\n            record.dataHash,\r\n            record.timestamp,\r\n            record.recordedBy\r\n        );\r\n    }\r\n}"
+      }
+    }
+  }
+}
