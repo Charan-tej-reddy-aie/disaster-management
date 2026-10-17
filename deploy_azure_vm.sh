@@ -54,15 +54,19 @@ sudo docker compose down --remove-orphans || true
 sudo docker compose up -d --build
 
 # 6. Seed Complete Database (Warehouses, Inventory, Requests, Allocations, Blockchain)
-echo "[6/7] Seeding complete database and demo workflow..."
-sleep 5
-sudo docker exec -i disaster_mysql mysql -uroot -prootpassword123 disaster_management < database/init/complete_seed.sql || true
+echo "[6/7] Waiting for MySQL to be ready and seeding complete database..."
+until sudo docker exec disaster_mysql mysqladmin ping -h localhost -uroot -prootpassword123 --silent; do
+    echo "Waiting for MySQL to accept connections..."
+    sleep 3
+done
+
+echo "MySQL is ready! Importing complete seed data..."
+sudo docker exec -i disaster_mysql mysql -uroot -prootpassword123 disaster_management < database/init/complete_seed.sql
 sudo docker exec disaster_backend node src/scripts/setup_roles_and_managers.js || true
 
-# 7. Verification and Health Check
-echo "[7/7] Verifying running containers..."
-sleep 5
-sudo docker compose ps
+echo "Restarting backend to apply fresh schema and connections..."
+sudo docker restart disaster_backend
+sleep 3
 
 PUBLIC_IP=$(curl -s ifconfig.me || hostname -I | awk '{print $1}')
 
