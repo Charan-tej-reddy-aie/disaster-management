@@ -1,32 +1,32 @@
 import { useState } from "react";
-import { Bell, Search, Shield, Zap, CheckCircle2, Loader2, Sparkles, Menu } from "lucide-react";
+import { Bell, Search, Shield, PlusCircle, CheckCircle2, Loader2, Sparkles, Menu } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
 
 export default function Topbar({ onSimulationTrigger, onToggleSidebar }) {
   const { user } = useAuth();
-  const [simulating, setSimulating] = useState(false);
-  const [simResult, setSimResult] = useState(null);
+  const [creating, setCreating] = useState(false);
+  const [disasterResult, setDisasterResult] = useState(null);
 
   const fullName = user?.fullName || user?.full_name || "National Officer";
   const initial = fullName.charAt(0).toUpperCase();
   const roleName = (user?.role || "NATIONAL_HEAD").replaceAll("_", " ");
 
-  const runQuickSimulation = async () => {
-    if (simulating) return;
+  const handleCreateDisaster = async () => {
+    if (creating) return;
     try {
-      setSimulating(true);
-      setSimResult(null);
-      const res = await api.post("/disasters/simulate-dummy");
+      setCreating(true);
+      setDisasterResult(null);
+      const res = await api.post("/disasters/create");
       if (res.data.success) {
-        setSimResult(res.data.scenario);
+        setDisasterResult(res.data.scenario);
         if (onSimulationTrigger) onSimulationTrigger(res.data.scenario);
       }
     } catch (err) {
-      console.error("Simulation error:", err);
-      alert(err.response?.data?.message || "Simulation failed to start.");
+      console.error("Disaster creation error:", err);
+      alert(err.response?.data?.message || "Failed to create disaster prediction.");
     } finally {
-      setSimulating(false);
+      setCreating(false);
     }
   };
 
@@ -59,23 +59,23 @@ export default function Topbar({ onSimulationTrigger, onToggleSidebar }) {
       </div>
 
       <div className="flex items-center gap-2 sm:gap-4">
-        {/* Quick Simulation Trigger Button */}
+        {/* Create Disaster Prediction Button */}
         <button
-          onClick={runQuickSimulation}
-          disabled={simulating}
-          className="inline-flex items-center gap-1.5 sm:gap-2 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 px-2.5 py-1.5 sm:px-3.5 text-xs font-semibold text-white shadow-sm shadow-red-500/20 hover:from-red-700 hover:to-rose-700 transition disabled:opacity-60 active:scale-95"
-          title="Trigger simulated AI disaster alert (Awaiting human verification)"
+          onClick={handleCreateDisaster}
+          disabled={creating}
+          className="inline-flex items-center gap-1.5 sm:gap-2 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 px-3 py-1.5 sm:px-4 text-xs font-bold text-white shadow-sm shadow-red-500/25 hover:from-red-700 hover:to-rose-800 transition disabled:opacity-60 active:scale-95 border border-red-500/30"
+          title="Create & Predict New Disaster (Requires manual verification & requests)"
         >
-          {simulating ? (
+          {creating ? (
             <>
               <Loader2 size={14} className="animate-spin" />
-              <span className="hidden sm:inline">Alerting...</span>
+              <span className="hidden sm:inline">Predicting...</span>
             </>
           ) : (
             <>
-              <Zap size={14} className="text-amber-300 fill-amber-300" />
-              <span className="hidden sm:inline">Simulate Alert</span>
-              <span className="sm:hidden">Alert</span>
+              <PlusCircle size={15} className="text-white" />
+              <span className="hidden sm:inline">Create Disaster</span>
+              <span className="sm:hidden">Create</span>
             </>
           )}
         </button>

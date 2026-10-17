@@ -12,7 +12,10 @@ import {
   ArrowRight,
   AlertTriangle,
   ExternalLink,
-  Layers
+  Layers,
+  PlusCircle,
+  X,
+  ShieldAlert
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -46,6 +49,25 @@ export default function WarehouseDashboard() {
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
+  // Stock Replenishment & Allotment State
+  const [stockRequests, setStockRequests] = useState([]);
+  const [stockModalOpen, setStockModalOpen] = useState(false);
+  const [allotModalOpen, setAllotModalOpen] = useState(false);
+  const [selectedStockReq, setSelectedStockReq] = useState(null);
+  const [allotQty, setAllotQty] = useState("");
+  const [allotSource, setAllotSource] = useState("Central National Emergency Reserve");
+  const [isSubmittingStockReq, setIsSubmittingStockReq] = useState(false);
+  const [isAllotting, setIsAllotting] = useState(false);
+
+  // Form for requesting stock
+  const [stockForm, setStockForm] = useState({
+    resourceId: "1",
+    quantity: "5000",
+    priority: "CRITICAL",
+    source: "Central National Emergency Reserve",
+    reason: ""
+  });
+
   const loadWarehousesList = async () => {
     try {
       const res = await api.get("/warehouses/managed");
@@ -54,6 +76,20 @@ export default function WarehouseDashboard() {
       }
     } catch (e) {
       console.warn("Could not load warehouse list:", e.message);
+    }
+  };
+
+  const loadStockRequests = async (whId) => {
+    try {
+      const url = whId
+        ? `/warehouses/stock-requests?warehouseId=${whId}`
+        : `/warehouses/stock-requests`;
+      const res = await api.get(url);
+      if (res.data?.success) {
+        setStockRequests(res.data.data || []);
+      }
+    } catch (e) {
+      console.warn("Could not load stock requests:", e.message);
     }
   };
 
@@ -68,9 +104,11 @@ export default function WarehouseDashboard() {
       const response = await api.get(url);
       if (response.data?.success) {
         setDashboardData(response.data.data);
-        if (!selectedWarehouseId && response.data.data.warehouse) {
-          setSelectedWarehouseId(String(response.data.data.warehouse.warehouse_id));
+        const activeWhId = whId || (response.data.data.warehouse ? String(response.data.data.warehouse.warehouse_id) : "");
+        if (!selectedWarehouseId && activeWhId) {
+          setSelectedWarehouseId(activeWhId);
         }
+        await loadStockRequests(activeWhId);
       } else {
         setError(response.data?.message || "Failed to load dashboard data");
       }
@@ -94,6 +132,7 @@ export default function WarehouseDashboard() {
     const id = e.target.value;
     setSelectedWarehouseId(id);
     loadDashboard(id);
+    loadStockRequests(id);
   };
 
   const handleMovementAction = async (movementId, action) => {
@@ -113,6 +152,96 @@ export default function WarehouseDashboard() {
     } finally {
       setActionLoading(null);
     }
+  };
+
+  // Submit new stock replenishment request
+  const handleSubmitStockRequest = async (e) => {
+    e.preventDefault();
+    if (!stockForm.quantity || Number(stockForm.quantity) <= 0) {
+      alert("Please enter a valid quantity to request.");
+      return;
+    }
+    const targetWhId = selectedWarehouseId || warehouse?.warehouse_id;
+    if (!targetWhId) {
+      alert("Please select a target warehouse.");
+      return;
+    }
+
+    try {
+      setIsSubmittingStockReq(true);
+      setError("");
+      const res = await api.post("/warehouses/stock-request", {
+        warehouseId: Number(targetWhId),
+        resourceId: Number(stockForm.resourceId),
+        quantityRequested: Number(stockForm.quantity),
+        priority: stockForm.priority,
+        reason: stockForm.reason || "Warehouse stock depletion emergency replenishment",
+        allotmentSource: stockForm.source
+      });
+
+      if (res.data?.success) {
+        setSuccessMsg("Stock replenishment request submitted successfully! Awaiting allotment by National Authority.");
+        setStockModalOpen(false);
+        setStockForm({
+          resourceId: "1",
+          quantity: "5000",
+          priority: "CRITICAL",
+          source: "Central National Emergency Reserve",
+          reason: ""
+        });
+        await loadStockRequests(targetWhId);
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to submit stock request");
+    } finally {
+      setIsSubmittingStockReq(false);
+    }
+  };
+
+  // Allot requested stock to warehouse
+  const handleConfirmAllotment = async () => {
+    if (!selectedStockReq) return;
+    try {
+      setIsAllotting(true);
+      setError("");
+      const res = await api.post(`/warehouses/stock-requests/${selectedStockReq.stock_request_id}/allot`, {
+        quantityAllotted: allotQty ? Number(allotQty) : Number(selectedStockReq.quantity_requested),
+        source: allotSource
+      });
+
+      if (res.data?.success) {
+        setSuccessMsg(`Stock Allotted! ${Number(allotQty || selectedStockReq.quantity_requested).toLocaleString()} units credited to warehouse from ${allotSource}. Physical inventory updated on blockchain!`);
+        setAllotModalOpen(false);
+        setSelectedStockReq(null);
+        await loadDashboard(selectedWarehouseId || warehouse?.warehouse_id);
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to allot stock");
+    } finally {
+      setIsAllotting(false);
+    }
+  };
+
+  const openRestockForMovement = (m, whStock, shortfall) => {
+    setStockForm({
+      resourceId: String(m.resource_id),
+      quantity: String(Math.max(shortfall || 1000, 1000)),
+      priority: "CRITICAL",
+      source: "Central National Emergency Reserve",
+      reason: `Immediate replenishment required for Movement #${m.movement_id} to ${m.destination_state} (Shortfall: ${shortfall?.toLocaleString() || 'insufficient'} ${m.unit})`
+    });
+    setStockModalOpen(true);
+  };
+
+  const openRestockForResource = (item) => {
+    setStockForm({
+      resourceId: String(item.resource_id),
+      quantity: "5000",
+      priority: "HIGH",
+      source: "Central National Emergency Reserve",
+      reason: `Depleted warehouse inventory for ${item.resource_name} (Current usable: ${Number(item.quantity_usable || 0).toLocaleString()} ${item.unit})`
+    });
+    setStockModalOpen(true);
   };
 
   const warehouse = dashboardData?.warehouse;
@@ -152,6 +281,25 @@ export default function WarehouseDashboard() {
             </div>
 
             <div className="flex items-center gap-3">
+              {/* Request Stock Replenishment Button */}
+              <button
+                onClick={() => {
+                  setStockForm({
+                    resourceId: "1",
+                    quantity: "5000",
+                    priority: "CRITICAL",
+                    source: "Central National Emergency Reserve",
+                    reason: `Emergency stock replenishment for ${warehouse?.warehouse_name || 'warehouse'}`
+                  });
+                  setStockModalOpen(true);
+                }}
+                className="flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition shadow-sm active:scale-95 border border-amber-400/30"
+                title="Request stock replenishment from Central Reserve when inventory runs low or is depleted"
+              >
+                <PlusCircle size={15} />
+                <span>Request Restock</span>
+              </button>
+
               {/* Warehouse selector for National Head or Multi-facility managers */}
               {allWarehouses.length > 1 && (
                 <div className="flex items-center gap-2 bg-white/10 rounded-xl px-3 py-1.5 border border-white/20">
@@ -303,17 +451,26 @@ export default function WarehouseDashboard() {
                               {usable.toLocaleString()}
                             </td>
                             <td className="px-5 py-4">
-                              <div className="w-28 space-y-1">
-                                <div className="flex justify-between text-[11px] font-medium text-slate-500">
-                                  <span>{usablePercent}% Free</span>
+                              <div className="flex items-center justify-between gap-3">
+                                <div className="w-24 space-y-1">
+                                  <div className="flex justify-between text-[11px] font-medium text-slate-500">
+                                    <span>{usablePercent}% Free</span>
+                                  </div>
+                                  <div className="h-2 w-full bg-amber-200 rounded-full overflow-hidden flex">
+                                    <div
+                                      className="bg-emerald-500 h-full"
+                                      style={{ width: `${usablePercent}%` }}
+                                      title={`${usablePercent}% usable`}
+                                    />
+                                  </div>
                                 </div>
-                                <div className="h-2 w-full bg-amber-200 rounded-full overflow-hidden flex">
-                                  <div
-                                    className="bg-emerald-500 h-full"
-                                    style={{ width: `${usablePercent}%` }}
-                                    title={`${usablePercent}% usable`}
-                                  />
-                                </div>
+                                <button
+                                  onClick={() => openRestockForResource(item)}
+                                  className="text-[11px] px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold border border-blue-200 transition whitespace-nowrap active:scale-95 shadow-2xs"
+                                  title="Request replenishment for this resource from Central Reserve"
+                                >
+                                  + Restock
+                                </button>
                               </div>
                             </td>
                           </tr>
@@ -478,15 +635,21 @@ export default function WarehouseDashboard() {
                             const hasStock = availableQty >= requiredQty;
 
                             if (!hasStock) {
+                              const shortfall = requiredQty - availableQty;
                               return (
-                                <button
-                                  disabled
-                                  className="px-3 py-1.5 bg-slate-100 text-slate-400 border border-slate-200 rounded-lg text-xs font-semibold cursor-not-allowed flex items-center gap-1.5 ml-auto"
-                                  title={`Cannot dispatch: Insufficient physical stock! (Available: ${availableQty.toLocaleString()}, Needed: ${requiredQty.toLocaleString()})`}
-                                >
-                                  <AlertTriangle size={13} className="text-amber-500" />
-                                  Out of Stock
-                                </button>
+                                <div className="flex flex-col items-end gap-1">
+                                  <button
+                                    onClick={() => openRestockForMovement(m, whStock, shortfall)}
+                                    className="px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-xs active:scale-95 ml-auto"
+                                    title={`Insufficient stock! (Available: ${availableQty.toLocaleString()}, Needed: ${requiredQty.toLocaleString()}). Click to request emergency replenishment!`}
+                                  >
+                                    <AlertTriangle size={13} className="text-amber-600 shrink-0" />
+                                    <span>Out of Stock • Request Restock</span>
+                                  </button>
+                                  <span className="text-[10px] text-amber-700 font-medium">
+                                    Shortfall: {shortfall.toLocaleString()} {m.unit}
+                                  </span>
+                                </div>
                               );
                             }
 
@@ -537,6 +700,364 @@ export default function WarehouseDashboard() {
               </table>
           </div>
         </div>
+
+        {/* Warehouse Stock Requisitions & Central Allotments Section */}
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gradient-to-r from-slate-50 via-amber-50/20 to-blue-50/20">
+            <div>
+              <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+                <Package size={20} className="text-amber-600" />
+                Facility Stock Replenishment & Central Allotments
+              </h2>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Requisition supplies when warehouse stock is exhausted, and allot inventory from Central National Reserve or Inter-Warehouse transfer
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  setStockForm({
+                    resourceId: "1",
+                    quantity: "5000",
+                    priority: "CRITICAL",
+                    source: "Central National Emergency Reserve",
+                    reason: `Stock replenishment for ${warehouse?.warehouse_name || 'facility'}`
+                  });
+                  setStockModalOpen(true);
+                }}
+                className="flex items-center gap-1.5 text-xs bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-3.5 py-2 rounded-xl font-bold shadow-sm transition active:scale-95"
+              >
+                <PlusCircle size={14} />
+                Request Stock Replenishment
+              </button>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm text-slate-600">
+              <thead className="bg-slate-50 text-xs font-semibold text-slate-500 uppercase border-b border-slate-100">
+                <tr>
+                  <th className="px-5 py-3.5">Requisition ID</th>
+                  <th className="px-4 py-3.5">Facility</th>
+                  <th className="px-4 py-3.5">Resource & Qty</th>
+                  <th className="px-4 py-3.5">Priority</th>
+                  <th className="px-4 py-3.5">Source Depot</th>
+                  <th className="px-4 py-3.5">Status</th>
+                  <th className="px-5 py-3.5 text-right">Allotment Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {stockRequests.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="text-center py-8 text-slate-400">
+                      No active stock replenishment requests for this facility. Click "+ Request Stock Replenishment" to requisition supplies.
+                    </td>
+                  </tr>
+                ) : (
+                  stockRequests.map((sr) => (
+                    <tr key={sr.stock_request_id} className="hover:bg-slate-50/70 transition">
+                      <td className="px-5 py-4 font-semibold text-slate-800">
+                        #SR-{sr.stock_request_id}
+                        <span className="block text-[11px] font-normal text-slate-400">
+                          {new Date(sr.created_at).toLocaleDateString()}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4 text-xs font-medium text-slate-700">
+                        {sr.warehouse_name}
+                        <span className="block text-[11px] text-slate-400">{sr.state_name}</span>
+                      </td>
+                      <td className="px-4 py-4">
+                        <span className="font-bold text-slate-900">
+                          {Number(sr.quantity_requested).toLocaleString()} {sr.unit}
+                        </span>
+                        <span className="block text-xs text-slate-500 font-medium">
+                          {sr.resource_name}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4">
+                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${
+                          sr.priority === "CRITICAL" ? "bg-red-100 text-red-700 border border-red-200" :
+                          sr.priority === "HIGH" ? "bg-orange-100 text-orange-700 border border-orange-200" :
+                          "bg-blue-100 text-blue-700 border border-blue-200"
+                        }`}>
+                          {sr.priority}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4 text-xs text-slate-600 font-medium">
+                        {sr.allotment_source || "Central National Reserve"}
+                      </td>
+                      <td className="px-4 py-4">
+                        {sr.status === "ALLOTTED" ? (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                            <CheckCircle2 size={13} className="text-emerald-600" />
+                            ALLOTTED ({Number(sr.quantity_allotted || sr.quantity_requested).toLocaleString()})
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200 animate-pulse">
+                            <Clock size={13} className="text-amber-600" />
+                            PENDING ALLOTMENT
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-5 py-4 text-right">
+                        {sr.status === "PENDING_ALLOTMENT" ? (
+                          <button
+                            onClick={() => {
+                              setSelectedStockReq(sr);
+                              setAllotQty(String(sr.quantity_requested));
+                              setAllotSource(sr.allotment_source || "Central National Emergency Reserve");
+                              setAllotModalOpen(true);
+                            }}
+                            className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-sm transition active:scale-95 inline-flex items-center gap-1.5 ml-auto"
+                          >
+                            <ShieldCheck size={14} />
+                            Allot Stock
+                          </button>
+                        ) : (
+                          <span className="text-xs text-slate-400 font-medium flex items-center justify-end gap-1">
+                            <ShieldCheck size={13} className="text-emerald-500" />
+                            Credited by {sr.allotted_by_name || "National Command"}
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      {/* Modal 1: Request Stock Replenishment Modal */}
+      {stockModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-fadeIn">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full border border-slate-200 overflow-hidden">
+            <div className="flex items-center justify-between p-5 border-b border-slate-100 bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-900 text-white">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 bg-amber-500/20 text-amber-300 rounded-xl border border-amber-400/30">
+                  <Package size={20} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-base">Request Stock Replenishment</h3>
+                  <p className="text-xs text-slate-300">Requisition supplies when warehouse resources are depleted</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setStockModalOpen(false)}
+                className="text-white/70 hover:text-white p-1 rounded-lg hover:bg-white/10"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmitStockRequest} className="p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Requesting Facility
+                </label>
+                <input
+                  type="text"
+                  disabled
+                  value={`${warehouse?.warehouse_name || 'Selected Warehouse'} (${warehouse?.state_name || 'State Center'})`}
+                  className="w-full px-3 py-2 text-sm bg-slate-100 text-slate-700 font-medium rounded-xl border border-slate-200 cursor-not-allowed"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                    Relief Resource
+                  </label>
+                  <select
+                    value={stockForm.resourceId}
+                    onChange={(e) => setStockForm({ ...stockForm, resourceId: e.target.value })}
+                    className="w-full px-3 py-2 text-sm bg-white text-slate-800 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 font-medium"
+                  >
+                    <option value="1">Food Kit (Kits)</option>
+                    <option value="2">Drinking Water (Litres)</option>
+                    <option value="3">Medical Kit (Kits)</option>
+                    <option value="4">Rescue Boat (Units)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                    Quantity Needed
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    required
+                    value={stockForm.quantity}
+                    onChange={(e) => setStockForm({ ...stockForm, quantity: e.target.value })}
+                    className="w-full px-3 py-2 text-sm bg-white text-slate-800 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 font-bold"
+                    placeholder="e.g. 5000"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                    Urgency Priority
+                  </label>
+                  <select
+                    value={stockForm.priority}
+                    onChange={(e) => setStockForm({ ...stockForm, priority: e.target.value })}
+                    className="w-full px-3 py-2 text-sm bg-white text-slate-800 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 font-semibold"
+                  >
+                    <option value="CRITICAL">CRITICAL (Immediate)</option>
+                    <option value="HIGH">HIGH (Standard Emergency)</option>
+                    <option value="MEDIUM">MEDIUM (Buffer)</option>
+                    <option value="LOW">LOW (Regular)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                    Source Requisition
+                  </label>
+                  <select
+                    value={stockForm.source}
+                    onChange={(e) => setStockForm({ ...stockForm, source: e.target.value })}
+                    className="w-full px-3 py-2 text-sm bg-white text-slate-800 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 font-medium"
+                  >
+                    <option value="Central National Emergency Reserve">Central National Reserve</option>
+                    <option value="Inter-Warehouse Transfer: Tamil Nadu Central Warehouse">Inter-Warehouse: Tamil Nadu</option>
+                    <option value="Inter-Warehouse Transfer: Karnataka Regional Depot">Inter-Warehouse: Karnataka</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Justification / Operational Reason
+                </label>
+                <textarea
+                  rows="3"
+                  value={stockForm.reason}
+                  onChange={(e) => setStockForm({ ...stockForm, reason: e.target.value })}
+                  placeholder="Detail why additional stock is needed (e.g. stock depleted, pending disaster movement dispatch)..."
+                  className="w-full px-3 py-2 text-sm bg-white text-slate-800 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setStockModalOpen(false)}
+                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmittingStockReq}
+                  className="px-4 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-sm transition disabled:opacity-50 active:scale-95 flex items-center gap-1.5"
+                >
+                  <Send size={13} />
+                  <span>{isSubmittingStockReq ? "Submitting..." : "Submit Requisition"}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal 2: Allot Emergency Stock Modal */}
+      {allotModalOpen && selectedStockReq && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-fadeIn">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full border border-slate-200 overflow-hidden">
+            <div className="flex items-center justify-between p-5 border-b border-slate-100 bg-gradient-to-r from-emerald-800 via-teal-900 to-slate-900 text-white">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 bg-emerald-500/20 text-emerald-300 rounded-xl border border-emerald-400/30">
+                  <ShieldCheck size={20} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-base">Allot Emergency Supplies</h3>
+                  <p className="text-xs text-emerald-200">Requisition #{selectedStockReq.stock_request_id} • {selectedStockReq.warehouse_name}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setAllotModalOpen(false)}
+                className="text-white/70 hover:text-white p-1 rounded-lg hover:bg-white/10"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl space-y-1">
+                <div className="flex justify-between text-xs">
+                  <span className="text-emerald-800 font-semibold">Requested By:</span>
+                  <span className="text-emerald-950 font-bold">{selectedStockReq.requested_by_name || 'Warehouse Manager'}</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-emerald-800 font-semibold">Resource Item:</span>
+                  <span className="text-emerald-950 font-bold">{selectedStockReq.resource_name}</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-emerald-800 font-semibold">Requisitioned Qty:</span>
+                  <span className="text-emerald-950 font-bold text-sm">
+                    {Number(selectedStockReq.quantity_requested).toLocaleString()} {selectedStockReq.unit}
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Allotment Source Depot
+                </label>
+                <select
+                  value={allotSource}
+                  onChange={(e) => setAllotSource(e.target.value)}
+                  className="w-full px-3 py-2 text-sm bg-white text-slate-800 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 font-medium"
+                >
+                  <option value="Central National Emergency Reserve">Central National Emergency Reserve (Government Strategic Stock)</option>
+                  <option value="Inter-Warehouse Transfer: Tamil Nadu Central Warehouse">Inter-Warehouse Transfer: Tamil Nadu Central Warehouse</option>
+                  <option value="Inter-Warehouse Transfer: Karnataka Regional Depot">Inter-Warehouse Transfer: Karnataka Regional Depot</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Approved Allotment Quantity
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  required
+                  value={allotQty}
+                  onChange={(e) => setAllotQty(e.target.value)}
+                  className="w-full px-3 py-2 text-sm bg-white text-slate-800 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 font-bold text-base"
+                />
+                <p className="text-[11px] text-slate-400 mt-1">
+                  Once confirmed, this exact quantity will be credited immediately to the warehouse inventory and recorded on Blockchain.
+                </p>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setAllotModalOpen(false)}
+                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmAllotment}
+                  disabled={isAllotting}
+                  className="px-4 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-sm transition disabled:opacity-50 active:scale-95 flex items-center gap-1.5"
+                >
+                  <ShieldCheck size={14} />
+                  <span>{isAllotting ? "Allotting..." : "Confirm & Allot Stock"}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

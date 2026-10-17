@@ -67,7 +67,7 @@ export default function Layout() {
           onToggleSidebar={toggleSidebar}
         />
 
-        {/* Global Simulation Alert Notification */}
+        {/* Global Disaster Alert Notification */}
         {simulationNotice && (
           <div className="mx-3 sm:mx-6 mt-4 p-4 rounded-2xl bg-gradient-to-r from-red-600 via-rose-600 to-orange-600 text-white shadow-lg shadow-red-700/25 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-fadeIn transition-all">
             <div className="flex items-center gap-3">
@@ -85,7 +85,7 @@ export default function Layout() {
                   </span>
                 </h4>
                 <p className="text-xs text-rose-100 mt-0.5">
-                  New disaster prediction generated for Kerala (~15,000 citizens at risk). Open Predictions to inspect details.
+                  Disaster prediction generated for Kerala (~15,000 citizens at risk). No automated requests or allocations made. Open Predictions to manually verify and request relief supplies.
                 </p>
               </div>
             </div>

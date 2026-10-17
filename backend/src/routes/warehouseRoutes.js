@@ -3,7 +3,10 @@ const express = require("express");
 const {
     getWarehousesByState,
     getManagedWarehouses,
-    getWarehouseManagerDashboard
+    getWarehouseManagerDashboard,
+    createWarehouseStockRequest,
+    getWarehouseStockRequests,
+    allotWarehouseStock
 } = require("../controllers/warehouseController");
 
 const {
@@ -29,6 +32,25 @@ router.get(
     authenticate,
     authorizeRoles("WAREHOUSE_MANAGER", "NATIONAL_HEAD", "STATE_HEAD"),
     getWarehouseManagerDashboard
+);
+
+// Stock Replenishment Requests and Allotment
+router.post(
+    "/stock-request",
+    authenticate,
+    createWarehouseStockRequest
+);
+
+router.get(
+    "/stock-requests",
+    authenticate,
+    getWarehouseStockRequests
+);
+
+router.post(
+    "/stock-requests/:id/allot",
+    authenticate,
+    allotWarehouseStock
 );
 
 router.get(

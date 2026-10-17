@@ -31,7 +31,7 @@ const simulateDummyDisaster = async (req, res) => {
         await connection.beginTransaction();
 
         const simCode = Math.floor(1000 + Math.random() * 9000);
-        const eventName = `Emergency Simulation: Cyclone & Inundation Alert #${simCode}`;
+        const eventName = `Disaster Alert: Cyclone & Coastal Inundation #${simCode}`;
 
         // 1. Create simulated disaster event in Kerala (state_id = 1)
         const [eventRes] = await connection.query(
@@ -82,7 +82,7 @@ const simulateDummyDisaster = async (req, res) => {
 
         return res.json({
             success: true,
-            message: "New disaster alert generated successfully!",
+            message: "Disaster alert predicted and registered successfully! Review in Predictions to manually create resource requests.",
             scenario: {
                 eventName,
                 eventId,
@@ -105,7 +105,7 @@ const simulateDummyDisaster = async (req, res) => {
             await connection.rollback();
             connection.release();
         }
-        console.error("Simulation error:", error);
+        console.error("Disaster prediction creation error:", error);
         return res.status(500).json({
             success: false,
             message: error.message
@@ -113,7 +113,10 @@ const simulateDummyDisaster = async (req, res) => {
     }
 };
 
+const createDisasterPrediction = simulateDummyDisaster;
+
 module.exports = {
     getDisasterTypes,
-    simulateDummyDisaster
+    simulateDummyDisaster,
+    createDisasterPrediction
 };

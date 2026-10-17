@@ -6,6 +6,7 @@ import {
   Warehouse,
   RefreshCw,
   Zap,
+  PlusCircle,
   CheckCircle2,
   Clock,
   ArrowRight,
@@ -43,8 +44,8 @@ export default function Dashboard() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [simulating, setSimulating] = useState(false);
-  const [simulationResult, setSimulationResult] = useState(null);
+  const [creating, setCreating] = useState(false);
+  const [disasterResult, setDisasterResult] = useState(null);
 
   const loadDashboard = async () => {
     try {
@@ -90,22 +91,22 @@ export default function Dashboard() {
     }
   };
 
-  const runSimulation = async () => {
+  const handleCreateDisaster = async () => {
     try {
-      setSimulating(true);
-      setSimulationResult(null);
+      setCreating(true);
+      setDisasterResult(null);
 
-      const res = await api.post("/disasters/simulate-dummy");
+      const res = await api.post("/disasters/create");
       if (res.data.success) {
         playAlarmSound();
-        setSimulationResult(res.data.scenario);
+        setDisasterResult(res.data.scenario);
         await loadDashboard();
       }
     } catch (err) {
-      console.error("Simulation error:", err);
-      alert(err.response?.data?.message || "Failed to run simulation");
+      console.error("Disaster creation error:", err);
+      alert(err.response?.data?.message || "Failed to create disaster prediction");
     } finally {
-      setSimulating(false);
+      setCreating(false);
     }
   };
 
@@ -124,26 +125,26 @@ export default function Dashboard() {
             National Operations Dashboard
           </h1>
           <p className="mt-1 text-sm text-slate-500">
-            Welcome back, <span className="font-semibold text-slate-700">{fullName}</span>. Real-time satellite telemetries and automated disaster response center.
+            Welcome back, <span className="font-semibold text-slate-700">{fullName}</span>. Real-time satellite telemetries and disaster response control center.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <button
-            onClick={runSimulation}
-            disabled={simulating}
+            onClick={handleCreateDisaster}
+            disabled={creating}
             className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-orange-600 px-4 py-2.5 text-sm font-bold text-white shadow-md shadow-red-500/25 hover:from-red-700 hover:to-orange-700 transition active:scale-95 disabled:opacity-50"
-            title="Trigger simulated AI disaster alert (Awaiting human verification)"
+            title="Create and predict new disaster alert for manual human review and workflow"
           >
-            {simulating ? (
+            {creating ? (
               <>
                 <Loader2 size={17} className="animate-spin" />
-                <span>Triggering Alert...</span>
+                <span>Predicting Disaster...</span>
               </>
             ) : (
               <>
-                <Zap size={17} className="text-amber-300 fill-amber-300" />
-                <span>Simulate Disaster Alert</span>
+                <PlusCircle size={17} className="text-white" />
+                <span>Create Disaster</span>
               </>
             )}
           </button>
@@ -159,8 +160,8 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Emergency Simulation Alert Banner */}
-      {simulationResult && (
+      {/* Emergency Disaster Alert Banner */}
+      {disasterResult && (
         <div className="rounded-2xl border-2 border-red-500/70 bg-gradient-to-br from-red-50 via-rose-50 to-orange-50 p-5 shadow-lg shadow-red-500/10">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div className="flex items-start gap-3.5">
@@ -170,21 +171,21 @@ export default function Dashboard() {
               <div>
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="rounded-full bg-red-600 px-2.5 py-0.5 text-[11px] font-black uppercase tracking-wider text-white">
-                    New Alert Triggered
+                    New Disaster Alert Predicted
                   </span>
                   <span className="rounded-full bg-red-100 text-red-800 text-xs px-2.5 py-0.5 font-bold border border-red-200">
                     CRITICAL SEVERITY (95%)
                   </span>
                   <span className="text-xs text-slate-500 font-mono">
-                    Prediction #{simulationResult.predictionId} • Event #{simulationResult.eventId}
+                    Prediction #{disasterResult.predictionId} • Event #{disasterResult.eventId}
                   </span>
                 </div>
                 <h3 className="text-base sm:text-lg font-black text-slate-900 mt-1.5">
-                  {simulationResult.eventName}
+                  {disasterResult.eventName}
                 </h3>
                 <p className="mt-1 text-xs sm:text-sm text-slate-700 leading-relaxed">
-                  New emergency disaster event generated in <strong className="text-slate-900">Kerala</strong> (~15,000 citizens at risk). 
-                  Open Predictions to inspect meteorological telemetry and AI-suggested relief supply requirements.
+                  Emergency disaster event generated in <strong className="text-slate-900">Kerala</strong> (~15,000 citizens at risk). 
+                  No automated requests or allocations were performed. Review telemetry in Predictions and manually initiate resource requests.
                 </p>
               </div>
             </div>
@@ -198,7 +199,7 @@ export default function Dashboard() {
                 <ArrowRight size={14} />
               </Link>
               <button
-                onClick={() => setSimulationResult(null)}
+                onClick={() => setDisasterResult(null)}
                 className="rounded-xl border border-slate-200 bg-white/80 px-3 py-2.5 text-xs font-medium text-slate-600 hover:bg-white"
                 title="Dismiss banner"
               >
