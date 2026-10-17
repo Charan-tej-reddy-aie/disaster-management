@@ -29,6 +29,70 @@ async function setup() {
       console.log("Column manager_user_id already exists.");
     }
 
+    // 2. Ensure Core Reference Data (Roles, Countries, States, Departments) Exists
+    console.log("Ensuring Core Reference Data (Roles, States, Resources)...");
+    await connection.query(`
+      INSERT IGNORE INTO roles (role_id, role_name, description) VALUES
+      (1, 'NATIONAL_HEAD', 'Single national-level disaster management head'),
+      (2, 'STATE_HEAD', 'Head responsible for a state'),
+      (3, 'DEPARTMENT_HEAD', 'Head of a disaster/resource department'),
+      (4, 'WAREHOUSE_MANAGER', 'Manages government resource warehouse'),
+      (5, 'FIELD_OFFICER', 'Field-level disaster response officer');
+    `);
+
+    await connection.query(`
+      INSERT IGNORE INTO countries (country_id, country_name, country_code) VALUES
+      (1, 'India', 'IN');
+    `);
+
+    await connection.query(`
+      INSERT IGNORE INTO states (state_id, country_id, state_name, state_code) VALUES
+      (1, 1, 'Kerala', 'KL'),
+      (2, 1, 'Tamil Nadu', 'TN'),
+      (3, 1, 'Karnataka', 'KA');
+    `);
+
+    await connection.query(`
+      INSERT IGNORE INTO departments (department_id, state_id, department_name, department_code, description) VALUES
+      (1, 1, 'Flood Management Department', 'FLOOD-KL', 'Handles flood preparedness and response'),
+      (2, 1, 'Fire and Rescue Department', 'FIRE-KL', 'Handles fire and rescue operations'),
+      (3, 2, 'Flood Management Department', 'FLOOD-TN', 'Handles flood preparedness and response'),
+      (4, 2, 'Fire and Rescue Department', 'FIRE-TN', 'Handles fire and rescue operations');
+    `);
+
+    await connection.query(`
+      INSERT IGNORE INTO resource_categories (resource_category_id, category_name, description) VALUES
+      (1, 'FOOD', 'Food and emergency ration resources'),
+      (2, 'WATER', 'Drinking and water supply resources'),
+      (3, 'MEDICAL', 'Medical and healthcare resources'),
+      (4, 'RESCUE', 'Search and rescue resources');
+    `);
+
+    await connection.query(`
+      INSERT IGNORE INTO resources (resource_id, resource_category_id, resource_name, unit, description) VALUES
+      (1, 1, 'Food Kit', 'KIT', 'Emergency food supply kit'),
+      (2, 2, 'Drinking Water', 'LITRE', 'Emergency drinking water'),
+      (3, 3, 'Medical Kit', 'KIT', 'Emergency medical kit'),
+      (4, 4, 'Rescue Boat', 'UNIT', 'Emergency rescue boat');
+    `);
+
+    await connection.query(`
+      INSERT IGNORE INTO warehouses (warehouse_id, state_id, department_id, warehouse_name, latitude, longitude, address) VALUES
+      (1, 1, 1, 'Kerala Central Emergency Warehouse', 10.8505169, 76.2710833, 'Kerala Emergency Resource Storage'),
+      (2, 2, 3, 'Tamil Nadu Central Emergency Warehouse', 13.0826802, 80.2707184, 'Tamil Nadu Emergency Resource Storage');
+    `);
+
+    await connection.query(`
+      INSERT IGNORE INTO warehouse_resources (warehouse_id, resource_id, quantity_available, quantity_reserved) VALUES
+      (1, 1, 50000, 0),
+      (1, 2, 100000, 0),
+      (1, 3, 10000, 0),
+      (1, 4, 25, 0),
+      (2, 1, 50000, 0),
+      (2, 2, 100000, 0),
+      (2, 3, 12000, 0);
+    `);
+
     const defaultPassword = "Admin@123";
     const passwordHash = bcrypt.hashSync(defaultPassword, 10);
 
