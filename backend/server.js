@@ -125,6 +125,21 @@ const PORT = process.env.PORT || 5000;
 
 async function autoInitTables() {
     try {
+        // 1. Ensure manager_user_id column exists on warehouses
+        try {
+            await pool.query(`
+                ALTER TABLE warehouses 
+                ADD COLUMN manager_user_id BIGINT UNSIGNED NULL,
+                ADD CONSTRAINT fk_warehouses_manager 
+                  FOREIGN KEY (manager_user_id) REFERENCES users(user_id) 
+                  ON DELETE SET NULL
+            `);
+            console.log("Column manager_user_id added to warehouses.");
+        } catch (colErr) {
+            // Already exists or ignore
+        }
+
+        // 2. Ensure warehouse_stock_requests table exists
         await pool.query(`
             CREATE TABLE IF NOT EXISTS warehouse_stock_requests (
                 stock_request_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -146,7 +161,7 @@ async function autoInitTables() {
                 CONSTRAINT fk_wsr_user FOREIGN KEY (requested_by) REFERENCES users (user_id) ON DELETE RESTRICT
             );
         `);
-        console.log("Database tables verified (including warehouse_stock_requests).");
+        console.log("Database tables verified (including warehouse_stock_requests and manager_user_id).");
     } catch (e) {
         console.warn("Table autoInit warning:", e.message);
     }
