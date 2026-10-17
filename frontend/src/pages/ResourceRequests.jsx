@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   AlertTriangle,
   CheckCircle,
   Clock,
   Package,
   RefreshCw,
-  XCircle
+  XCircle,
+  Plus
 } from "lucide-react";
 
 import api from "../services/api";
@@ -717,14 +719,23 @@ export default function ResourceRequests() {
         </div>
 
 
-        <button
-          onClick={loadRequests}
-          className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
-        >
-          <RefreshCw size={16} />
+        <div className="flex items-center gap-3">
+          <Link
+            to="/resource-requests/create"
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 transition"
+          >
+            <Plus size={16} />
+            Create Request
+          </Link>
 
-          Refresh
-        </button>
+          <button
+            onClick={loadRequests}
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition"
+          >
+            <RefreshCw size={16} />
+            Refresh
+          </button>
+        </div>
 
       </div>
 

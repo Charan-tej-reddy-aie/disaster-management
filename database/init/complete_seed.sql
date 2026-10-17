@@ -115,4 +115,48 @@ INSERT IGNORE INTO warehouse_stock_requests (stock_request_id, warehouse_id, res
 (1, 1, 1, 3, 10000, 10000, 'HIGH', 'ALLOTTED', 'CENTRAL_NATIONAL_RESERVE', 'Pre-monsoon strategic buffer replenishment'),
 (2, 1, 4, 3, 10, 0, 'CRITICAL', 'PENDING_ALLOTMENT', 'CENTRAL_NATIONAL_RESERVE', 'Additional inflatable rescue craft needed for coastal flooding');
 
+-- 12. Demo Resource Requests across different lifecycle stages
+INSERT INTO resource_requests (resource_request_id, prediction_id, requested_by, state_id, request_status, priority, reason, created_at) VALUES
+(1, 1, 2, 1, 'PENDING_STATE_APPROVAL', 'CRITICAL', 'Urgent medical trauma kits needed for localized waterborne illnesses in flood sector', NOW()),
+(2, 1, 2, 1, 'PENDING_NATIONAL_APPROVAL', 'HIGH', 'Emergency clean drinking water pouches and water filtration units for coastal communities', NOW()),
+(3, 1, 2, 1, 'NATIONAL_APPROVED', 'CRITICAL', 'High-priority family food rations and nutritional kits for relief camps (Ready for Quantum Allocation)', NOW()),
+(4, 1, 2, 1, 'ALLOCATED', 'HIGH', 'Emergency rescue boats and inflatable motorcraft for river overflow evacuation', DATE_SUB(NOW(), INTERVAL 1 DAY))
+ON DUPLICATE KEY UPDATE request_status = VALUES(request_status), reason = VALUES(reason);
+
+-- 13. Request Items for each request
+INSERT INTO resource_request_items (request_item_id, resource_request_id, resource_id, quantity_requested, quantity_approved) VALUES
+(1, 1, 3, 2500, 0),
+(2, 2, 2, 20000, 20000),
+(3, 3, 1, 15000, 15000),
+(4, 4, 4, 15, 15)
+ON DUPLICATE KEY UPDATE quantity_requested = VALUES(quantity_requested), quantity_approved = VALUES(quantity_approved);
+
+-- 14. Optimization Run for Request 4
+INSERT INTO optimization_runs (optimization_run_id, resource_request_id, algorithm_name, status, execution_time_ms, created_at) VALUES
+(1, 4, 'QAOA_QUANTUM_APPROXIMATE_OPTIMIZATION', 'COMPLETED', 1420, DATE_SUB(NOW(), INTERVAL 1 DAY))
+ON DUPLICATE KEY UPDATE status = VALUES(status);
+
+-- 15. Resource Allocation for Request 4
+INSERT INTO resource_allocations (allocation_id, resource_request_id, optimization_run_id, allocated_by, allocation_status, created_at) VALUES
+(1, 4, 1, 1, 'APPROVED', DATE_SUB(NOW(), INTERVAL 1 DAY))
+ON DUPLICATE KEY UPDATE allocation_status = VALUES(allocation_status);
+
+-- 16. Resource Allocation Items (split across Kerala and Tamil Nadu warehouses)
+INSERT INTO resource_allocation_items (allocation_item_id, allocation_id, resource_id, warehouse_id, quantity_allocated) VALUES
+(1, 1, 4, 1, 10),
+(2, 1, 4, 2, 5)
+ON DUPLICATE KEY UPDATE quantity_allocated = VALUES(quantity_allocated);
+
+-- 17. Resource Movements (Dispatches in transit and delivered)
+INSERT INTO resource_movements (movement_id, allocation_id, from_warehouse_id, to_state_id, resource_id, quantity, movement_status, tracking_reference, dispatched_at, delivered_at, created_at) VALUES
+(1, 1, 1, 1, 4, 10, 'DELIVERED', 'NDRF-LOG-KL-2026-081', DATE_SUB(NOW(), INTERVAL 20 HOUR), DATE_SUB(NOW(), INTERVAL 4 HOUR), DATE_SUB(NOW(), INTERVAL 22 HOUR)),
+(2, 1, 2, 1, 4, 5, 'IN_TRANSIT', 'NDRF-LOG-TN-2026-149', DATE_SUB(NOW(), INTERVAL 6 HOUR), NULL, DATE_SUB(NOW(), INTERVAL 8 HOUR))
+ON DUPLICATE KEY UPDATE movement_status = VALUES(movement_status), tracking_reference = VALUES(tracking_reference);
+
+-- 18. Blockchain transactions for audit trail
+INSERT IGNORE INTO blockchain_transactions (blockchain_transaction_id, entity_type, entity_id, transaction_hash, blockchain_network, block_number, transaction_status, recorded_at) VALUES
+(1, 'ALLOCATION', 1, '0x8f2d5a7b1c3e4f6a9b8c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a', 'Hardhat Local EVM', 101, 'CONFIRMED', NOW()),
+(2, 'MOVEMENT', 1, '0x3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d', 'Hardhat Local EVM', 102, 'CONFIRMED', NOW()),
+(3, 'MOVEMENT', 2, '0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b', 'Hardhat Local EVM', 103, 'CONFIRMED', NOW());
+
 SET FOREIGN_KEY_CHECKS = 1;
