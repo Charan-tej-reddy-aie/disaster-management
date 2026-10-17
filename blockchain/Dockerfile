@@ -1,5 +1,5 @@
 # Production Dockerfile for Blockchain EVM node
-FROM node:20-alpine
+FROM node:22-alpine
 
 WORKDIR /app
 
