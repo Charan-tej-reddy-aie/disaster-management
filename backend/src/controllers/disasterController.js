@@ -1,7 +1,4 @@
 const pool = require("../config/database");
-const { createResourceAllocation } = require("../services/resourceAllocationService");
-const { updateMovementStatus } = require("../services/resourceMovementService");
-const { runQuantumAllocationPreview } = require("../services/quantumAllocationService");
 
 const getDisasterTypes = async (req, res) => {
     try {
@@ -80,22 +77,18 @@ const simulateDummyDisaster = async (req, res) => {
             );
         }
 
-        // 5. Find valid users for requested_by, allocatedBy, and updatedBy
-        const [natUsers] = await connection.query(
-            "SELECT user_id FROM users WHERE role_id = 1 OR email = 'national.head@disaster.local' ORDER BY user_id ASC LIMIT 1"
-        );
+        // 5. Find valid users for requested_by
         const [whUsers] = await connection.query(
             "SELECT user_id FROM users WHERE role_id = 4 OR email = 'kerala.warehouse@disaster.local' ORDER BY user_id ASC LIMIT 1"
         );
-        const nationalUserId = natUsers.length > 0 ? natUsers[0].user_id : (req.user?.userId || 1);
-        const warehouseUserId = whUsers.length > 0 ? whUsers[0].user_id : nationalUserId;
+        const warehouseUserId = whUsers.length > 0 ? whUsers[0].user_id : (req.user?.userId || 1);
 
-        // Create Resource Request in NATIONAL_APPROVED state (escalated & authorized)
+        // 6. Create Resource Request in PENDING_STATE_APPROVAL state (Awaiting Human Verification!)
         const [reqRes] = await connection.query(
             `INSERT INTO resource_requests
              (prediction_id, state_id, requested_by, request_status, priority, reason)
-             VALUES (?, 1, ?, 'NATIONAL_APPROVED', 'CRITICAL', ?)`,
-            [predictionId, warehouseUserId, `Live Simulation Emergency Response for ${eventName}`]
+             VALUES (?, 1, ?, 'PENDING_STATE_APPROVAL', 'CRITICAL', ?)`,
+            [predictionId, warehouseUserId, `AI Early Warning Shortage Requisition for ${eventName}`]
         );
         const requestId = reqRes.insertId;
 
@@ -103,93 +96,41 @@ const simulateDummyDisaster = async (req, res) => {
             await connection.query(
                 `INSERT INTO resource_request_items
                  (resource_request_id, resource_id, quantity_requested, quantity_approved)
-                 VALUES (?, ?, ?, ?)`,
-                [requestId, item.resourceId, item.required, item.required]
+                 VALUES (?, ?, ?, 0)`,
+                [requestId, item.resourceId, item.required]
             );
         }
 
         await connection.commit();
         connection.release();
 
-        // 6. Run Quantum Optimization preview
-        let quantumDetails = null;
-        try {
-            quantumDetails = await runQuantumAllocationPreview(requestId);
-        } catch (qe) {
-            console.warn("Quantum preview notice:", qe.message);
-        }
-
-        // 7. Create Resource Allocation
-        const allocResult = await createResourceAllocation({
-            requestId,
-            allocatedBy: nationalUserId
-        });
-        const allocationId = allocResult.allocationId;
-
-        // 8. Find created movements and advance them with live Blockchain transactions
-        const [movements] = await pool.query(
-            `SELECT movement_id, from_warehouse_id, to_state_id, to_district_id, resource_id, quantity 
-             FROM resource_movements WHERE allocation_id = ?`,
-            [allocationId]
-        );
-
-        const blockchainLogs = [];
-        if (movements.length > 0) {
-            const mov = movements[0];
-
-            // Step 8a: Dispatch -> Blockchain
-            const dispatchRes = await updateMovementStatus({
-                movementId: mov.movement_id,
-                newStatus: "DISPATCHED",
-                updatedBy: warehouseUserId
-            });
-            blockchainLogs.push({
-                step: "DISPATCHED",
-                movementId: mov.movement_id,
-                txHash: dispatchRes.blockchainAudit?.transactionHash,
-                blockNumber: dispatchRes.blockchainAudit?.blockNumber
-            });
-
-            // Step 8b: In-Transit -> Blockchain
-            const transitRes = await updateMovementStatus({
-                movementId: mov.movement_id,
-                newStatus: "IN_TRANSIT",
-                updatedBy: warehouseUserId
-            });
-            blockchainLogs.push({
-                step: "IN_TRANSIT",
-                movementId: mov.movement_id,
-                txHash: transitRes.blockchainAudit?.transactionHash,
-                blockNumber: transitRes.blockchainAudit?.blockNumber
-            });
-
-            // Step 8c: Delivered -> Blockchain
-            const deliverRes = await updateMovementStatus({
-                movementId: mov.movement_id,
-                newStatus: "DELIVERED",
-                updatedBy: warehouseUserId
-            });
-            blockchainLogs.push({
-                step: "DELIVERED",
-                movementId: mov.movement_id,
-                txHash: deliverRes.blockchainAudit?.transactionHash,
-                blockNumber: deliverRes.blockchainAudit?.blockNumber
-            });
-        }
-
         return res.json({
             success: true,
-            message: "Live disaster scenario simulated and confirmed across AI, Quantum, and Blockchain layers!",
+            message: "Emergency disaster alert generated! AI requisition created and awaiting State Disaster Head (SDMA) human verification.",
             scenario: {
                 eventName,
                 eventId,
                 predictionId,
                 requestId,
-                allocationId,
-                movementsCount: movements.length,
-                quantumAlgorithm: "QAOA Multi-Warehouse Optimization",
-                quantumDetails: quantumDetails?.optimizationRun?.algorithm_name || "QAOA",
-                blockchainTransactions: blockchainLogs
+                stateId: 1,
+                stateName: "Kerala",
+                severity: "CRITICAL",
+                probability: 0.95,
+                affectedPopulation: 15000,
+                affectedAreaKm2: 420.0,
+                status: "PENDING_STATE_APPROVAL",
+                requiresHumanVerification: true,
+                items: [
+                    { resourceName: "Emergency Food Kits", quantity: 15000, unit: "Kits" },
+                    { resourceName: "Clean Drinking Water", quantity: 30000, unit: "Litres" },
+                    { resourceName: "Emergency Medical Kits", quantity: 1500, unit: "Kits" }
+                ],
+                nextSteps: [
+                    "1. Log in as State Disaster Head (KeralaState.head@disaster.local) to verify and approve the requisition.",
+                    "2. Log in as National Disaster Head (national.head@disaster.local) to authorize national stockpiles.",
+                    "3. Run Quantum QAOA Optimization to determine optimal warehouse dispatch routes.",
+                    "4. Dispatch from warehouse and record immutable verification on Ethereum Blockchain!"
+                ]
             }
         });
     } catch (error) {

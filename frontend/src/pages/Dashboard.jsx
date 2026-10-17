@@ -68,6 +68,28 @@ export default function Dashboard() {
     }
   };
 
+  const playAlarmSound = () => {
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
+      osc.frequency.setValueAtTime(659, ctx.currentTime + 0.15);
+      osc.frequency.setValueAtTime(880, ctx.currentTime + 0.3);
+      gain.gain.setValueAtTime(0.12, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.6);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.6);
+    } catch {
+      // Audio autoplay policy handled gracefully
+    }
+  };
+
   const runSimulation = async () => {
     try {
       setSimulating(true);
@@ -75,6 +97,7 @@ export default function Dashboard() {
 
       const res = await api.post("/disasters/simulate-dummy");
       if (res.data.success) {
+        playAlarmSound();
         setSimulationResult(res.data.scenario);
         await loadDashboard();
       }
@@ -109,17 +132,18 @@ export default function Dashboard() {
           <button
             onClick={runSimulation}
             disabled={simulating}
-            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 px-4 py-2.5 text-sm font-bold text-white shadow-md shadow-blue-500/25 hover:from-blue-700 hover:to-purple-700 transition active:scale-95 disabled:opacity-50"
+            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-orange-600 px-4 py-2.5 text-sm font-bold text-white shadow-md shadow-red-500/25 hover:from-red-700 hover:to-orange-700 transition active:scale-95 disabled:opacity-50"
+            title="Trigger simulated AI disaster alert (Awaiting human verification)"
           >
             {simulating ? (
               <>
                 <Loader2 size={17} className="animate-spin" />
-                <span>Simulating Scenario...</span>
+                <span>Triggering Alert...</span>
               </>
             ) : (
               <>
                 <Zap size={17} className="text-amber-300 fill-amber-300" />
-                <span>Simulate Live Disaster</span>
+                <span>Simulate Disaster Alert</span>
               </>
             )}
           </button>
@@ -135,38 +159,58 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Simulation Result Banner if executed */}
+      {/* Emergency Simulation Alert Banner */}
       {simulationResult && (
-        <div className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-5 shadow-sm">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex items-start gap-3">
-              <div className="rounded-xl bg-emerald-600 p-2 text-white shadow-sm">
-                <CheckCircle2 size={24} />
+        <div className="rounded-2xl border-2 border-red-500/70 bg-gradient-to-br from-red-50 via-rose-50 to-orange-50 p-5 shadow-lg shadow-red-500/10">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="flex items-start gap-3.5">
+              <div className="rounded-2xl bg-gradient-to-br from-red-600 to-rose-700 p-3 text-white shadow-md shadow-red-600/30 shrink-0">
+                <TriangleAlert size={26} className="animate-pulse" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-emerald-950 flex items-center gap-2">
-                  Simulation Successful: {simulationResult.eventName}
-                  <span className="rounded-full bg-emerald-200/60 text-emerald-800 text-xs px-2.5 py-0.5 font-mono">
-                    ID #{simulationResult.predictionId}
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="rounded-full bg-red-600 px-2.5 py-0.5 text-[11px] font-black uppercase tracking-wider text-white">
+                    Emergency Alert Active
                   </span>
+                  <span className="rounded-full bg-red-100 text-red-800 text-xs px-2.5 py-0.5 font-bold border border-red-200">
+                    CRITICAL SEVERITY (95%)
+                  </span>
+                  <span className="rounded-full bg-amber-100 text-amber-800 text-xs px-2.5 py-0.5 font-bold border border-amber-200">
+                    Awaiting State Approval
+                  </span>
+                  <span className="text-xs text-slate-500 font-mono">
+                    Pred #{simulationResult.predictionId} • Req #{simulationResult.requestId}
+                  </span>
+                </div>
+                <h3 className="text-base sm:text-lg font-black text-slate-900 mt-1.5">
+                  {simulationResult.eventName}
                 </h3>
-                <p className="mt-1 text-xs text-emerald-800">
-                  Full chain completed: Prediction ➔ Emergency Request #{simulationResult.requestId} ➔ Quantum QAOA Optimization ➔ Allocation #{simulationResult.allocationId} ➔ Hardhat Blockchain Confirmation!
+                <p className="mt-1 text-xs sm:text-sm text-slate-700 leading-relaxed">
+                  AI early-warning model detected rapid flood inundation in <strong className="text-slate-900">Kerala</strong> (~15,000 citizens at risk). 
+                  Emergency supplies calculated (15,000 Food Kits, 30,000L Water, 1,500 Medical Kits). 
+                  <strong className="text-red-700 ml-1">Human Verification Required:</strong> State Disaster Head must review and authorize or reject this request.
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2.5 shrink-0 self-end lg:self-center">
               <Link
-                to="/blockchain"
-                className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-emerald-700 transition"
+                to="/resource-requests"
+                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-red-500/25 hover:from-red-700 hover:to-rose-700 transition active:scale-95"
               >
-                <ShieldCheck size={15} />
-                View Blockchain Audit
+                <span>Human Verification (SDMA)</span>
+                <ArrowRight size={14} />
+              </Link>
+              <Link
+                to="/predictions"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-sm"
+              >
+                Inspect AI Telemetry
               </Link>
               <button
                 onClick={() => setSimulationResult(null)}
-                className="rounded-xl border border-emerald-300 bg-white px-3 py-2 text-xs font-semibold text-emerald-800 hover:bg-emerald-100/50"
+                className="rounded-xl border border-slate-200 bg-white/80 px-3 py-2.5 text-xs font-medium text-slate-600 hover:bg-white"
+                title="Dismiss banner"
               >
                 Dismiss
               </button>

@@ -63,19 +63,19 @@ export default function Topbar({ onSimulationTrigger, onToggleSidebar }) {
         <button
           onClick={runQuickSimulation}
           disabled={simulating}
-          className="inline-flex items-center gap-1.5 sm:gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-2.5 py-1.5 sm:px-3.5 text-xs font-semibold text-white shadow-sm shadow-blue-500/20 hover:from-blue-700 hover:to-indigo-700 transition disabled:opacity-60 active:scale-95"
-          title="Execute complete end-to-end disaster scenario"
+          className="inline-flex items-center gap-1.5 sm:gap-2 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 px-2.5 py-1.5 sm:px-3.5 text-xs font-semibold text-white shadow-sm shadow-red-500/20 hover:from-red-700 hover:to-rose-700 transition disabled:opacity-60 active:scale-95"
+          title="Trigger simulated AI disaster alert (Awaiting human verification)"
         >
           {simulating ? (
             <>
               <Loader2 size={14} className="animate-spin" />
-              <span className="hidden sm:inline">Simulating...</span>
+              <span className="hidden sm:inline">Alerting...</span>
             </>
           ) : (
             <>
               <Zap size={14} className="text-amber-300 fill-amber-300" />
-              <span className="hidden sm:inline">Simulate Disaster</span>
-              <span className="sm:hidden">Simulate</span>
+              <span className="hidden sm:inline">Simulate Alert</span>
+              <span className="sm:hidden">Alert</span>
             </>
           )}
         </button>

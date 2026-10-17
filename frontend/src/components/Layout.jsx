@@ -69,35 +69,39 @@ export default function Layout() {
 
         {/* Global Simulation Alert Notification */}
         {simulationNotice && (
-          <div className="mx-3 sm:mx-6 mt-4 p-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white shadow-lg shadow-emerald-700/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-fadeIn transition-all">
+          <div className="mx-3 sm:mx-6 mt-4 p-4 rounded-2xl bg-gradient-to-r from-red-600 via-rose-600 to-orange-600 text-white shadow-lg shadow-red-700/25 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-fadeIn transition-all">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-xl bg-white/20 text-white backdrop-blur-sm shrink-0">
-                <CheckCircle size={22} className="text-emerald-200" />
+                <AlertTriangle size={22} className="text-amber-200 animate-pulse" />
               </div>
               <div>
                 <h4 className="font-bold text-sm leading-tight flex flex-wrap items-center gap-2">
-                  Simulation Scenario Complete: {simulationNotice.eventName}
-                  <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded-full font-mono">
-                    REQ #{simulationNotice.requestId}
+                  🚨 Early Warning Alert: {simulationNotice.eventName}
+                  <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded-full font-mono font-bold">
+                    CRITICAL (95%)
+                  </span>
+                  <span className="text-[10px] bg-amber-300 text-slate-900 px-2 py-0.5 rounded-full font-bold">
+                    AWAITING STATE APPROVAL
                   </span>
                 </h4>
-                <p className="text-xs text-emerald-100 mt-0.5">
-                  Allocation #{simulationNotice.allocationId} created with Quantum QAOA • Dispatched & confirmed on Hardhat Ethereum Ledger!
+                <p className="text-xs text-rose-100 mt-0.5">
+                  Requisition #{simulationNotice.requestId} generated in Kerala (~15,000 citizens at risk). State Disaster Head must review and approve.
                 </p>
               </div>
             </div>
 
             <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
               <Link
-                to="/blockchain"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white text-emerald-800 text-xs font-bold hover:bg-emerald-50 transition shadow-sm"
+                to="/resource-requests"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white text-red-700 text-xs font-bold hover:bg-rose-50 transition shadow-sm"
               >
-                <ShieldCheck size={14} />
-                Inspect on Blockchain
+                <span>Verify Requisition (SDMA)</span>
+                <ArrowRight size={14} />
               </Link>
               <button
                 onClick={() => setSimulationNotice(null)}
                 className="p-1.5 text-white/80 hover:text-white rounded-lg hover:bg-white/10"
+                title="Dismiss banner"
               >
                 <X size={16} />
               </button>
