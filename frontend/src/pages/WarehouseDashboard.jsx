@@ -471,16 +471,36 @@ export default function WarehouseDashboard() {
                           )}
                         </td>
                         <td className="px-5 py-4 text-right">
-                          {m.movement_status === "PLANNED" && (
-                            <button
-                              onClick={() => handleMovementAction(m.movement_id, "dispatch")}
-                              disabled={actionLoading === m.movement_id}
-                              className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-sm transition disabled:opacity-50 flex items-center gap-1.5 ml-auto"
-                            >
-                              <Send size={13} />
-                              Dispatch
-                            </button>
-                          )}
+                          {m.movement_status === "PLANNED" && (() => {
+                            const whStock = inventory.find((inv) => Number(inv.resource_id) === Number(m.resource_id));
+                            const availableQty = Number(whStock?.quantity_available || 0);
+                            const requiredQty = Number(m.quantity || 0);
+                            const hasStock = availableQty >= requiredQty;
+
+                            if (!hasStock) {
+                              return (
+                                <button
+                                  disabled
+                                  className="px-3 py-1.5 bg-slate-100 text-slate-400 border border-slate-200 rounded-lg text-xs font-semibold cursor-not-allowed flex items-center gap-1.5 ml-auto"
+                                  title={`Cannot dispatch: Insufficient physical stock! (Available: ${availableQty.toLocaleString()}, Needed: ${requiredQty.toLocaleString()})`}
+                                >
+                                  <AlertTriangle size={13} className="text-amber-500" />
+                                  Out of Stock
+                                </button>
+                              );
+                            }
+
+                            return (
+                              <button
+                                onClick={() => handleMovementAction(m.movement_id, "dispatch")}
+                                disabled={actionLoading === m.movement_id}
+                                className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-sm transition disabled:opacity-50 flex items-center gap-1.5 ml-auto active:scale-95"
+                              >
+                                <Send size={13} />
+                                Dispatch
+                              </button>
+                            );
+                          })()}
 
                           {m.movement_status === "DISPATCHED" && (
                             <button
