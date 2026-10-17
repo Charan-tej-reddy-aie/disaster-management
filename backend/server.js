@@ -125,7 +125,31 @@ const PORT = process.env.PORT || 5000;
 
 async function autoInitTables() {
     try {
-        // 1. Ensure manager_user_id column exists on warehouses
+        const bcrypt = require("bcryptjs");
+
+        // 1. Ensure roles exist
+        await pool.query(`
+            INSERT IGNORE INTO roles (role_id, role_name, description) VALUES
+            (1, 'NATIONAL_HEAD', 'Single national-level disaster management head'),
+            (2, 'STATE_HEAD', 'Head responsible for a state'),
+            (3, 'DEPARTMENT_HEAD', 'Head of a disaster/resource department'),
+            (4, 'WAREHOUSE_MANAGER', 'Manages government resource warehouse'),
+            (5, 'FIELD_OFFICER', 'Field-level disaster response officer');
+        `);
+
+        // 2. Ensure country and states exist
+        await pool.query(`
+            INSERT IGNORE INTO countries (country_id, country_name, country_code) VALUES
+            (1, 'India', 'IN');
+        `);
+        await pool.query(`
+            INSERT IGNORE INTO states (state_id, country_id, state_name, state_code) VALUES
+            (1, 1, 'Kerala', 'KL'),
+            (2, 1, 'Tamil Nadu', 'TN'),
+            (3, 1, 'Karnataka', 'KA');
+        `);
+
+        // 3. Ensure manager_user_id column exists on warehouses
         try {
             await pool.query(`
                 ALTER TABLE warehouses 
@@ -134,12 +158,44 @@ async function autoInitTables() {
                   FOREIGN KEY (manager_user_id) REFERENCES users(user_id) 
                   ON DELETE SET NULL
             `);
-            console.log("Column manager_user_id added to warehouses.");
+            console.log("Column manager_user_id verified on warehouses.");
         } catch (colErr) {
             // Already exists or ignore
         }
 
-        // 2. Ensure warehouse_stock_requests table exists
+        // 4. Ensure demo users exist with password Admin@123
+        const defaultHash = bcrypt.hashSync("Admin@123", 10);
+        const upsertUser = async (email, fullName, roleId, stateId) => {
+            const [existing] = await pool.query("SELECT user_id FROM users WHERE email = ?", [email]);
+            if (existing.length > 0) {
+                await pool.query(
+                    "UPDATE users SET full_name = ?, role_id = ?, state_id = ?, password_hash = ?, is_active = 1 WHERE user_id = ?",
+                    [fullName, roleId, stateId, defaultHash, existing[0].user_id]
+                );
+                return existing[0].user_id;
+            } else {
+                const [ins] = await pool.query(
+                    "INSERT INTO users (role_id, state_id, full_name, email, password_hash, is_active) VALUES (?, ?, ?, ?, ?, 1)",
+                    [roleId, stateId, fullName, email, defaultHash]
+                );
+                return ins.insertId;
+            }
+        };
+
+        const uNat = await upsertUser("national.head@disaster.local", "National Disaster Management Head", 1, null);
+        const uState = await upsertUser("KeralaState.head@disaster.local", "Kerala State Disaster Management Head", 2, 1);
+        const uWh1 = await upsertUser("kerala.warehouse@disaster.local", "Kerala Warehouse Manager", 4, 1);
+        const uWh2 = await upsertUser("tn.warehouse@disaster.local", "Tamil Nadu Warehouse Manager", 4, 2);
+        await upsertUser("dept.head@disaster.local", "Kerala Disaster Department Head", 3, 1);
+        await upsertUser("field.officer@disaster.local", "Kerala Field Response Officer", 5, 1);
+
+        // 5. Link warehouse managers
+        try {
+            await pool.query("UPDATE warehouses SET manager_user_id = ? WHERE warehouse_id = 1", [uWh1]);
+            await pool.query("UPDATE warehouses SET manager_user_id = ? WHERE warehouse_id = 2", [uWh2]);
+        } catch (whErr) {}
+
+        // 6. Ensure warehouse_stock_requests table exists
         await pool.query(`
             CREATE TABLE IF NOT EXISTS warehouse_stock_requests (
                 stock_request_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -161,7 +217,7 @@ async function autoInitTables() {
                 CONSTRAINT fk_wsr_user FOREIGN KEY (requested_by) REFERENCES users (user_id) ON DELETE RESTRICT
             );
         `);
-        console.log("Database tables verified (including warehouse_stock_requests and manager_user_id).");
+        console.log("Database initialized: all tables, roles, warehouses, and demo accounts ready.");
     } catch (e) {
         console.warn("Table autoInit warning:", e.message);
     }
