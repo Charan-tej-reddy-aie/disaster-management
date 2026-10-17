@@ -1,5 +1,7 @@
 USE disaster_management;
 
+SET FOREIGN_KEY_CHECKS = 0;
+
 -- 1. Country & States
 INSERT IGNORE INTO countries (country_id, country_name, country_code) VALUES (1, 'India', 'IN');
 INSERT IGNORE INTO states (state_id, country_id, state_name, state_code) VALUES
@@ -112,3 +114,5 @@ ON DUPLICATE KEY UPDATE quantity_required = VALUES(quantity_required);
 INSERT IGNORE INTO warehouse_stock_requests (stock_request_id, warehouse_id, resource_id, requested_by, quantity_requested, quantity_allotted, priority, status, allotment_source, reason) VALUES
 (1, 1, 1, 3, 10000, 10000, 'HIGH', 'ALLOTTED', 'CENTRAL_NATIONAL_RESERVE', 'Pre-monsoon strategic buffer replenishment'),
 (2, 1, 4, 3, 10, 0, 'CRITICAL', 'PENDING_ALLOTMENT', 'CENTRAL_NATIONAL_RESERVE', 'Additional inflatable rescue craft needed for coastal flooding');
+
+SET FOREIGN_KEY_CHECKS = 1;
