@@ -12,6 +12,15 @@ INSERT IGNORE INTO states (state_id, country_id, state_name, state_code) VALUES
 (5, 1, 'Assam', 'AS');
 
 -- 2. State Locations
+CREATE TABLE IF NOT EXISTS state_locations (
+    state_location_id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    state_id BIGINT UNSIGNED NOT NULL,
+    latitude DECIMAL(10,7) NOT NULL,
+    longitude DECIMAL(10,7) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT uq_state_location UNIQUE (state_id)
+);
+
 INSERT IGNORE INTO state_locations (state_id, latitude, longitude) VALUES
 (1, 10.8505169, 76.2710833),
 (2, 13.0826802, 80.2707184),
@@ -111,6 +120,23 @@ INSERT INTO predicted_resource_requirements (predicted_requirement_id, predictio
 ON DUPLICATE KEY UPDATE quantity_required = VALUES(quantity_required);
 
 -- 11. Initial Stock Request
+CREATE TABLE IF NOT EXISTS warehouse_stock_requests (
+    stock_request_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    warehouse_id BIGINT UNSIGNED NOT NULL,
+    resource_id BIGINT UNSIGNED NOT NULL,
+    requested_by BIGINT UNSIGNED NOT NULL,
+    quantity_requested DECIMAL(15,3) NOT NULL,
+    quantity_allotted DECIMAL(15,3) NOT NULL DEFAULT 0,
+    priority ENUM('LOW', 'MEDIUM', 'HIGH', 'CRITICAL') NOT NULL DEFAULT 'HIGH',
+    status ENUM('PENDING_ALLOTMENT', 'ALLOTTED', 'REJECTED') NOT NULL DEFAULT 'PENDING_ALLOTMENT',
+    allotment_source VARCHAR(100) NOT NULL DEFAULT 'CENTRAL_NATIONAL_RESERVE',
+    reason TEXT NULL,
+    allotted_by BIGINT UNSIGNED NULL,
+    allotted_at DATETIME NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
 INSERT IGNORE INTO warehouse_stock_requests (stock_request_id, warehouse_id, resource_id, requested_by, quantity_requested, quantity_allotted, priority, status, allotment_source, reason) VALUES
 (1, 1, 1, 3, 10000, 10000, 'HIGH', 'ALLOTTED', 'CENTRAL_NATIONAL_RESERVE', 'Pre-monsoon strategic buffer replenishment'),
 (2, 1, 4, 3, 10, 0, 'CRITICAL', 'PENDING_ALLOTMENT', 'CENTRAL_NATIONAL_RESERVE', 'Additional inflatable rescue craft needed for coastal flooding');

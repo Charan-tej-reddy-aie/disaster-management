@@ -1047,7 +1047,7 @@ CREATE TABLE IF NOT EXISTS warehouse_stock_requests (
     CONSTRAINT fk_wsr_user FOREIGN KEY (requested_by) REFERENCES users (user_id) ON DELETE RESTRICT
 );
 
-CREATE TABLE state_locations (
+CREATE TABLE IF NOT EXISTS state_locations (
     state_location_id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     state_id BIGINT UNSIGNED NOT NULL,
     latitude DECIMAL(10,7) NOT NULL,

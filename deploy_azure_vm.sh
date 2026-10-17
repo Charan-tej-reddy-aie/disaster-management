@@ -61,7 +61,7 @@ until sudo docker exec disaster_mysql mysqladmin ping -h localhost -uroot -proot
 done
 
 echo "MySQL is ready! Importing complete seed data..."
-sudo docker exec -i disaster_mysql mysql -uroot -prootpassword123 disaster_management < database/init/complete_seed.sql
+sudo docker exec -i disaster_mysql mysql -f -uroot -prootpassword123 disaster_management < database/init/complete_seed.sql
 sudo docker exec disaster_backend node src/scripts/setup_roles_and_managers.js || true
 
 echo "Restarting backend to apply fresh schema and connections..."
