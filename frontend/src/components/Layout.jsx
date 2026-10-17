@@ -76,26 +76,26 @@ export default function Layout() {
               </div>
               <div>
                 <h4 className="font-bold text-sm leading-tight flex flex-wrap items-center gap-2">
-                  🚨 Early Warning Alert: {simulationNotice.eventName}
+                  🚨 New Disaster Alert: {simulationNotice.eventName}
                   <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded-full font-mono font-bold">
                     CRITICAL (95%)
                   </span>
-                  <span className="text-[10px] bg-amber-300 text-slate-900 px-2 py-0.5 rounded-full font-bold">
-                    AWAITING STATE APPROVAL
+                  <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded-full font-mono">
+                    ID #{simulationNotice.predictionId}
                   </span>
                 </h4>
                 <p className="text-xs text-rose-100 mt-0.5">
-                  Requisition #{simulationNotice.requestId} generated in Kerala (~15,000 citizens at risk). State Disaster Head must review and approve.
+                  New disaster prediction generated for Kerala (~15,000 citizens at risk). Open Predictions to inspect details.
                 </p>
               </div>
             </div>
 
             <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
               <Link
-                to="/resource-requests"
+                to="/predictions"
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white text-red-700 text-xs font-bold hover:bg-rose-50 transition shadow-sm"
               >
-                <span>Verify Requisition (SDMA)</span>
+                <span>View in Predictions</span>
                 <ArrowRight size={14} />
               </Link>
               <button

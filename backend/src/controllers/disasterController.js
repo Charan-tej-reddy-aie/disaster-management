@@ -77,59 +77,26 @@ const simulateDummyDisaster = async (req, res) => {
             );
         }
 
-        // 5. Find valid users for requested_by
-        const [whUsers] = await connection.query(
-            "SELECT user_id FROM users WHERE role_id = 4 OR email = 'kerala.warehouse@disaster.local' ORDER BY user_id ASC LIMIT 1"
-        );
-        const warehouseUserId = whUsers.length > 0 ? whUsers[0].user_id : (req.user?.userId || 1);
-
-        // 6. Create Resource Request in PENDING_STATE_APPROVAL state (Awaiting Human Verification!)
-        const [reqRes] = await connection.query(
-            `INSERT INTO resource_requests
-             (prediction_id, state_id, requested_by, request_status, priority, reason)
-             VALUES (?, 1, ?, 'PENDING_STATE_APPROVAL', 'CRITICAL', ?)`,
-            [predictionId, warehouseUserId, `AI Early Warning Shortage Requisition for ${eventName}`]
-        );
-        const requestId = reqRes.insertId;
-
-        for (const item of items) {
-            await connection.query(
-                `INSERT INTO resource_request_items
-                 (resource_request_id, resource_id, quantity_requested, quantity_approved)
-                 VALUES (?, ?, ?, 0)`,
-                [requestId, item.resourceId, item.required]
-            );
-        }
-
         await connection.commit();
         connection.release();
 
         return res.json({
             success: true,
-            message: "Emergency disaster alert generated! AI requisition created and awaiting State Disaster Head (SDMA) human verification.",
+            message: "New disaster alert generated successfully!",
             scenario: {
                 eventName,
                 eventId,
                 predictionId,
-                requestId,
                 stateId: 1,
                 stateName: "Kerala",
                 severity: "CRITICAL",
                 probability: 0.95,
                 affectedPopulation: 15000,
                 affectedAreaKm2: 420.0,
-                status: "PENDING_STATE_APPROVAL",
-                requiresHumanVerification: true,
                 items: [
                     { resourceName: "Emergency Food Kits", quantity: 15000, unit: "Kits" },
                     { resourceName: "Clean Drinking Water", quantity: 30000, unit: "Litres" },
                     { resourceName: "Emergency Medical Kits", quantity: 1500, unit: "Kits" }
-                ],
-                nextSteps: [
-                    "1. Log in as State Disaster Head (KeralaState.head@disaster.local) to verify and approve the requisition.",
-                    "2. Log in as National Disaster Head (national.head@disaster.local) to authorize national stockpiles.",
-                    "3. Run Quantum QAOA Optimization to determine optimal warehouse dispatch routes.",
-                    "4. Dispatch from warehouse and record immutable verification on Ethereum Blockchain!"
                 ]
             }
         });
