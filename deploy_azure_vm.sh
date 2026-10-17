@@ -53,9 +53,10 @@ echo "[5/6] Building and starting all 6 microservices via Docker Compose..."
 sudo docker compose down --remove-orphans || true
 sudo docker compose up -d --build
 
-# 6. Seed Demo Users and Warehouse Managers
-echo "[6/7] Seeding demo users and setting credentials..."
+# 6. Seed Complete Database (Warehouses, Inventory, Requests, Allocations, Blockchain)
+echo "[6/7] Seeding complete database and demo workflow..."
 sleep 5
+sudo docker exec -i disaster_mysql mysql -uroot -prootpassword123 disaster_management < database/init/complete_seed.sql || true
 sudo docker exec disaster_backend node src/scripts/setup_roles_and_managers.js || true
 
 # 7. Verification and Health Check
