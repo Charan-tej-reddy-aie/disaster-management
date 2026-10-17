@@ -33,6 +33,12 @@ const simulateDummyDisaster = async (req, res) => {
         const simCode = Math.floor(1000 + Math.random() * 9000);
         const eventName = `Disaster Alert: Cyclone & Coastal Inundation #${simCode}`;
 
+        // Ensure prediction model exists
+        await connection.query(`
+            INSERT IGNORE INTO prediction_models (prediction_model_id, model_name, model_version, model_type, description)
+            VALUES (1, 'Ensemble Hazard Predictor', 'v2.4', 'MACHINE_LEARNING', 'Hybrid XGBoost and Random Forest')
+        `);
+
         // 1. Create simulated disaster event in Kerala (state_id = 1)
         const [eventRes] = await connection.query(
             `INSERT INTO disaster_events 
